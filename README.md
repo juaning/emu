@@ -1,4 +1,4 @@
-#EMU APP#
+#EMU APP
 
 Emu is an app to manage payroll
 
