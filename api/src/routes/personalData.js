@@ -21,7 +21,6 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-  console.log(req);
   res.json({
     data: {
       msg: `Personal Data ID: ${req.params.id}`,
