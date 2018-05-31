@@ -1,6 +1,7 @@
 .DS_Store
 node_modules/
 db-data/
+data/
 .dockerignore
 *.log
 **.env

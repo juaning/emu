@@ -4,29 +4,26 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile
-    command: npm run dev
+    command: npm run start-watch
     volumes: 
       - ./api:/usr/app/
       - ./api/node_modules:/usr/app/node_modules
     ports:
       - "3000:3000"
     depends_on:
-      - postgres
+      - mongo
     environment:
-      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       NODE_ENV: development
-      TEST: ${TEST}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-      DB_HOST: postgres
-  postgres:
-    image: postgres:10.4-alpine
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      MONGO_URL: mongodb://${MONGODB_APPLICATION_USER}:${MONGODB_APPLICATION_PASS}@mongo:27017/${MONGODB_APPLICATION_DATABASE}
+  mongo:
+    image: mongo
     volumes:
-      - "./db-data:/var/lib/postgresql/data"
+      - ./data/mongo:/data/db
+    ports:
+      - "27017:27017"
+    environment:
+      MONGODB_ADMIN_USER: ${MONGODB_ADMIN_USER}
+      MONGODB_ADMIN_PASS: ${MONGODB_ADMIN_PASS}
+      MONGODB_APPLICATION_DATABASE: ${MONGODB_APPLICATION_DATABASE}
+      MONGODB_APPLICATION_USER: ${MONGODB_APPLICATION_USER}
+      MONGODB_APPLICATION_PASS: ${MONGODB_APPLICATION_PASS}

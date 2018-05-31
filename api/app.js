@@ -7,7 +7,7 @@ const app = express();
 app.use(morgan('dev'));
 
 app.get('/', (req, res) => {
-  res.send(`Hello World!! ENV=${process.env.TEST}`);
+  res.send('Please go to /api');
 });
 
 app.use('/api', router);
