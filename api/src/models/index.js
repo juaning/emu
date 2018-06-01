@@ -39,3 +39,5 @@ if (CONFIG.db_host !== '') {
 }
 
 /* eslint-enable no-console */
+
+module.exports = models;
