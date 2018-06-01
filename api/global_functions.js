@@ -48,3 +48,10 @@ process.on('unhandledRejection', error =>
   // eslint-disable-next-line no-console
   console.error('Uncaught Error', pe(error)));
 /* eslint-enable no-unused-vars */
+
+module.exports = {
+  to,
+  TE,
+  ReE,
+  ReS,
+};

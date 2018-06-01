@@ -3,7 +3,7 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 
-// const v1 = require('./src/routes/v1');
+const v1 = require('./src/routes/v1');
 
 const app = express();
 
@@ -13,9 +13,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Passport
 app.use(passport.initialize());
-
-// Models
-// const models = require('./src/models');
 
 // CORS. So other sites can access our API
 app.use((req, res, next) => {
@@ -32,7 +29,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.use('/v1', v1);
+app.use('/v1', v1);
 
 app.use('/', (req, res) => {
   res.statusCode = 200;
