@@ -1,39 +1,38 @@
 const fs = require('fs');
 const path = require('path');
-const Sequelize = require('sequelize');
+const mongoose = require('mongoose');
+const CONFIG = require('./../../config/config');
 
 const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
-const config = require('../../config/database.js')[env];
+const models = {};
 
-const db = {};
+if (CONFIG.db_host !== '') {
+  const files = fs
+    .readdirSync(__dirname)
+    .filter((file) => {
+      return (
+        file.IndexOf('.') !== 0)
+        && (file !== basename)
+        && (file.slice(-3) === '.js')
+      );
+    })
+    .forEach((file) => {
+      const filename = file.split('.')[0];
+      const model_name = filename.chartAt(0).toUpperCase() + filename.slice(1);
+    });
+  
+  mongoose.Promise = global.Promise;
+  const mongoLocation = process.env.MONGO_URL;
 
-let sequelize;
+  mongoose.connect(mongoLocation)
+    .catch(err => console
+      .log(`*** Can not connect to Mongo Server: ${mongoLocation}`));
 
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+  const db = mongoose.connection;
+  module.exports = db;
+  db.once('open', () => console.log(`Connected to mongo at ${mongoLocation}`));
+  db.on('error', error => console.log(`Error: ${error}`));
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
+  console.log('No mongo credentials given');
 }
 
-fs
-  .readdirSync(__dirname)
-  .filter(file =>
-    (file.indexOf('.') !== 0)
-    && (file !== basename)
-    && (file.slice(-3) === '.js'))
-  .forEach((file) => {
-    const model = sequelize.import(path.join(__dirname, file));
-    db[model.name] = model;
-  });
-
-Object.keys(db).forEach((modelName) => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
-});
-
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
-
-module.exports = db;

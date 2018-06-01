@@ -14,3 +14,5 @@ CONFIG.db_password = process.env.MONGODB_APPLICATION_PASS || 'db-password';
 
 CONFIG.jwt_encryption = process.env.JWT_ENCRYPTION || 'jwt_change_this';
 CONFIG.jwt_expiration = process.env.JWT_EXPIRATION || '10000';
+
+module.exports = CONFIG;
