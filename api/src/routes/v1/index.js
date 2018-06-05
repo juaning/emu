@@ -1,5 +1,5 @@
 const express = require('express');
-const PersonalDataRoutes = require('./personalDataRoutes');
+// const PersonalDataRoutes = require('./personalDataRoutes');
 
 const router = express.router();
 
@@ -12,6 +12,6 @@ router.get('/', (req, res) => {
   });
 });
 
-router.use('/personal_data', PersonalDataRoutes);
+// router.use('/personal_data', PersonalDataRoutes);
 
 module.exports = router;

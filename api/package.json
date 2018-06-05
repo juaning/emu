@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node ./app.js",
-    "start-watch": "nodemon --watch . --ignore ./__tests__ -x \"npm start\"",
+    "start-watch": "nodemon npm start",
     "dev": "npm run start-watch",
     "dev-postgres": "npm run db-migrate && npm run start-watch",
     "db-create": "./node_modules/.bin/sequelize db:create",
@@ -39,5 +39,10 @@
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.12.0",
     "nodemon": "^1.17.5"
+  },
+  "nodemonConfig": {
+    "ignore": ["__tests__/*", "tests/*", "node_modules/*"],
+    "watch": ["."],
+    "legacyWatch": "true"
   }
 }
