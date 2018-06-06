@@ -4,7 +4,7 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile
-    command: npm run dev
+    command: npm run start-watch
     volumes: 
       - ./api:/usr/app/
       - ./api/node_modules:/usr/app/node_modules
@@ -14,8 +14,6 @@ services:
       - mongo
     environment:
       NODE_ENV: development
-      # MONGO_URL: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongo:27017/${MONGO_INITDB_DATABASE}
-      # DATABASE_URL: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongo:27017/${MONGO_INITDB_DATABASE}
       MONGO_URL: mongodb://mongo:27017/${MONGO_INITDB_DATABASE}
   mongo:
     image: mongo
@@ -24,9 +22,3 @@ services:
       - ./data/mongo:/data/db
     ports:
       - "27017:27017"
-    environment:
-      # MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      # MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
-      # MONGO_USERNAME: ${MONGO_USERNAME}
-      # MONGO_PASSWORD: ${MONGO_PASSWORD}
