@@ -2,3 +2,7 @@ languaje: node_js
 node_js:
   - "node"
   - "9"
+install:
+  - npm install
+script:
+  - npm test
