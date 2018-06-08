@@ -1,35 +1,17 @@
-import * as express from "express";
-import { Request, Response } from "express";
+import * as express from 'express';
+import { Request, Response } from 'express';
+import PersonalDataController from './../controllers/PersonalDataController';
 
 const router = express.Router();
+const personalDataController = new PersonalDataController();
 
 router.route('/')
-.get((req: Request, res: Response) => {
-  res.status(200).send({
-    message: 'GET request successfull! URL /personal-data'
-  });
-})
-.post((req: Request, res: Response) => {
-  res.status(200).send({
-    message: 'POST request successfull! URL /personal-data'
-  });
-});
+.get(personalDataController.getAllPersonalData)
+.post(personalDataController.addPersonalData);
 
 router.route('/:personalDataId')
-.get((req: Request, res: Response) => {
-  res.status(200).send({
-    message: `GET request successfull! URL /personal-data/${req.params.personalDataId}`
-  });
-})
-.put((req: Request, res: Response) => {
-  res.status(200).send({
-    message: `PUT request successfull! URL /personal-data/${req.params.personalDataId}`
-  });
-})
-.delete((req: Request, res: Response) => {
-  res.status(200).send({
-    message: `DELETE request successfull! URL /personal-data/${req.params.personalDataId}`
-  });
-});
+.get(personalDataController.getPersonalDataWithID)
+.put(personalDataController.updatePersonalData)
+.delete(personalDataController.deletePersonalData);
 
 export default router;
