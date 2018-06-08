@@ -1,7 +1,9 @@
-const mongoose = require('mongoose');
-const validate = require('mongoose-validator');
+import * as mongoose from 'mongoose';
+import * as validate from 'mongoose-validator';
 
-const PersonalDataSchema = mongoose.Schema({
+const { Schema } = mongoose;
+
+const PersonalDataSchema = Schema({
   documentId: { type: String, required: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
@@ -48,4 +50,4 @@ PersonalDataSchema.methods.toWeb = () => {
   return json;
 };
 
-module.exports = mongoose.model('PersonalData', PersonalDataSchema);
+export default PersonalDataSchema;
