@@ -1,5 +1,4 @@
 import * as express from 'express';
-import { Request, Response } from 'express';
 import PersonalDataController from './../controllers/PersonalDataController';
 
 const router = express.Router();
