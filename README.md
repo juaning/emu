@@ -1,4 +1,4 @@
-# EMU APP
+# EMU APP [![Build Status](https://travis-ci.com/juaning/emu.svg?branch=master)](https://travis-ci.com/juaning/emu)
 
 Emu is an app to manage payroll
 
