@@ -8,7 +8,6 @@ import registerServiceWorker from './registerServiceWorker';
 
 // ReactDOM.render(<App />, document.getElementById('root'));
 // import 'assets/css/material-dashboard-react.css?v=1.3.0';
-// import './resources/assets/css/material-dashboard-react.css?v=1.3.0';
 import './resources/assets/css/material-dashboard-react.css';
 
 import indexRoutes from './resources/routes';

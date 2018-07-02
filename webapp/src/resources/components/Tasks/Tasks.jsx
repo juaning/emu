@@ -101,13 +101,13 @@ Tasks.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   tasksIndexes: PropTypes.arrayOf(PropTypes.number),
   tasks: PropTypes.arrayOf(PropTypes.node),
-  checkedIndexes: PropTypes.arrayOf(PropTypes.bool),
+  checkedIndexes: PropTypes.arrayOf(PropTypes.number),
 };
 
 Tasks.defaultProps = {
   tasksIndexes: [0],
   tasks: [''],
-  checkedIndexes: [false],
+  checkedIndexes: [0],
 };
 
 export default withStyles(tasksStyle)(Tasks);

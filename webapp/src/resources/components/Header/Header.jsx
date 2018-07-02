@@ -77,7 +77,7 @@ Header.propTypes = {
 };
 
 Header.defaultProps = {
-  color: 'primary',
+  color: 'success',
   routes: [{
     path: '',
     navbarName: '',

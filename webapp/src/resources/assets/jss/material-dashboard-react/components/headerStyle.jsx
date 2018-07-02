@@ -10,6 +10,31 @@ import {
 } from '../../material-dashboard-react';
 
 const headerStyle = () => ({
+  primary: {
+    backgroundColor: primaryColor,
+    color: '#FFFFFF',
+    ...defaultBoxShadow,
+  },
+  info: {
+    backgroundColor: infoColor,
+    color: '#FFFFFF',
+    ...defaultBoxShadow,
+  },
+  success: {
+    backgroundColor: successColor,
+    color: '#FFFFFF',
+    ...defaultBoxShadow,
+  },
+  warning: {
+    backgroundColor: warningColor,
+    color: '#FFFFFF',
+    ...defaultBoxShadow,
+  },
+  danger: {
+    backgroundColor: dangerColor,
+    color: '#FFFFFF',
+    ...defaultBoxShadow,
+  },
   appBar: {
     backgroundColor: 'transparent',
     boxShadow: 'none',
@@ -47,31 +72,6 @@ const headerStyle = () => ({
   },
   appResponsive: {
     top: '8px',
-  },
-  primary: {
-    backgroundColor: primaryColor,
-    color: '#FFFFFF',
-    ...defaultBoxShadow,
-  },
-  info: {
-    backgroundColor: infoColor,
-    color: '#FFFFFF',
-    ...defaultBoxShadow,
-  },
-  success: {
-    backgroundColor: successColor,
-    color: '#FFFFFF',
-    ...defaultBoxShadow,
-  },
-  warning: {
-    backgroundColor: warningColor,
-    color: '#FFFFFF',
-    ...defaultBoxShadow,
-  },
-  danger: {
-    backgroundColor: dangerColor,
-    color: '#FFFFFF',
-    ...defaultBoxShadow,
   },
 });
 
