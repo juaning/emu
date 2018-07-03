@@ -16,13 +16,14 @@ import mainRoutes from '../../routes/mainRoutes';
 import dashboardStyle from '../../assets/jss/material-dashboard-react/layouts/dashboardStyle';
 
 import image from '../../assets/img/sidebar-2.jpg';
-import logo from '../../assets/img/reactlogo.png';
+// import logo from '../../assets/img/reactlogo.png';
+import logo from '../../assets/img/folklogo.png';
 
 const switchRoutes = (
   <Switch>
     {mainRoutes.map((route) => {
-      if (route.redirect) return <Redirect from={route.path} to={route.to} />;
-      return <Route path={route.path} component={route.component} />;
+      if (route.redirect) return <Redirect from={route.path} to={route.to} key={route.path} />;
+      return <Route path={route.path} component={route.component} key={route.path} />;
     })}
   </Switch>
 );
@@ -56,7 +57,7 @@ class App extends Component {
       <div className={classes.wrapper}>
         <Sidebar
           routes={mainRoutes}
-          logoText="Creative Tim"
+          logoText="folk"
           logo={logo}
           image={image}
           handleDrawerToggle={this.handleDrawerToggle}
@@ -64,7 +65,7 @@ class App extends Component {
           color="blue"
           {...rest}
         />
-        <div className={classes.mainPanel} ref={this.setMainPanelRef}>
+        <div className={classes.mainPanel} ref={this.setMainPanelRef.bind(this)}>
           <Header
             routes={mainRoutes}
             handleDrawerToggle={this.handleDrawerToggle}
@@ -82,15 +83,6 @@ class App extends Component {
 
 App.propTypes = {
   classes: PropTypes.shape({}).isRequired,
-  location: PropTypes.shape({
-    pathname: PropTypes.string,
-  }),
-};
-
-App.defaultProps = {
-  location: {
-    pathname: '',
-  },
 };
 
 export default withStyles(dashboardStyle)(App);
