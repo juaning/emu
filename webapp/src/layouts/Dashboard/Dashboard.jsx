@@ -16,7 +16,6 @@ import mainRoutes from '../../routes/mainRoutes';
 import dashboardStyle from '../../assets/jss/material-dashboard-react/layouts/dashboardStyle';
 
 import image from '../../assets/img/sidebar-2.jpg';
-// import logo from '../../assets/img/reactlogo.png';
 import logo from '../../assets/img/folklogo.png';
 
 const switchRoutes = (
