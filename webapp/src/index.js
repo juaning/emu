@@ -10,7 +10,7 @@ import registerServiceWorker from './registerServiceWorker';
 // import 'assets/css/material-dashboard-react.css?v=1.3.0';
 import './resources/assets/css/material-dashboard-react.css';
 
-import indexRoutes from './resources/routes';
+import indexRoutes from './routes';
 
 const hist = createBrowserHistory();
 
