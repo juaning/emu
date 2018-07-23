@@ -2,11 +2,14 @@
 
 Emu is an app to manage payroll
 
-For now, it contains a couple of docker containers for API related stuff
-using node 9 and another one for DB stuff using postgres
+I has a docker compose file that creates 3 containers:
+
+* API: Node 9
+* DB: MongoDB
+* Front End: ReactJA
 
 To start the app you should do docker-compose up on root directory
 
-Then npm install on /api and then you're good to go
+Then head to http://localhost:8080
 
 ![employees list](https://github.com/juaning/emu/blob/master/resources/img/employees_list.jpeg?raw=true)
