@@ -29,3 +29,6 @@ data/
 # docker 
 .dockerignore
 
+# docs
+*.pdf
+
