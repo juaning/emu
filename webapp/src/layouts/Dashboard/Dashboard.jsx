@@ -30,6 +30,7 @@ const switchRoutes = (
 class App extends Component {
   state = {
     mobileOpen: false,
+    miniOpen: false,
   }
   componentDidMount() {
     if (navigator.platform.includes('Win')) {
@@ -62,6 +63,7 @@ class App extends Component {
           handleDrawerToggle={this.handleDrawerToggle}
           open={this.state.mobileOpen}
           color="blue"
+          miniOpen={this.state.miniOpen}
           {...rest}
         />
         <div className={classes.mainPanel} ref={this.setMainPanelRef.bind(this)}>

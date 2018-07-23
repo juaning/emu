@@ -62,7 +62,7 @@ const Sidebar = ({ ...props }) => {
   );
   const brand = (
     <div className={classes.logo}>
-      <a href="https://www.creative-tim.com" className={classes.logoLink}>
+      <a href="/" className={classes.logoLink}>
         <div className={classes.logoImage}>
           <img src={logo} alt="logo" className={classes.img} />
         </div>
@@ -102,7 +102,7 @@ const Sidebar = ({ ...props }) => {
         <Drawer
           anchor="left"
           variant="permanent"
-          open
+          open={props.miniOpen}
           classes={{
             paper: classes.drawerPaper,
           }}
@@ -133,6 +133,7 @@ Sidebar.propTypes = {
   routes: PropTypes.arrayOf(PropTypes.shape({})),
   open: PropTypes.bool,
   handleDrawerToggle: PropTypes.func,
+  miniOpen: PropTypes.bool,
 };
 
 Sidebar.defaultProps = {
@@ -146,6 +147,7 @@ Sidebar.defaultProps = {
   routes: [{}],
   open: false,
   handleDrawerToggle: () => {},
+  miniOpen: false,
 };
 
 export default withStyles(sidebarStyle)(Sidebar);
