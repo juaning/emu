@@ -9,4 +9,4 @@ To start the app you should do docker-compose up on root directory
 
 Then npm install on /api and then you're good to go
 
-![employees list](https://github.com/juaning/emu/resources/img/employees_list.jpeg)
+![employees list](https://github.com/juaning/emu/blob/master/resources/img/employees_list.jpeg?raw=true)
