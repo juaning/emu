@@ -13,16 +13,28 @@ import ErrorOutline from '@material-ui/icons/ErrorOutline';
 class AlertDialog extends React.Component {
   state = {
     open: this.props.showDialog,
+    personalDataID: this.props.personalDataID,
+    parentDeleteEmployee: this.props.onClickDeleteEmployee,
   }
 
   componentWillReceiveProps(props) {
     this.setState({
       open: props.showDialog,
+      personalDataID: props.personalDataID,
+      parentDeleteEmployee: props.onClickDeleteEmployee,
     });
   }
 
-  handleClose = () => {
+  handleClose = this.handleClose.bind(this)
+  handleClose() {
     this.setState({ open: false });
+  }
+
+  deleteEmployee = this.deleteEmployee.bind(this)
+  deleteEmployee() {
+    this.state.parentDeleteEmployee(this.state.personalDataID).then(() => {
+      this.handleClose();
+    });
   }
 
   render() {
@@ -35,19 +47,19 @@ class AlertDialog extends React.Component {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            <ErrorOutline color="primary" />{' '}
+            <ErrorOutline color="primary" style={{ fontSize: '72px' }} />{' '}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Esta seguro?
+              Esta seguro que desea eliminar a {this.props.name}?
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">
-              Disagree
+              No
             </Button>
-            <Button onClick={this.handleClose} color="primary" autoFocus>
-              Agree
+            <Button onClick={this.deleteEmployee} color="primary" autoFocus>
+              Si
             </Button>
           </DialogActions>
         </Dialog>
@@ -58,10 +70,16 @@ class AlertDialog extends React.Component {
 
 AlertDialog.propTypes = {
   showDialog: PropTypes.bool,
+  name: PropTypes.string,
+  personalDataID: PropTypes.string,
+  onClickDeleteEmployee: PropTypes.func,
 };
 
 AlertDialog.defaultProps = {
   showDialog: false,
+  name: '',
+  personalDataID: '',
+  onClickDeleteEmployee: () => {},
 };
 
 export default AlertDialog;

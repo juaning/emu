@@ -15,6 +15,8 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardBody from '../../components/Card/CardBody';
 import Button from '../../components/CustomButtons/Button';
 import AlertDialog from '../../components/Dialog/AlertDialog';
+// API resources
+import API from '../../resources/api';
 
 const styles = {
   cardCategoryWhite: {
@@ -46,29 +48,41 @@ const styles = {
   },
 };
 
+const employeeAPI = new API({ url: '' });
+employeeAPI.createEntity({ name: 'personal-data' });
+
 class TableList extends React.Component {
   state = {
     personalData: [],
     showDialog: false,
   }
   componentDidMount() {
-    fetch('/personal-data')
+    employeeAPI.endpoints['personal-data'].getAll()
       .then(results => results.json())
-      .then((data) => {
-        this.setState({
-          personalData: data,
-        });
-      })
+      .then(data => this.setState({ personalData: data }))
       .catch(err => console.error(err));
   }
   btnEditClicked = this.btnEditClicked.bind(this);
-  btnEditClicked(itemID) {
-    console.log('this', this, 'ID', itemID);
+  btnEditClicked({ id, name }) {
+    console.log('this', this, 'ID', id, 'NAME', name);
   }
   btnRemoveClicked = this.btnRemoveClicked.bind(this);
-  btnRemoveClicked(itemID) {
-    console.log('this', this, 'ID', itemID);
-    this.setState({ showDialog: true });
+  btnRemoveClicked({ id, name }) {
+    this.setState({ showDialog: true, name, id });
+  }
+  deleteEmployee = this.deleteEmployee.bind(this)
+  deleteEmployee(employeeId) {
+    return employeeAPI.endpoints['personal-data'].delete({
+      id: employeeId,
+    })
+      .then(result => result.json())
+      .then(() => {
+        const personalData = this.state.personalData
+          // eslint-disable-next-line no-underscore-dangle
+          .filter(persona => persona._id !== employeeId);
+        this.setState({ personalData });
+      })
+      .catch(err => console.error(err));
   }
   render() {
     const { classes } = this.props;
@@ -89,7 +103,7 @@ class TableList extends React.Component {
               justIcon
               round
               simple
-              onClick={() => this.btnEditClicked(id)}
+              onClick={() => this.btnEditClicked({ id, name })}
               color="info"
               customClass="edit"
             >
@@ -100,7 +114,7 @@ class TableList extends React.Component {
               justIcon
               round
               simple
-              onClick={() => this.btnRemoveClicked(id)}
+              onClick={() => this.btnRemoveClicked({ id, name })}
               color="danger"
               customClass="remove"
             >
@@ -112,7 +126,12 @@ class TableList extends React.Component {
     });
     return (
       <Grid container>
-        <AlertDialog showDialog={this.state.showDialog} />
+        <AlertDialog
+          showDialog={this.state.showDialog}
+          name={this.state.name}
+          personalDataID={this.state.id}
+          onClickDeleteEmployee={this.deleteEmployee}
+        />
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color="primary">
