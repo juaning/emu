@@ -70,6 +70,20 @@ class TableList extends React.Component {
   btnRemoveClicked({ id, name }) {
     this.setState({ showDialog: true, name, id });
   }
+  deleteEmployee = this.deleteEmployee.bind(this)
+  deleteEmployee(employeeId) {
+    return employeeAPI.endpoints['personal-data'].delete({
+      id: employeeId,
+    })
+      .then(result => result.json())
+      .then(() => {
+        const personalData = this.state.personalData
+          // eslint-disable-next-line no-underscore-dangle
+          .filter(persona => persona._id !== employeeId);
+        this.setState({ personalData });
+      })
+      .catch(err => console.error(err));
+  }
   render() {
     const { classes } = this.props;
     const randomInt = max => Math.floor(Math.random() * Math.floor(max));
@@ -116,6 +130,7 @@ class TableList extends React.Component {
           showDialog={this.state.showDialog}
           name={this.state.name}
           personalDataID={this.state.id}
+          onClickDeleteEmployee={this.deleteEmployee}
         />
         <GridItem xs={12} sm={12} md={12}>
           <Card>

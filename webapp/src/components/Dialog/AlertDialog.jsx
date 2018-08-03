@@ -9,22 +9,19 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 // import @material-ui/icons
 import ErrorOutline from '@material-ui/icons/ErrorOutline';
-// API resources
-import API from '../../resources/api';
-
-const employeeAPI = new API({ url: '' });
-employeeAPI.createEntity({ name: 'personal-data' });
 
 class AlertDialog extends React.Component {
   state = {
     open: this.props.showDialog,
     personalDataID: this.props.personalDataID,
+    parentDeleteEmployee: this.props.onClickDeleteEmployee,
   }
 
   componentWillReceiveProps(props) {
     this.setState({
       open: props.showDialog,
       personalDataID: props.personalDataID,
+      parentDeleteEmployee: props.onClickDeleteEmployee,
     });
   }
 
@@ -35,13 +32,9 @@ class AlertDialog extends React.Component {
 
   deleteEmployee = this.deleteEmployee.bind(this)
   deleteEmployee() {
-    employeeAPI.endpoints['personal-data'].delete({ id: this.state.personalDataID })
-      .then(result => result.json())
-      .then((data) => {
-        console.log(data);
-        this.handleClose();
-      })
-      .catch(err => console.error(err));
+    this.state.parentDeleteEmployee(this.state.personalDataID).then(() => {
+      this.handleClose();
+    });
   }
 
   render() {
@@ -79,12 +72,14 @@ AlertDialog.propTypes = {
   showDialog: PropTypes.bool,
   name: PropTypes.string,
   personalDataID: PropTypes.string,
+  onClickDeleteEmployee: PropTypes.func,
 };
 
 AlertDialog.defaultProps = {
   showDialog: false,
   name: '',
   personalDataID: '',
+  onClickDeleteEmployee: () => {},
 };
 
 export default AlertDialog;
