@@ -1,16 +1,16 @@
 import React from 'react';
-import classNames from 'classnames';
-import PropTypes from 'prop-types';
-// @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
-// @material-ui/icons
-import Clear from '@material-ui/icons/Clear';
 import Check from '@material-ui/icons/Check';
-// core components
-import customInputStyle from '../../assets/jss/material-dashboard-react/components/customInputStyle';
+import Clear from '@material-ui/icons/Clear';
+// nodejs library to set properties for components
+import PropTypes from 'prop-types';
+// nodejs library that concatenates classes
+import classNames from 'classnames';
+
+import customInputStyle from '../../assets/jss/material-dashboard-pro-react/components/customInputStyle';
 
 function CustomInput({ ...props }) {
   const {
@@ -21,6 +21,8 @@ function CustomInput({ ...props }) {
     labelProps,
     inputProps,
     error,
+    white,
+    inputRootCustomClasses,
     success,
   } = props;
 
@@ -32,21 +34,38 @@ function CustomInput({ ...props }) {
     [classes.underlineError]: error,
     [classes.underlineSuccess]: success && !error,
     [classes.underline]: true,
+    [classes.whiteUnderline]: white,
   });
   const marginTop = classNames({
-    [classes.marginTop]: labelText === undefined,
+    [inputRootCustomClasses]: inputRootCustomClasses !== undefined,
   });
+  const inputClasses = classNames({
+    [classes.input]: true,
+    [classes.whiteInput]: white,
+  });
+  let formControlClasses;
+  if (formControlProps !== undefined) {
+    formControlClasses = classNames(
+      formControlProps.className,
+      classes.formControl,
+    );
+  } else {
+    formControlClasses = classes.formControl;
+  }
+  let feedbackClasses = classes.feedback;
+  if (inputProps !== undefined) {
+    if (inputProps.endAdornment !== undefined) {
+      feedbackClasses = `${feedbackClasses} ${classes.feedbackRight}`;
+    }
+  }
   const successVal = success ? (
-    <Check className={`${classes.feedback} ${classes.labelRootSuccess}`} />
+    <Check className={`${feedbackClasses} ${classes.labelRootSuccess}`} />
   ) : null;
   return (
-    <FormControl
-      {...formControlProps}
-      className={`${formControlProps.className} ${classes.formControl}`}
-    >
+    <FormControl {...formControlProps} className={formControlClasses}>
       {labelText !== undefined ? (
         <InputLabel
-          className={classes.labelRoot + labelClasses}
+          className={`${classes.labelRoot} ${labelClasses}`}
           htmlFor={id}
           {...labelProps}
         >
@@ -55,6 +74,7 @@ function CustomInput({ ...props }) {
       ) : null}
       <Input
         classes={{
+          input: inputClasses,
           root: marginTop,
           disabled: classes.disabled,
           underline: underlineClasses,
@@ -63,7 +83,7 @@ function CustomInput({ ...props }) {
         {...inputProps}
       />
       {error ? (
-        <Clear className={`${classes.feedback} ${classes.labelRootError}`} />
+        <Clear className={`${feedbackClasses} ${classes.labelRootError}`} />
       ) : successVal}
     </FormControl>
   );
@@ -76,8 +96,10 @@ CustomInput.propTypes = {
   id: PropTypes.string,
   inputProps: PropTypes.shape({}),
   formControlProps: PropTypes.shape({}),
+  inputRootCustomClasses: PropTypes.string,
   error: PropTypes.bool,
   success: PropTypes.bool,
+  white: PropTypes.bool,
 };
 
 CustomInput.defaultProps = {
@@ -86,8 +108,10 @@ CustomInput.defaultProps = {
   id: '',
   inputProps: {},
   formControlProps: {},
+  inputRootCustomClasses: '',
   error: false,
   success: false,
+  white: false,
 };
 
 export default withStyles(customInputStyle)(CustomInput);
