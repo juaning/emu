@@ -3,6 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 // nodejs library to set properties for components
 import PropTypes from 'prop-types';
+import shortid from 'shortid';
 
 // material-ui components
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -13,7 +14,7 @@ import Card from '../../components/Card/Card';
 import CardBody from '../../components/Card/CardBody';
 import CardHeader from '../../components/Card/CardHeader';
 
-import customTabsStyle from '../../assets/jss/material-dashboard-react/components/customTabsStyle';
+import customTabsStyle from '../../assets/jss/material-dashboard-pro-react/components/customTabsStyle';
 
 class CustomTabs extends React.Component {
   state = {
@@ -50,10 +51,9 @@ class CustomTabs extends React.Component {
               root: classes.tabsRoot,
               indicator: classes.displayNone,
             }}
-            scrollable
-            scrollButtons="auto"
           >
             {tabs.map((prop) => {
+              const key = shortid.generate();
               let icon = {};
               if (prop.tabIcon) {
                 icon = {
@@ -69,7 +69,7 @@ class CustomTabs extends React.Component {
                     selected: classes.tabSelected,
                     wrapper: classes.tabWrapper,
                   }}
-                  key={prop.tabName}
+                  key={key}
                   label={prop.tabName}
                   {...icon}
                 />
@@ -78,9 +78,10 @@ class CustomTabs extends React.Component {
           </Tabs>
         </CardHeader>
         <CardBody>
-          {tabs.map((prop, key) => {
+          {tabs.map((prop) => {
+            const key = shortid.generate();
             if (key === this.state.value) {
-              return <div key={prop.tabName}>{prop.tabContent}</div>;
+              return <div key={key}>{prop.tabContent}</div>;
             }
             return null;
           })}
@@ -98,6 +99,7 @@ CustomTabs.propTypes = {
     'danger',
     'info',
     'primary',
+    'rose',
   ]),
   title: PropTypes.string,
   tabs: PropTypes.arrayOf(PropTypes.shape({
