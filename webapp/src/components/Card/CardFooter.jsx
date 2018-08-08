@@ -8,7 +8,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 // @material-ui/icons
 
 // core components
-import cardFooterStyle from '../../assets/jss/material-dashboard-react/components/cardFooterStyle';
+import cardFooterStyle from '../../assets/jss/material-dashboard-pro-react/components/cardFooterStyle';
 
 function CardFooter({ ...props }) {
   const {
@@ -17,16 +17,21 @@ function CardFooter({ ...props }) {
     children,
     plain,
     profile,
+    pricing,
+    testimonial,
     stats,
     chart,
+    product,
     ...rest
   } = props;
   const cardFooterClasses = classNames({
     [classes.cardFooter]: true,
     [classes.cardFooterPlain]: plain,
-    [classes.cardFooterProfile]: profile,
+    [classes.cardFooterProfile]: profile || testimonial,
+    [classes.cardFooterPricing]: pricing,
+    [classes.cardFooterTestimonial]: testimonial,
     [classes.cardFooterStats]: stats,
-    [classes.cardFooterChart]: chart,
+    [classes.cardFooterChart]: chart || product,
     [className]: className !== undefined,
   });
   return (
@@ -42,8 +47,11 @@ CardFooter.propTypes = {
   children: PropTypes.node,
   plain: PropTypes.bool,
   profile: PropTypes.bool,
+  pricing: PropTypes.bool,
+  testimonial: PropTypes.bool,
   stats: PropTypes.bool,
   chart: PropTypes.bool,
+  product: PropTypes.bool,
 };
 
 CardFooter.defaultProps = {
@@ -51,8 +59,11 @@ CardFooter.defaultProps = {
   children: '',
   plain: false,
   profile: false,
+  pricing: false,
+  testimonial: false,
   stats: false,
   chart: false,
+  product: false,
 };
 
 export default withStyles(cardFooterStyle)(CardFooter);
