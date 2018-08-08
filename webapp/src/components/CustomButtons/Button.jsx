@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Button from '@material-ui/core/Button';
 
-import buttonStyle from '../../assets/jss/material-dashboard-react/components/buttonStyle';
+import buttonStyle from '../../assets/jss/material-dashboard-pro-react/components/buttonStyle';
 
 function RegularButton({ ...props }) {
   const {
@@ -16,6 +16,7 @@ function RegularButton({ ...props }) {
     color,
     round,
     children,
+    fullWidth,
     disabled,
     simple,
     size,
@@ -31,6 +32,7 @@ function RegularButton({ ...props }) {
     [classes[size]]: size,
     [classes[color]]: color,
     [classes.round]: round,
+    [classes.fullWidth]: fullWidth,
     [classes.disabled]: disabled,
     [classes.simple]: simple,
     [classes.block]: block,
@@ -55,18 +57,29 @@ RegularButton.propTypes = {
     'danger',
     'rose',
     'white',
+    'twitter',
+    'facebook',
+    'google',
+    'linkedin',
+    'pinterest',
+    'youtube',
+    'tumblr',
+    'github',
+    'behance',
+    'dribbble',
+    'reddit',
     'transparent',
   ]),
   size: PropTypes.oneOf(['sm', 'lg']),
   simple: PropTypes.bool,
   round: PropTypes.bool,
   children: PropTypes.node,
+  fullWidth: PropTypes.bool,
   disabled: PropTypes.bool,
   block: PropTypes.bool,
   link: PropTypes.bool,
   justIcon: PropTypes.bool,
   className: PropTypes.string,
-  // use this to pass the classes props from Material-UI
   muiClasses: PropTypes.shape({}),
 };
 
@@ -76,6 +89,7 @@ RegularButton.defaultProps = {
   simple: false,
   round: false,
   children: '',
+  fullWidth: false,
   disabled: false,
   block: false,
   link: false,
