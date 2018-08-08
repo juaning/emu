@@ -8,7 +8,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 // @material-ui/icons
 
 // core components
-import cardHeaderStyle from '../../assets/jss/material-dashboard-react/components/cardHeaderStyle';
+import cardHeaderStyle from '../../assets/jss/material-dashboard-pro-react/components/cardHeaderStyle';
 
 function CardHeader({ ...props }) {
   const {
@@ -17,16 +17,24 @@ function CardHeader({ ...props }) {
     children,
     color,
     plain,
+    image,
+    contact,
+    signup,
     stats,
     icon,
+    text,
     ...rest
   } = props;
   const cardHeaderClasses = classNames({
     [classes.cardHeader]: true,
-    [classes[`${color} CardHeader`]]: color,
+    [classes[`${color}CardHeader`]]: color,
     [classes.cardHeaderPlain]: plain,
+    [classes.cardHeaderImage]: image,
+    [classes.cardHeaderContact]: contact,
+    [classes.cardHeaderSignup]: signup,
     [classes.cardHeaderStats]: stats,
     [classes.cardHeaderIcon]: icon,
+    [classes.cardHeaderText]: text,
     [className]: className !== undefined,
   });
   return (
@@ -49,8 +57,12 @@ CardHeader.propTypes = {
     'rose',
   ]),
   plain: PropTypes.bool,
+  image: PropTypes.bool,
+  contact: PropTypes.bool,
+  signup: PropTypes.bool,
   stats: PropTypes.bool,
   icon: PropTypes.bool,
+  text: PropTypes.bool,
 };
 
 CardHeader.defaultProps = {
@@ -58,8 +70,12 @@ CardHeader.defaultProps = {
   children: '',
   color: 'primary',
   plain: false,
+  image: false,
+  contact: false,
+  signup: false,
   stats: false,
   icon: false,
+  text: false,
 };
 
 export default withStyles(cardHeaderStyle)(CardHeader);
