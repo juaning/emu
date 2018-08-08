@@ -6,11 +6,19 @@ import Grid from '@material-ui/core/Grid';
 
 const style = {
   grid: {
-    padding: '0 15px !important',
+    margin: '0 -15px',
+    width: 'calc(100% + 30px)',
+    // '&:before,&:after':{
+    //   display: 'table',
+    //   content: '" "',
+    // },
+    // '&:after':{
+    //   clear: 'both',
+    // }
   },
 };
 
-function GridItem({ ...props }) {
+function GridContainer({ ...props }) {
   const {
     classes,
     children,
@@ -18,21 +26,21 @@ function GridItem({ ...props }) {
     ...rest
   } = props;
   return (
-    <Grid item {...rest} className={`${classes.grid} ${className}`}>
+    <Grid container {...rest} className={`${classes.grid} ${className}`}>
       {children}
     </Grid>
   );
 }
 
-GridItem.propTypes = {
+GridContainer.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   children: PropTypes.node,
   className: PropTypes.string,
 };
 
-GridItem.defaultProps = {
+GridContainer.defaultProps = {
   children: '',
   className: '',
 };
 
-export default withStyles(style)(GridItem);
+export default withStyles(style)(GridContainer);
