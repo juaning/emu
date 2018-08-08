@@ -8,7 +8,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 // @material-ui/icons
 
 // core components
-import cardIconStyle from '../../assets/jss/material-dashboard-react/components/cardIconStyle';
+import cardIconStyle from '../../assets/jss/material-dashboard-pro-react/components/cardIconStyle';
 
 function CardIcon({ ...props }) {
   const {
@@ -20,7 +20,7 @@ function CardIcon({ ...props }) {
   } = props;
   const cardIconClasses = classNames({
     [classes.cardIcon]: true,
-    [classes[`${color} CardHeader`]]: color,
+    [classes[`${color}CardHeader`]]: color,
     [className]: className !== undefined,
   });
   return (
