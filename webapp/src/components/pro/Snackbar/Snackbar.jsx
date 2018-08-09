@@ -1,22 +1,30 @@
-import React from "react";
-import PropTypes from "prop-types";
-import cx from "classnames";
+import React from 'react';
+import PropTypes from 'prop-types';
+import cx from 'classnames';
 
 // @material-ui/core components
-import withStyles from "@material-ui/core/styles/withStyles";
-import Snack from "@material-ui/core/Snackbar";
-import IconButton from "@material-ui/core/IconButton";
+import withStyles from '@material-ui/core/styles/withStyles';
+import Snack from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
 
 // @material-ui/icons
-import Close from "@material-ui/icons/Close";
+import Close from '@material-ui/icons/Close';
 
-import snackbarContentStyle from "assets/jss/material-dashboard-pro-react/components/snackbarContentStyle.jsx";
+import snackbarContentStyle from '../../assets/jss/material-dashboard-pro-react/components/snackbarContentStyle';
 
 function Snackbar({ ...props }) {
-  const { classes, message, color, close, icon, place, open } = props;
-  var action = [];
+  const {
+    classes,
+    message,
+    color,
+    close,
+    icon,
+    place,
+    open,
+  } = props;
+  let action = [];
   const messageClasses = cx({
-    [classes.iconMessage]: icon !== undefined
+    [classes.iconMessage]: icon !== undefined,
   });
   if (close !== undefined) {
     action = [
@@ -28,31 +36,32 @@ function Snackbar({ ...props }) {
         onClick={() => props.closeNotification()}
       >
         <Close className={classes.close} />
-      </IconButton>
+      </IconButton>,
     ];
   }
   const iconClasses = cx({
     [classes.icon]: classes.icon,
-    [classes.infoIcon]: color === "info",
-    [classes.successIcon]: color === "success",
-    [classes.warningIcon]: color === "warning",
-    [classes.dangerIcon]: color === "danger",
-    [classes.primaryIcon]: color === "primary",
-    [classes.roseIcon]: color === "rose"
+    [classes.infoIcon]: color === 'info',
+    [classes.successIcon]: color === 'success',
+    [classes.warningIcon]: color === 'warning',
+    [classes.dangerIcon]: color === 'danger',
+    [classes.primaryIcon]: color === 'primary',
+    [classes.roseIcon]: color === 'rose',
   });
+  const anchorHorizontal = place.indexOf('c') !== -1 ? 'center' : 'right';
   return (
     <Snack
       classes={{
         anchorOriginTopCenter: classes.top20,
         anchorOriginTopRight: classes.top40,
-        anchorOriginTopLeft: classes.top40
+        anchorOriginTopLeft: classes.top40,
       }}
       anchorOrigin={{
-        vertical: place.indexOf("t") === -1 ? "bottom" : "top",
+        vertical: place.indexOf('t') === -1 ? 'bottom' : 'top',
         horizontal:
-          place.indexOf("l") !== -1
-            ? "left"
-            : place.indexOf("c") !== -1 ? "center" : "right"
+          place.indexOf('l') !== -1
+            ? 'left'
+            : anchorHorizontal,
       }}
       open={open}
       message={
@@ -64,33 +73,39 @@ function Snackbar({ ...props }) {
       action={action}
       ContentProps={{
         classes: {
-          root: classes.root + " " + classes[color],
-          message: classes.message
-        }
+          root: `${classes.root} ${classes[color]}`,
+          message: classes.message,
+        },
       }}
     />
   );
 }
 
 Snackbar.defaultProps = {
-  color: "info"
+  color: 'info',
+  close: true,
+  icon: () => {},
+  place: 'tr',
+  open: false,
+  closeNotification: () => {},
 };
 
 Snackbar.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.shape({}).isRequired,
   message: PropTypes.node.isRequired,
   color: PropTypes.oneOf([
-    "info",
-    "success",
-    "warning",
-    "danger",
-    "primary",
-    "rose"
+    'info',
+    'success',
+    'warning',
+    'danger',
+    'primary',
+    'rose',
   ]),
   close: PropTypes.bool,
   icon: PropTypes.func,
-  place: PropTypes.oneOf(["tl", "tr", "tc", "br", "bl", "bc"]),
-  open: PropTypes.bool
+  place: PropTypes.oneOf(['tl', 'tr', 'tc', 'br', 'bl', 'bc']),
+  open: PropTypes.bool,
+  closeNotification: PropTypes.func,
 };
 
 export default withStyles(snackbarContentStyle)(Snackbar);

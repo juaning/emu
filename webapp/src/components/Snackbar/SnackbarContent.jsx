@@ -1,14 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import cx from 'classnames';
+
 // @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
 import Snack from '@material-ui/core/SnackbarContent';
 import IconButton from '@material-ui/core/IconButton';
+
 // @material-ui/icons
 import Close from '@material-ui/icons/Close';
-// core components
-import snackbarContentStyle from '../../assets/jss/material-dashboard-react/components/snackbarContentStyle';
+
+import snackbarContentStyle from '../../assets/jss/material-dashboard-pro-react/components/snackbarContentStyle';
 
 function SnackbarContent({ ...props }) {
   const {
@@ -19,7 +21,7 @@ function SnackbarContent({ ...props }) {
     icon,
   } = props;
   let action = [];
-  const messageClasses = classNames({
+  const messageClasses = cx({
     [classes.iconMessage]: icon !== undefined,
   });
   if (close !== undefined) {
@@ -34,11 +36,20 @@ function SnackbarContent({ ...props }) {
       </IconButton>,
     ];
   }
+  const iconClasses = cx({
+    [classes.icon]: classes.icon,
+    [classes.infoIcon]: color === 'info',
+    [classes.successIcon]: color === 'success',
+    [classes.warningIcon]: color === 'warning',
+    [classes.dangerIcon]: color === 'danger',
+    [classes.primaryIcon]: color === 'primary',
+    [classes.roseIcon]: color === 'rose',
+  });
   return (
     <Snack
       message={
         <div>
-          {icon !== undefined ? <props.icon className={classes.icon} /> : null}
+          {icon !== undefined ? <props.icon className={iconClasses} /> : null}
           <span className={messageClasses}>{message}</span>
         </div>
       }
@@ -51,6 +62,12 @@ function SnackbarContent({ ...props }) {
   );
 }
 
+SnackbarContent.defaultProps = {
+  color: 'info',
+  close: true,
+  icon: () => {},
+};
+
 SnackbarContent.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   message: PropTypes.node.isRequired,
@@ -60,15 +77,10 @@ SnackbarContent.propTypes = {
     'warning',
     'danger',
     'primary',
+    'rose',
   ]),
   close: PropTypes.bool,
   icon: PropTypes.func,
-};
-
-SnackbarContent.defaultProps = {
-  color: 'primary',
-  close: false,
-  icon: () => {},
 };
 
 export default withStyles(snackbarContentStyle)(SnackbarContent);
