@@ -1,23 +1,23 @@
-import React from "react";
+import React from 'react';
 // react plugin for creating charts
-import ChartistGraph from "react-chartist";
+import ChartistGraph from 'react-chartist';
 
 // @material-ui/core components
-import withStyles from "@material-ui/core/styles/withStyles";
+import withStyles from '@material-ui/core/styles/withStyles';
 
 // @material-ui/icons
-import Timeline from "@material-ui/icons/Timeline";
+import Timeline from '@material-ui/icons/Timeline';
 
 // core components
-import Heading from "components/Heading/Heading.jsx";
-import GridContainer from "components/Grid/GridContainer.jsx";
-import GridItem from "components/Grid/GridItem.jsx";
+import Heading from '../../../components/Heading/Heading';
+import GridContainer from '../../../components/Grid/GridContainer';
+import GridItem from '../../../components/Grid/GridItem';
 
-import Card from "components/Card/Card.jsx";
-import CardHeader from "components/Card/CardHeader.jsx";
-import CardIcon from "components/Card/CardIcon.jsx";
-import CardBody from "components/Card/CardBody.jsx";
-import CardFooter from "components/Card/CardFooter.jsx";
+import Card from '../../../components/Card/Card';
+import CardHeader from '../../../components/Card/CardHeader';
+import CardIcon from '../../../components/Card/CardIcon';
+import CardBody from '../../../components/Card/CardBody';
+import CardFooter from '../../../components/Card/CardFooter';
 
 import {
   roundedLineChart,
@@ -26,37 +26,36 @@ import {
   colouredLineChart,
   multipleBarsChart,
   colouredLinesChart,
-  pieChart
-} from "variables/charts.jsx";
+  pieChart,
+} from '../../../variables/charts';
 
-import chartsStyle from "assets/jss/material-dashboard-pro-react/views/chartsStyle.jsx";
+import chartsStyle from '../../../assets/jss/material-dashboard-pro-react/views/chartsStyle';
 
-class Charts extends React.Component {
-  render() {
-    const { classes } = this.props;
-    return (
-      <div>
+const Charts = props => {
+  const { classes } = props;
+  return (
+    <div>
         <Heading
           textAlign="center"
           title="React Chartist"
           category={
             <span>
-              A react wrapper for{" "}
+              A react wrapper for{' '}
               <a
                 target="_blank"
                 href="https://gionkunz.github.io/chartist-js/"
                 rel="noopener noreferrer"
               >
                 Chartist.js
-              </a>. Please checkout the{" "}
+              </a>. Please checkout the{' '}
               <a
                 href="https://gionkunz.github.io/chartist-js/getting-started.html"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 full documentation of Chartist.js
-              </a>{" "}
-              and{" "}
+              </a>{' '}
+              and{' '}
               <a
                 href="https://fraserxu.me/react-chartist/"
                 target="_blank"
@@ -201,19 +200,19 @@ class Charts extends React.Component {
               </CardBody>
               <CardFooter stats className={classes.cardFooter}>
                 <h6 className={classes.legendTitle}>Legend</h6>
-                <i className={"fas fa-circle " + classes.info} /> Apple{` `}
+                <i className={'fas fa-circle ' + classes.info} /> Apple{' '}
                 <i
-                  className={"fas fa-circle " + classes.warning}
-                /> Samsung{` `}
-                <i className={"fas fa-circle " + classes.danger} /> Windows
-                Phone{` `}
+                  className={'fas fa-circle ' + classes.warning}
+                /> Samsung{' '}
+                <i className={'fas fa-circle ' + classes.danger} /> Windows
+                Phone{' '}
               </CardFooter>
             </Card>
           </GridItem>
         </GridContainer>
       </div>
     );
-  }
-}
+  );
+};
 
 export default withStyles(chartsStyle)(Charts);

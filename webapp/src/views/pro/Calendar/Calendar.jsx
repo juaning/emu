@@ -1,24 +1,26 @@
-import React from "react";
+import React from 'react';
+import PropTypes from 'prop-types';
+
 // react component used to create a calendar with events on it
-import BigCalendar from "react-big-calendar";
+import BigCalendar from 'react-big-calendar';
 // dependency plugin for react-big-calendar
-import moment from "moment";
+import moment from 'moment';
 // react component used to create alerts
-import SweetAlert from "react-bootstrap-sweetalert";
+import SweetAlert from 'react-bootstrap-sweetalert';
 
 // @material-ui/core components
-import withStyles from "@material-ui/core/styles/withStyles";
+import withStyles from '@material-ui/core/styles/withStyles';
 
 // core components
-import Heading from "components/Heading/Heading.jsx";
-import GridContainer from "components/Grid/GridContainer.jsx";
-import GridItem from "components/Grid/GridItem.jsx";
-import Card from "components/Card/Card.jsx";
-import CardBody from "components/Card/CardBody.jsx";
+import Heading from '../../../components/Heading/Heading';
+import GridContainer from '../../../components/Grid/GridContainer';
+import GridItem from '../../../components/Grid/GridItem';
+import Card from '../../../components/Card/Card';
+import CardBody from '../../../components/Card/CardBody';
 
-import buttonStyle from "assets/jss/material-dashboard-pro-react/components/buttonStyle.jsx";
+import buttonStyle from '../../../assets/jss/material-dashboard-pro-react/components/buttonStyle';
 
-import { events } from "variables/general.jsx";
+import { events } from '../../../variables/general';
 
 BigCalendar.setLocalizer(BigCalendar.momentLocalizer(moment));
 
@@ -26,13 +28,14 @@ class Calendar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      events: events,
-      alert: null
+      events,
+      alert: null,
     };
     this.hideAlert = this.hideAlert.bind(this);
   }
   selectedEvent(event) {
-    alert(event.title);
+    // eslint-disable-next-line
+    alert(event.title, this.state.alert);
   }
   addNewEventAlert(slotInfo) {
     this.setState({
@@ -40,44 +43,43 @@ class Calendar extends React.Component {
         <SweetAlert
           input
           showCancel
-          style={{ display: "block", marginTop: "-100px" }}
+          style={{ display: 'block', marginTop: '-100px' }}
           title="Input something"
           onConfirm={e => this.addNewEvent(e, slotInfo)}
           onCancel={() => this.hideAlert()}
           confirmBtnCssClass={
-            this.props.classes.button + " " + this.props.classes.success
+            `${this.props.classes.button} ${this.props.classes.success}`
           }
           cancelBtnCssClass={
-            this.props.classes.button + " " + this.props.classes.danger
+            `${this.props.classes.button} ${this.props.classes.danger}`
           }
         />
-      )
+      ),
     });
   }
   addNewEvent(e, slotInfo) {
-    var newEvents = this.state.events;
+    const newEvents = this.state.events;
     newEvents.push({
       title: e,
       start: slotInfo.start,
-      end: slotInfo.end
+      end: slotInfo.end,
     });
     this.setState({
       alert: null,
-      events: newEvents
+      events: newEvents,
     });
   }
   hideAlert() {
     this.setState({
-      alert: null
+      alert: null,
     });
   }
-  eventColors(event, start, end, isSelected) {
-    var backgroundColor = "event-";
-    event.color
-      ? (backgroundColor = backgroundColor + event.color)
-      : (backgroundColor = backgroundColor + "default");
+  eventColors(event) {
+    let backgroundColor = 'event-';
+    const alert = this.state.alert || true;
+    backgroundColor += (event.color && alert) ? event.color : 'default';
     return {
-      className: backgroundColor
+      className: backgroundColor,
     };
   }
   render() {
@@ -88,14 +90,14 @@ class Calendar extends React.Component {
           title="React Big Calendar"
           category={
             <span>
-              A beautiful react component made by{" "}
+              A beautiful react component made by{' '}
               <a
                 href="https://github.com/intljusticemission"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 International Justice Mission
-              </a>. Please checkout their{" "}
+              </a>. Please checkout their{' '}
               <a
                 href="https://github.com/intljusticemission/react-big-calendar"
                 target="_blank"
@@ -129,5 +131,13 @@ class Calendar extends React.Component {
     );
   }
 }
+
+Calendar.propTypes = {
+  classes: PropTypes.shape({
+    button: PropTypes.string,
+    success: PropTypes.string,
+    danger: PropTypes.string,
+  }).isRequired,
+};
 
 export default withStyles(buttonStyle)(Calendar);
