@@ -1,19 +1,18 @@
-/*eslint-disable*/
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
 // @material-ui/core components
-import withStyles from "@material-ui/core/styles/withStyles";
-import Hidden from "@material-ui/core/Hidden";
+import withStyles from '@material-ui/core/styles/withStyles';
+import Hidden from '@material-ui/core/Hidden';
 
 // core components
-import Heading from "components/Heading/Heading.jsx";
-import GridContainer from "components/Grid/GridContainer.jsx";
-import GridItem from "components/Grid/GridItem.jsx";
-import Card from "components/Card/Card.jsx";
-import CardBody from "components/Card/CardBody.jsx";
+import Heading from '../../../components/Heading/Heading';
+import GridContainer from '../../../components/Grid/GridContainer';
+import GridItem from '../../../components/Grid/GridItem';
+import Card from '../../../components/Card/Card';
+import CardBody from '../../../components/Card/CardBody';
 
-import iconsStyle from "assets/jss/material-dashboard-pro-react/views/iconsStyle";
+import iconsStyle from '../../../assets/jss/material-dashboard-pro-react/views/iconsStyle';
 
 function Icons({ ...props }) {
   return (
@@ -24,8 +23,12 @@ function Icons({ ...props }) {
           title="Material Design Icons"
           category={
             <span>
-              Handcrafted by our friends from{" "}
-              <a target="_blank" href="https://design.google.com/icons/">
+              Handcrafted by our friends from{' '}
+              <a
+                target="_blank"
+                href="https://design.google.com/icons/"
+                rel="noopener noreferrer"
+              >
                 Google
               </a>
             </span>
@@ -33,7 +36,7 @@ function Icons({ ...props }) {
         />
         <Card plain>
           <CardBody plain>
-            <Hidden only={["sm", "xs"]}>
+            <Hidden only={['sm', 'xs']}>
               <iframe
                 className={props.classes.iframe}
                 src="https://material.io/icons/"
@@ -42,7 +45,7 @@ function Icons({ ...props }) {
                 <p>Your browser does not support iframes.</p>
               </iframe>
             </Hidden>
-            <Hidden only={["lg", "md"]}>
+            <Hidden only={['lg', 'md']}>
               <GridItem xs={12} sm={12} md={6}>
                 <h5>
                   The icons are visible on Desktop mode inside an iframe. Since
@@ -66,7 +69,9 @@ function Icons({ ...props }) {
 }
 
 Icons.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.shape({
+    iframe: PropTypes.string,
+  }).isRequired,
 };
 
 export default withStyles(iconsStyle)(Icons);
