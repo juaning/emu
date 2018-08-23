@@ -1,41 +1,44 @@
-import React from "react";
+import React from 'react';
+import PropTypes from 'prop-types';
 // react component for creating dynamic tables
-import ReactTable from "react-table";
+import ReactTable from 'react-table';
+import shortid from 'shortid';
 
 // @material-ui/core components
-import withStyles from "@material-ui/core/styles/withStyles";
+import withStyles from '@material-ui/core/styles/withStyles';
 // @material-ui/icons
-import Assignment from "@material-ui/icons/Assignment";
-import Dvr from "@material-ui/icons/Dvr";
-import Favorite from "@material-ui/icons/Favorite";
-import Close from "@material-ui/icons/Close";
+import Assignment from '@material-ui/icons/Assignment';
+import Dvr from '@material-ui/icons/Dvr';
+import Favorite from '@material-ui/icons/Favorite';
+import Close from '@material-ui/icons/Close';
 // core components
-import GridContainer from "components/Grid/GridContainer.jsx";
-import GridItem from "components/Grid/GridItem.jsx";
-import Button from "components/CustomButtons/Button.jsx";
-import Card from "components/Card/Card.jsx";
-import CardBody from "components/Card/CardBody.jsx";
-import CardIcon from "components/Card/CardIcon.jsx";
-import CardHeader from "components/Card/CardHeader.jsx";
+import GridContainer from '../../../components/Grid/GridContainer';
+import GridItem from '../../../components/Grid/GridItem';
+import Button from '../../../components/CustomButtons/Button';
+import Card from '../../../components/Card/Card';
+import CardBody from '../../../components/Card/CardBody';
+import CardIcon from '../../../components/Card/CardIcon';
+import CardHeader from '../../../components/Card/CardHeader';
 
-import { dataTable } from "variables/general.jsx";
+import { dataTable } from '../../../variables/general';
 
-import { cardTitle } from "assets/jss/material-dashboard-pro-react.jsx";
+import { cardTitle } from '../../../assets/jss/material-dashboard-pro-react';
 
 const styles = {
   cardIconTitle: {
     ...cardTitle,
-    marginTop: "15px",
-    marginBottom: "0px"
-  }
+    marginTop: '15px',
+    marginBottom: '0px',
+  },
 };
 
 class ReactTables extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: dataTable.dataRows.map((prop, key) => {
-        return {
+      data: dataTable.dataRows.map((prop) => {
+        const key = shortid.generate();
+        return ({
           id: key,
           name: prop[0],
           position: prop[1],
@@ -50,55 +53,49 @@ class ReactTables extends React.Component {
                 round
                 simple
                 onClick={() => {
-                  let obj = this.state.data.find(o => o.id === key);
-                  alert(
-                    "You've clicked LIKE button on \n{ \nName: " +
-                      obj.name +
-                      ", \nposition: " +
-                      obj.position +
-                      ", \noffice: " +
-                      obj.office +
-                      ", \nage: " +
-                      obj.age +
-                      "\n}."
-                  );
+                  const obj = this.state.data.find(o => o.id === key);
+                  // eslint-disable-next-line
+                  console.log(`You've clicked LIKE button on 
+                  {
+                    Name: ${obj.name}
+                    position: ${obj.position}
+                    office: ${obj.office}
+                    age: ${obj.age}
+                  }`);
                 }}
                 color="info"
                 className="like"
               >
                 <Favorite />
-              </Button>{" "}
+              </Button>{' '}
               {/* use this button to add a edit kind of action */}
               <Button
                 justIcon
                 round
                 simple
                 onClick={() => {
-                  let obj = this.state.data.find(o => o.id === key);
-                  alert(
-                    "You've clicked EDIT button on \n{ \nName: " +
-                      obj.name +
-                      ", \nposition: " +
-                      obj.position +
-                      ", \noffice: " +
-                      obj.office +
-                      ", \nage: " +
-                      obj.age +
-                      "\n}."
-                  );
+                  const obj = this.state.data.find(o => o.id === key);
+                  // eslint-disable-next-line
+                  console.log(`You've clicked EDIT button on 
+                  {
+                    Name: ${obj.name}
+                    position: ${obj.position}
+                    office: ${obj.office}
+                    age: ${obj.age}
+                  }`);
                 }}
                 color="warning"
                 className="edit"
               >
                 <Dvr />
-              </Button>{" "}
+              </Button>{' '}
               {/* use this button to remove the data row */}
               <Button
                 justIcon
                 round
                 simple
                 onClick={() => {
-                  var data = this.state.data;
+                  const { data } = this.state;
                   data.find((o, i) => {
                     if (o.id === key) {
                       // here you should add some custom code so you can delete the data
@@ -108,17 +105,17 @@ class ReactTables extends React.Component {
                     }
                     return false;
                   });
-                  this.setState({ data: data });
+                  this.setState({ data });
                 }}
                 color="danger"
                 className="remove"
               >
                 <Close />
-              </Button>{" "}
+              </Button>{' '}
             </div>
-          )
-        };
-      })
+          ),
+        });
+      }),
     };
   }
   render() {
@@ -139,27 +136,27 @@ class ReactTables extends React.Component {
                 filterable
                 columns={[
                   {
-                    Header: "Name",
-                    accessor: "name"
+                    Header: 'Name',
+                    accessor: 'name',
                   },
                   {
-                    Header: "Position",
-                    accessor: "position"
+                    Header: 'Position',
+                    accessor: 'position',
                   },
                   {
-                    Header: "Office",
-                    accessor: "office"
+                    Header: 'Office',
+                    accessor: 'office',
                   },
                   {
-                    Header: "Age",
-                    accessor: "age"
+                    Header: 'Age',
+                    accessor: 'age',
                   },
                   {
-                    Header: "Actions",
-                    accessor: "actions",
+                    Header: 'Actions',
+                    accessor: 'actions',
                     sortable: false,
-                    filterable: false
-                  }
+                    filterable: false,
+                  },
                 ]}
                 defaultPageSize={10}
                 showPaginationTop
@@ -173,5 +170,9 @@ class ReactTables extends React.Component {
     );
   }
 }
+
+ReactTables.propTypes = {
+  classes: PropTypes.shape({}).isRequired,
+};
 
 export default withStyles(styles)(ReactTables);
