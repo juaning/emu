@@ -1,37 +1,38 @@
-import React from "react";
+import React from 'react';
+import PropTypes from 'prop-types';
 // react component plugin for creating a beautiful datetime dropdown picker
-import Datetime from "react-datetime";
+import Datetime from 'react-datetime';
 // react component plugin for creating beatiful tags on an input
-import TagsInput from "react-tagsinput";
+import TagsInput from 'react-tagsinput';
 // react plugin that creates slider
-import Nouislider from "react-nouislider";
+import Nouislider from 'react-nouislider';
 
 // @material-ui/core components
-import withStyles from "@material-ui/core/styles/withStyles";
-import FormControl from "@material-ui/core/FormControl";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import InputLabel from "@material-ui/core/InputLabel";
-import Switch from "@material-ui/core/Switch";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
+import withStyles from '@material-ui/core/styles/withStyles';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import InputLabel from '@material-ui/core/InputLabel';
+import Switch from '@material-ui/core/Switch';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
 // @material-ui/icons
-import Today from "@material-ui/icons/Today";
-import LibraryBooks from "@material-ui/icons/LibraryBooks";
-import AvTimer from "@material-ui/icons/AvTimer";
+import Today from '@material-ui/icons/Today';
+import LibraryBooks from '@material-ui/icons/LibraryBooks';
+import AvTimer from '@material-ui/icons/AvTimer';
 
 // core components
-import GridContainer from "components/Grid/GridContainer.jsx";
-import GridItem from "components/Grid/GridItem.jsx";
-import CustomDropdown from "components/CustomDropdown/CustomDropdown.jsx";
-import CustomLinearProgress from "components/CustomLinearProgress/CustomLinearProgress.jsx";
-import ImageUpload from "components/CustomUpload/ImageUpload.jsx";
-import Card from "components/Card/Card.jsx";
-import CardHeader from "components/Card/CardHeader.jsx";
-import CardIcon from "components/Card/CardIcon.jsx";
-import CardBody from "components/Card/CardBody.jsx";
+import GridContainer from '../../../components/Grid/GridContainer';
+import GridItem from '../../../components/Grid/GridItem';
+import CustomDropdown from '../../../components/CustomDropdown/CustomDropdown';
+import CustomLinearProgress from '../../../components/CustomLinearProgress/CustomLinearProgress';
+import ImageUpload from '../../../components/CustomUpload/ImageUpload';
+import Card from '../../../components/Card/Card';
+import CardHeader from '../../../components/Card/CardHeader';
+import CardIcon from '../../../components/Card/CardIcon';
+import CardBody from '../../../components/Card/CardBody';
 
-import extendedFormsStyle from "assets/jss/material-dashboard-pro-react/views/extendedFormsStyle.jsx";
+import extendedFormsStyle from '../../../assets/jss/material-dashboard-pro-react/views/extendedFormsStyle';
 
 class ExtendedForms extends React.Component {
   constructor(props) {
@@ -39,19 +40,19 @@ class ExtendedForms extends React.Component {
     this.state = {
       checkedA: true,
       checkedB: false,
-      simpleSelect: "",
+      simpleSelect: '',
       multipleSelect: [],
-      tags: ["pizza", "pasta", "parmesan"]
+      tags: ['pizza', 'pasta', 'parmesan'],
     };
     this.handleTags = this.handleTags.bind(this);
   }
-  handleSimple = event => {
+  handleSimple = (event) => {
     this.setState({ [event.target.name]: event.target.value });
   };
-  handleMultiple = event => {
+  handleMultiple = (event) => {
     this.setState({ multipleSelect: event.target.value });
   };
-  handleChange = name => event => {
+  handleChange = name => (event) => {
     this.setState({ [name]: event.target.checked });
   };
   handleTags(regularTags) {
@@ -77,7 +78,7 @@ class ExtendedForms extends React.Component {
                 <br />
                 <FormControl fullWidth>
                   <Datetime
-                    inputProps={{ placeholder: "Datetime Picker Here" }}
+                    inputProps={{ placeholder: 'Datetime Picker Here' }}
                   />
                 </FormControl>
               </CardBody>
@@ -97,7 +98,7 @@ class ExtendedForms extends React.Component {
                 <FormControl fullWidth>
                   <Datetime
                     timeFormat={false}
-                    inputProps={{ placeholder: "Date Picker Here" }}
+                    inputProps={{ placeholder: 'Date Picker Here' }}
                   />
                 </FormControl>
               </CardBody>
@@ -117,7 +118,7 @@ class ExtendedForms extends React.Component {
                 <FormControl fullWidth>
                   <Datetime
                     dateFormat={false}
-                    inputProps={{ placeholder: "Time Picker Here" }}
+                    inputProps={{ placeholder: 'Time Picker Here' }}
                   />
                 </FormControl>
               </CardBody>
@@ -138,19 +139,19 @@ class ExtendedForms extends React.Component {
                         control={
                           <Switch
                             checked={this.state.checkedA}
-                            onChange={this.handleChange("checkedA")}
+                            onChange={this.handleChange('checkedA')}
                             value="checkedA"
                             classes={{
                               switchBase: classes.switchBase,
                               checked: classes.switchChecked,
                               icon: classes.switchIcon,
                               iconChecked: classes.switchIconChecked,
-                              bar: classes.switchBar
+                              bar: classes.switchBar,
                             }}
                           />
                         }
                         classes={{
-                          label: classes.label
+                          label: classes.label,
                         }}
                         label="Toggle is on"
                       />
@@ -160,19 +161,19 @@ class ExtendedForms extends React.Component {
                         control={
                           <Switch
                             checked={this.state.checkedB}
-                            onChange={this.handleChange("checkedB")}
+                            onChange={this.handleChange('checkedB')}
                             value="checkedB"
                             classes={{
                               switchBase: classes.switchBase,
                               checked: classes.switchChecked,
                               icon: classes.switchIcon,
                               iconChecked: classes.switchIconChecked,
-                              bar: classes.switchBar
+                              bar: classes.switchBar,
                             }}
                           />
                         }
                         classes={{
-                          label: classes.label
+                          label: classes.label,
                         }}
                         label="Toggle is off"
                       />
@@ -194,22 +195,22 @@ class ExtendedForms extends React.Component {
                           </InputLabel>
                           <Select
                             MenuProps={{
-                              className: classes.selectMenu
+                              className: classes.selectMenu,
                             }}
                             classes={{
-                              select: classes.select
+                              select: classes.select,
                             }}
                             value={this.state.simpleSelect}
                             onChange={this.handleSimple}
                             inputProps={{
-                              name: "simpleSelect",
-                              id: "simple-select"
+                              name: 'simpleSelect',
+                              id: 'simple-select',
                             }}
                           >
                             <MenuItem
                               disabled
                               classes={{
-                                root: classes.selectMenuItem
+                                root: classes.selectMenuItem,
                               }}
                             >
                               Choose City
@@ -217,7 +218,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="2"
                             >
@@ -226,7 +227,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="3"
                             >
@@ -235,7 +236,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="4"
                             >
@@ -244,7 +245,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="5"
                             >
@@ -253,7 +254,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="6"
                             >
@@ -262,7 +263,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="7"
                             >
@@ -271,7 +272,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="8"
                             >
@@ -280,7 +281,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="9"
                             >
@@ -289,7 +290,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="10"
                             >
@@ -298,7 +299,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="11"
                             >
@@ -307,7 +308,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="12"
                             >
@@ -316,7 +317,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="13"
                             >
@@ -325,7 +326,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="14"
                             >
@@ -334,7 +335,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="15"
                             >
@@ -343,7 +344,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="16"
                             >
@@ -352,7 +353,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="17"
                             >
@@ -361,7 +362,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="18"
                             >
@@ -370,7 +371,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="19"
                             >
@@ -397,14 +398,14 @@ class ExtendedForms extends React.Component {
                             MenuProps={{ className: classes.selectMenu }}
                             classes={{ select: classes.select }}
                             inputProps={{
-                              name: "multipleSelect",
-                              id: "multiple-select"
+                              name: 'multipleSelect',
+                              id: 'multiple-select',
                             }}
                           >
                             <MenuItem
                               disabled
                               classes={{
-                                root: classes.selectMenuItem
+                                root: classes.selectMenuItem,
                               }}
                             >
                               Choose City
@@ -412,7 +413,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="2"
                             >
@@ -421,7 +422,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="3"
                             >
@@ -430,7 +431,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="4"
                             >
@@ -439,7 +440,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="5"
                             >
@@ -448,7 +449,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="6"
                             >
@@ -457,7 +458,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="7"
                             >
@@ -466,7 +467,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="8"
                             >
@@ -475,7 +476,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="9"
                             >
@@ -484,7 +485,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="10"
                             >
@@ -493,7 +494,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="11"
                             >
@@ -502,7 +503,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="12"
                             >
@@ -511,7 +512,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="13"
                             >
@@ -520,7 +521,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="14"
                             >
@@ -529,7 +530,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="15"
                             >
@@ -538,7 +539,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="16"
                             >
@@ -547,7 +548,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="17"
                             >
@@ -556,7 +557,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="18"
                             >
@@ -565,7 +566,7 @@ class ExtendedForms extends React.Component {
                             <MenuItem
                               classes={{
                                 root: classes.selectMenuItem,
-                                selected: classes.selectMenuItemSelected
+                                selected: classes.selectMenuItemSelected,
                               }}
                               value="19"
                             >
@@ -585,7 +586,7 @@ class ExtendedForms extends React.Component {
                     <TagsInput
                       value={this.state.tags}
                       onChange={this.handleTags}
-                      tagProps={{ className: "react-tagsinput-tag info" }}
+                      tagProps={{ className: 'react-tagsinput-tag info' }}
                     />
                   </GridItem>
                   <GridItem xs={12} sm={12} md={6}>
@@ -597,18 +598,18 @@ class ExtendedForms extends React.Component {
                           buttonProps={{
                             round: true,
                             fullWidth: true,
-                            style: { marginBottom: "0" },
-                            color: "info"
+                            style: { marginBottom: '0' },
+                            color: 'info',
                           }}
                           dropdownHeader="Dropdown header"
                           dropdownList={[
-                            "Action",
-                            "Another action",
-                            "Something else here",
+                            'Action',
+                            'Another action',
+                            'Something else here',
                             { divider: true },
-                            "Separated link",
+                            'Separated link',
                             { divider: true },
-                            "One more separated link"
+                            'One more separated link',
                           ]}
                         />
                       </GridItem>
@@ -619,18 +620,18 @@ class ExtendedForms extends React.Component {
                           buttonProps={{
                             round: true,
                             fullWidth: true,
-                            style: { marginBottom: "0" },
-                            color: "info"
+                            style: { marginBottom: '0' },
+                            color: 'info',
                           }}
                           dropdownHeader="Dropdown header"
                           dropdownList={[
-                            "Action",
-                            "Another action",
-                            "Something else here",
+                            'Action',
+                            'Another action',
+                            'Something else here',
                             { divider: true },
-                            "Separated link",
+                            'Separated link',
                             { divider: true },
-                            "One more separated link"
+                            'One more separated link',
                           ]}
                         />
                       </GridItem>
@@ -656,19 +657,19 @@ class ExtendedForms extends React.Component {
                       variant="determinate"
                       color="success"
                       value={100}
-                      style={{ width: "35%", display: "inline-block" }}
+                      style={{ width: '35%', display: 'inline-block' }}
                     />
                     <CustomLinearProgress
                       variant="determinate"
                       color="warning"
                       value={100}
-                      style={{ width: "20%", display: "inline-block" }}
+                      style={{ width: '20%', display: 'inline-block' }}
                     />
                     <CustomLinearProgress
                       variant="determinate"
                       color="danger"
                       value={25}
-                      style={{ width: "45%", display: "inline-block" }}
+                      style={{ width: '45%', display: 'inline-block' }}
                     />
                   </GridItem>
                   <GridItem xs={12} sm={12} md={6}>
@@ -695,16 +696,16 @@ class ExtendedForms extends React.Component {
                     <legend>Regular Image</legend>
                     <ImageUpload
                       addButtonProps={{
-                        color: "rose",
-                        round: true
+                        color: 'rose',
+                        round: true,
                       }}
                       changeButtonProps={{
-                        color: "rose",
-                        round: true
+                        color: 'rose',
+                        round: true,
                       }}
                       removeButtonProps={{
-                        color: "danger",
-                        round: true
+                        color: 'danger',
+                        round: true,
                       }}
                     />
                   </GridItem>
@@ -713,16 +714,16 @@ class ExtendedForms extends React.Component {
                     <ImageUpload
                       avatar
                       addButtonProps={{
-                        color: "rose",
-                        round: true
+                        color: 'rose',
+                        round: true,
                       }}
                       changeButtonProps={{
-                        color: "rose",
-                        round: true
+                        color: 'rose',
+                        round: true,
                       }}
                       removeButtonProps={{
-                        color: "danger",
-                        round: true
+                        color: 'danger',
+                        round: true,
                       }}
                     />
                   </GridItem>
@@ -735,5 +736,9 @@ class ExtendedForms extends React.Component {
     );
   }
 }
+
+ExtendedForms.propTypes = {
+  classes: PropTypes.shape({}).isRequired,
+};
 
 export default withStyles(extendedFormsStyle)(ExtendedForms);
