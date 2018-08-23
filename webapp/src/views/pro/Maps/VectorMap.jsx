@@ -1,16 +1,15 @@
-/*eslint-disable*/
-import React from "react";
+import React from 'react';
 // react plugin for creating vector maps
-import { VectorMap } from "react-jvectormap";
+import { VectorMap } from 'react-jvectormap';
 
 // core components
-import GridContainer from "components/Grid/GridContainer.jsx";
-import GridItem from "components/Grid/GridItem.jsx";
-import Heading from "components/Heading/Heading.jsx";
-import Card from "components/Card/Card.jsx";
-import CardBody from "components/Card/CardBody.jsx";
+import GridContainer from '../../../components/Grid/GridContainer';
+import GridItem from '../../../components/Grid/GridItem';
+import Heading from '../../../components/Heading/Heading';
+import Card from '../../../components/Card/Card';
+import CardBody from '../../../components/Card/CardBody';
 
-var mapData = {
+const mapData = {
   AU: 760,
   BR: 550,
   CA: 120,
@@ -21,10 +20,10 @@ var mapData = {
   IN: 200,
   RO: 600,
   RU: 300,
-  US: 2920
+  US: 2920,
 };
 
-function VectorMaps({ ...prop }) {
+function VectorMaps() {
   return (
     <div>
       <Heading
@@ -35,13 +34,14 @@ function VectorMaps({ ...prop }) {
             <a
               href="https://www.npmjs.com/package/react-jvectormap"
               target="_blank"
+              rel="noopener noreferrer"
             >
               React wrapper component
-            </a>{" "}
-            of jQuery{" "}
-            <a href="http://jvectormap.com/" target="_blank">
+            </a>{' '}
+            of jQuery{' '}
+            <a href="http://jvectormap.com/" target="_blank" rel="noopener noreferrer">
               jVector Map
-            </a>{" "}
+            </a>{' '}
             pluging.
           </span>
         }
@@ -51,31 +51,31 @@ function VectorMaps({ ...prop }) {
           <Card plain>
             <CardBody plain>
               <VectorMap
-                map={"world_mill"}
+                map="world_mill"
                 backgroundColor="transparent"
                 zoomOnScroll={false}
                 containerStyle={{
-                  width: "100%",
-                  height: "420px"
+                  width: '100%',
+                  height: '420px',
                 }}
                 containerClassName="map"
                 regionStyle={{
                   initial: {
-                    fill: "#e4e4e4",
-                    "fill-opacity": 0.9,
-                    stroke: "none",
-                    "stroke-width": 0,
-                    "stroke-opacity": 0
-                  }
+                    fill: '#e4e4e4',
+                    'fill-opacity': 0.9,
+                    stroke: 'none',
+                    'stroke-width': 0,
+                    'stroke-opacity': 0,
+                  },
                 }}
                 series={{
                   regions: [
                     {
                       values: mapData,
-                      scale: ["#AAAAAA", "#444444"],
-                      normalizeFunction: "polynomial"
-                    }
-                  ]
+                      scale: ['#AAAAAA', '#444444'],
+                      normalizeFunction: 'polynomial',
+                    },
+                  ],
                 }}
               />
             </CardBody>
