@@ -8,7 +8,7 @@ import FlightLand from '@material-ui/icons/FlightLand';
 import Build from '@material-ui/icons/Build';
 
 // core components
-import CustomDropdown from '../components/CustomDropdown/CustomDropdown';
+import CustomDropdown from '../../components/CustomDropdown/CustomDropdown';
 
 // ##############################
 // // // stories for RTLSupport view
