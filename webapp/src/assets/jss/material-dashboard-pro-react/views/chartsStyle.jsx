@@ -10,49 +10,49 @@ import {
   infoColor,
   roseColor,
   grayColor,
-  cardTitle
-} from "assets/jss/material-dashboard-pro-react.jsx";
+  cardTitle,
+} from '../../material-dashboard-pro-react';
 
 const chartsStyle = {
   cardTitle,
   cardCategory: {
-    margin: "0",
-    color: "#999999"
+    margin: '0',
+    color: '#999999',
   },
   cardIconTitle: {
     ...cardTitle,
-    marginTop: "15px",
-    marginBottom: "0px"
+    marginTop: '15px',
+    marginBottom: '0px',
   },
   legendTitle: {
     color: grayColor,
-    margin: "10px 0 !important",
-    display: "flex"
+    margin: '10px 0 !important',
+    display: 'flex',
   },
   primary: {
-    color: primaryColor
+    color: primaryColor,
   },
   warning: {
-    color: warningColor
+    color: warningColor,
   },
   danger: {
-    color: dangerColor
+    color: dangerColor,
   },
   success: {
-    color: successColor
+    color: successColor,
   },
   info: {
-    color: infoColor
+    color: infoColor,
   },
   rose: {
-    color: roseColor
+    color: roseColor,
   },
   gray: {
-    color: grayColor
+    color: grayColor,
   },
   cardFooter: {
-    display: "block"
-  }
+    display: 'block',
+  },
 };
 
 export default chartsStyle;
