@@ -1,6 +1,6 @@
 import Dashboard from '@material-ui/icons/Dashboard';
 import ContentPaste from '@material-ui/icons/ContentPaste';
-import DashboardPage from '../views/Dashboard/Dashboard';
+import DashboardPage from '../views/pro/Dashboard/Dashboard';
 import Employees from '../views/Employees/Employees';
 
 const mainRoutes = [
