@@ -4,10 +4,10 @@ import Fingerprint from '@material-ui/icons/Fingerprint';
 import MonetizationOn from '@material-ui/icons/MonetizationOn';
 import LockOpen from '@material-ui/icons/LockOpen';
 
-import PricingPage from '../../views/Pages/PricingPag';
-import LoginPage from '../../views/Pages/LoginPage';
-import RegisterPage from '../../views/Pages/RegisterPage';
-import LockScreenPage from '../../views/Pages/LockScreenPage';
+import PricingPage from '../../views/pro/Pages/PricingPage';
+import LoginPage from '../../views/pro/Pages/LoginPage';
+import RegisterPage from '../../views/pro/Pages/RegisterPage';
+import LockScreenPage from '../../views/pro/Pages/LockScreenPage';
 
 const pagesRoutes = [
   {
