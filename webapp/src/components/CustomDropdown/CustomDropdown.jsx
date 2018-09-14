@@ -145,7 +145,7 @@ class CustomDropdown extends React.Component {
                             onClick={this.handleClose}
                             className={dropdownItem}
                           >
-                            {prop}
+                            {prop.text}
                           </MenuItem>
                         );
                       })}
@@ -178,7 +178,7 @@ CustomDropdown.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   hoverColor: PropTypes.oneOf(['primary', 'black']),
   buttonText: PropTypes.node,
-  buttonIcon: PropTypes.func,
+  buttonIcon: PropTypes.string,
   dropdownList: PropTypes.arrayOf(PropTypes.shape({})),
   buttonProps: PropTypes.shape({}),
   dropup: PropTypes.bool,

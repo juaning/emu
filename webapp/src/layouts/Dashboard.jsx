@@ -20,24 +20,24 @@ import dashboardRoutes from '../routes/pro/dashboard';
 import appStyle from '../assets/jss/material-dashboard-pro-react/layouts/dashboardStyle';
 
 import image from '../assets/img/sidebar-2.jpg';
-import logo from '../assets/img/logo-white.svg';
+import logo from '../assets/img/folklogo.png';
 
 const switchRoutes = (
   <Switch>
-    {dashboardRoutes.map((prop) => {
+    {dashboardRoutes.map((route) => {
       const routesKey = shortid.generate();
-      if (prop.redirect) {
-        return <Redirect from={prop.path} to={prop.pathTo} key={routesKey} />;
+      if (route.redirect) {
+        return <Redirect from={route.path} to={route.pathTo} key={routesKey} />;
       }
-      if (prop.collapse) {
-        return prop.views.map((viewProp) => {
+      if (route.collapse) {
+        return route.views.map((view) => {
           const viewKey = shortid.generate();
           return (
-            <Route path={viewProp.path} component={viewProp.component} key={viewKey} />
+            <Route path={view.path} component={view.component} key={viewKey} />
           );
         });
       }
-      return <Route path={prop.path} component={prop.component} key={routesKey} />;
+      return <Route path={route.path} component={route.component} key={routesKey} />;
     })}
   </Switch>
 );
@@ -51,7 +51,7 @@ class Dashboard extends React.Component {
   };
   componentDidMount() {
     if (navigator.platform.indexOf('Win') > -1) {
-      ps = new PerfectScrollbar(this.mainPanel.current, {
+      ps = new PerfectScrollbar(this.mainPanelRef.current, {
         suppressScrollX: true,
         suppressScrollY: false,
       });
@@ -60,10 +60,7 @@ class Dashboard extends React.Component {
   }
   componentDidUpdate(e) {
     if (e.history.location.pathname !== e.location.pathname) {
-      this.mainPanel.current.scrollTop = 0;
-      // if (this.state.mobileOpen) {
-      //   this.setState({ mobileOpen: false });
-      // }
+      this.mainPanelRef.current.scrollTop = 0;
     }
   }
   componentWillUnmount() {
@@ -94,7 +91,7 @@ class Dashboard extends React.Component {
       <div className={classes.wrapper}>
         <Sidebar
           routes={dashboardRoutes}
-          logoText="Creative Tim"
+          logoText="folk"
           logo={logo}
           image={image}
           handleDrawerToggle={this.handleDrawerToggle}
