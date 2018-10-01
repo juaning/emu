@@ -103,6 +103,7 @@ Header.propTypes = {
     'success',
     'warning',
     'danger',
+    '',
   ]),
   routes: PropTypes.arrayOf(PropTypes.shape({
     path: PropTypes.string,
@@ -118,7 +119,7 @@ Header.propTypes = {
 };
 
 Header.defaultProps = {
-  color: 'success',
+  color: '',
   routes: [{
     path: '',
     navbarName: '',

@@ -30,6 +30,7 @@ class Sidebar extends React.Component {
       openTables: this.activeRoute('/tables'),
       openMaps: this.activeRoute('/maps'),
       openPages: this.activeRoute('-page'),
+      openEmpleados: this.activeRoute('/empleados'),
       miniActive: true,
     };
     this.activeRoute.bind(this);
@@ -165,15 +166,98 @@ class Sidebar extends React.Component {
     );
     const links = (
       <List className={classes.list}>
-        {routes.map((prop) => {
-          const key = shortid.generate();
-          if (prop.redirect) {
-            return null;
-          }
-          if (prop.collapse) {
+        {routes.map((route) => {
+          if (!route.hidden) {
+            const key = shortid.generate();
+            if (route.redirect) {
+              return null;
+            }
+            if (route.collapse) {
+              const navLinkClasses =
+                `${classes.itemLink} ${cx({ [` ${classes.collapseActive}`]: this.activeRoute(route.path) })}`;
+              const itemTextRouteParent =
+                `${classes.itemText} ${cx({
+                  [classes.itemTextMini]:
+                    this.props.miniActive && this.state.miniActive,
+                  [classes.itemTextMiniRTL]:
+                    rtlActive && this.props.miniActive && this.state.miniActive,
+                  [classes.itemTextRTL]: rtlActive,
+                })}`;
+              collapseItemText =
+                `${classes.collapseItemText} ${cx({
+                  [classes.collapseItemTextMini]:
+                    this.props.miniActive && this.state.miniActive,
+                  [classes.collapseItemTextMiniRTL]:
+                    rtlActive && this.props.miniActive && this.state.miniActive,
+                  [classes.collapseItemTextRTL]: rtlActive,
+                })}`;
+              const itemIcon =
+                `${classes.itemIcon} ${cx({ [classes.itemIconRTL]: rtlActive })}`;
+              caret =
+                `${classes.caret} ${cx({ [classes.caretRTL]: rtlActive })}`;
+              return (
+                <ListItem key={key} className={classes.item}>
+                  <NavLink
+                    to="#"
+                    className={navLinkClasses}
+                    onClick={() => this.openCollapse(route.state)}
+                  >
+                    <ListItemIcon className={itemIcon}>
+                      <route.icon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={route.name}
+                      secondary={
+                        <b
+                          className={
+                            `${caret} ${this.state[route.state] ? classes.caretActive : ''}`
+                          }
+                        />
+                      }
+                      disableTypography
+                      className={itemTextRouteParent}
+                    />
+                  </NavLink>
+                  <Collapse in={this.state[route.state]} unmountOnExit>
+                    <List className={`${classes.list} ${classes.collapseList}`}>
+                      {route.views.map((view) => {
+                        const keyView = shortid.generate();
+                        if (view.redirect) {
+                          return null;
+                        }
+                        const navLinkClassesView =
+                          `${classes.collapseItemLink} ${cx({
+                            [` ${classes[color]}`]: this.activeRoute(view.path),
+                          })}`;
+                        const collapseItemMiniView =
+                          `${classes.collapseItemMini} ${cx({
+                            [classes.collapseItemMiniRTL]: rtlActive,
+                          })}`;
+                        return (
+                          <ListItem key={keyView} className={classes.collapseItem}>
+                            <NavLink to={view.path} className={navLinkClassesView}>
+                              <span className={collapseItemMiniView}>
+                                {view.mini}
+                              </span>
+                              <ListItemText
+                                primary={view.name}
+                                disableTypography
+                                className={collapseItemText}
+                              />
+                            </NavLink>
+                          </ListItem>
+                        );
+                      })}
+                    </List>
+                  </Collapse>
+                </ListItem>
+              );
+            }
             const navLinkClasses =
-              `${classes.itemLink} ${cx({ [` ${classes.collapseActive}`]: this.activeRoute(prop.path) })}`;
-            const itemTextRouteParent =
+              `${classes.itemLink} ${cx({
+                [` ${classes[color]}`]: this.activeRoute(route.path),
+              })}`;
+            const itemTextRoute =
               `${classes.itemText} ${cx({
                 [classes.itemTextMini]:
                   this.props.miniActive && this.state.miniActive,
@@ -181,104 +265,24 @@ class Sidebar extends React.Component {
                   rtlActive && this.props.miniActive && this.state.miniActive,
                 [classes.itemTextRTL]: rtlActive,
               })}`;
-            collapseItemText =
-              `${classes.collapseItemText} ${cx({
-                [classes.collapseItemTextMini]:
-                  this.props.miniActive && this.state.miniActive,
-                [classes.collapseItemTextMiniRTL]:
-                  rtlActive && this.props.miniActive && this.state.miniActive,
-                [classes.collapseItemTextRTL]: rtlActive,
-              })}`;
             const itemIcon =
               `${classes.itemIcon} ${cx({ [classes.itemIconRTL]: rtlActive })}`;
-            caret =
-              `${classes.caret} ${cx({ [classes.caretRTL]: rtlActive })}`;
             return (
               <ListItem key={key} className={classes.item}>
-                <NavLink
-                  to="#"
-                  className={navLinkClasses}
-                  onClick={() => this.openCollapse(prop.state)}
-                >
+                <NavLink to={route.path} className={navLinkClasses}>
                   <ListItemIcon className={itemIcon}>
-                    <prop.icon />
+                    <route.icon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={prop.name}
-                    secondary={
-                      <b
-                        className={
-                          `${caret} ${this.state[prop.state] ? classes.caretActive : ''}`
-                        }
-                      />
-                    }
+                    primary={route.name}
                     disableTypography
-                    className={itemTextRouteParent}
+                    className={itemTextRoute}
                   />
                 </NavLink>
-                <Collapse in={this.state[prop.state]} unmountOnExit>
-                  <List className={`${classes.list} ${classes.collapseList}`}>
-                    {prop.views.map((propView) => {
-                      const keyView = shortid.generate();
-                      if (propView.redirect) {
-                        return null;
-                      }
-                      const navLinkClassesView =
-                        `${classes.collapseItemLink} ${cx({
-                          [` ${classes[color]}`]: this.activeRoute(propView.path),
-                        })}`;
-                      const collapseItemMiniView =
-                        `${classes.collapseItemMini} ${cx({
-                          [classes.collapseItemMiniRTL]: rtlActive,
-                        })}`;
-                      return (
-                        <ListItem key={keyView} className={classes.collapseItem}>
-                          <NavLink to={propView.path} className={navLinkClassesView}>
-                            <span className={collapseItemMiniView}>
-                              {propView.mini}
-                            </span>
-                            <ListItemText
-                              primary={propView.name}
-                              disableTypography
-                              className={collapseItemText}
-                            />
-                          </NavLink>
-                        </ListItem>
-                      );
-                    })}
-                  </List>
-                </Collapse>
               </ListItem>
             );
           }
-          const navLinkClasses =
-            `${classes.itemLink} ${cx({
-              [` ${classes[color]}`]: this.activeRoute(prop.path),
-            })}`;
-          const itemTextRoute =
-            `${classes.itemText} ${cx({
-              [classes.itemTextMini]:
-                this.props.miniActive && this.state.miniActive,
-              [classes.itemTextMiniRTL]:
-                rtlActive && this.props.miniActive && this.state.miniActive,
-              [classes.itemTextRTL]: rtlActive,
-            })}`;
-          const itemIcon =
-            `${classes.itemIcon} ${cx({ [classes.itemIconRTL]: rtlActive })}`;
-          return (
-            <ListItem key={key} className={classes.item}>
-              <NavLink to={prop.path} className={navLinkClasses}>
-                <ListItemIcon className={itemIcon}>
-                  <prop.icon />
-                </ListItemIcon>
-                <ListItemText
-                  primary={prop.name}
-                  disableTypography
-                  className={itemTextRoute}
-                />
-              </NavLink>
-            </ListItem>
-          );
+          return null;
         })}
       </List>
     );
@@ -297,10 +301,10 @@ class Sidebar extends React.Component {
       `${classes.logo} ${cx({ [classes.whiteAfter]: bgColor === 'white' })}`;
     const brand = (
       <div className={logoClasses}>
-        <a href="https://www.creative-tim.com" className={logoMini}>
+        <a href="/" className={logoMini}>
           <img src={logo} alt="logo" className={classes.img} />
         </a>
-        <a href="https://www.creative-tim.com" className={logoNormal}>
+        <a href="/" className={logoNormal}>
           {logoText}
         </a>
       </div>
