@@ -4,8 +4,6 @@ import cx from 'classnames';
 
 // @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 
 import footerStyle from '../../assets/jss/material-dashboard-pro-react/components/footerStyle';
 
@@ -14,7 +12,6 @@ function Footer({ ...props }) {
     classes,
     fluid,
     white,
-    rtlActive,
   } = props;
   const container = cx({
     [classes.container]: !fluid,
@@ -26,45 +23,18 @@ function Footer({ ...props }) {
     cx({
       [` ${classes.whiteColor}`]: white,
     });
-  const block = cx({
-    [classes.block]: true,
-    [classes.whiteColor]: white,
-  });
   return (
     <footer className={classes.footer}>
       <div className={container}>
-        <div className={classes.left}>
-          <List className={classes.list}>
-            <ListItem className={classes.inlineBlock}>
-              <a href="#home" className={block}>
-                {rtlActive ? 'الصفحة الرئيسية' : 'Home'}
-              </a>
-            </ListItem>
-            <ListItem className={classes.inlineBlock}>
-              <a href="#company" className={block}>
-                {rtlActive ? 'شركة' : 'Company'}
-              </a>
-            </ListItem>
-            <ListItem className={classes.inlineBlock}>
-              <a href="#portfolio" className={block}>
-                {rtlActive ? 'بعدسة' : 'Portfolio'}
-              </a>
-            </ListItem>
-            <ListItem className={classes.inlineBlock}>
-              <a href="#blog" className={block}>
-                {rtlActive ? 'مدونة' : 'Blog'}
-              </a>
-            </ListItem>
-          </List>
-        </div>
         <p className={classes.right}>
           &copy; {1900 + new Date().getYear()}{' '}
-          <a href="https://www.creative-tim.com" className={anchor}>
-            {rtlActive ? 'توقيت الإبداعية' : 'Creative Tim'}
+          <a href="https://www.folkpy.com/" className={anchor}>
+            Folk Py
           </a>
-          {rtlActive
-            ? ', مصنوعة مع الحب لشبكة الإنترنت أفضل'
-            : ', made with love for a better web'}
+          &nbsp;hecho con ❤ por
+          <a href="https://fioar04.wixsite.com/omicronepm" className={anchor}>
+          &nbsp;OmicronEPM
+          </a>
         </p>
       </div>
     </footer>
@@ -75,13 +45,11 @@ Footer.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   fluid: PropTypes.bool,
   white: PropTypes.bool,
-  rtlActive: PropTypes.bool,
 };
 
 Footer.defaultProps = {
   fluid: false,
   white: false,
-  rtlActive: false,
 };
 
 export default withStyles(footerStyle)(Footer);

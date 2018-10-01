@@ -2,6 +2,9 @@ class API {
   constructor({ url }) {
     this.url = url;
     this.endpoints = {};
+    this.headers = {
+      'Content-Type': 'application/json',
+    };
   }
 
   createEntity(entity) {
@@ -20,11 +23,13 @@ class API {
     endpoints.getOne = ({ id }) => fetch(`${resourceURL}/${id}`);
     endpoints.create = body => fetch(`${resourceURL}`, {
       method: 'POST',
-      body,
+      headers: this.headers,
+      body: JSON.stringify(body),
     });
     endpoints.update = body => fetch(`${resourceURL}/${body.id}`, {
       method: 'PUT',
-      body,
+      headers: this.headers,
+      body: JSON.stringify(body),
     });
     endpoints.delete = ({ id }) => fetch(`${resourceURL}/${id}`, {
       method: 'DELETE',
