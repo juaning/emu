@@ -274,9 +274,29 @@ const genderListConstant = [
   { value: 'male', text: 'Masculino' },
 ];
 
+const bloodTypeConstant = [
+  { value: 'a+', text: 'A (+)' },
+  { value: 'a-', text: 'A (-)' },
+  { value: 'b+', text: 'B (+)' },
+  { value: 'b-', text: 'B (-)' },
+  { value: 'o+', text: 'O (+)' },
+  { value: 'o-', text: 'O (-)' },
+  { value: 'ab+', text: 'AB (+)' },
+  { value: 'ab-', text: 'AB (-)' },
+];
+
+const healthInsuranceConstant = [
+  { value: 'asismed', text: 'Asismed' },
+  { value: 'migone', text: 'Migone' },
+  { value: 'comecipar', text: 'Comecipar' },
+  { value: 'santa_clara', text: 'Santa Clara' },
+];
+
 export {
   datesConstant,
   maritalStatusConstant,
   countryListConstant,
   genderListConstant,
+  bloodTypeConstant,
+  healthInsuranceConstant,
 };

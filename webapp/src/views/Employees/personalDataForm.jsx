@@ -15,8 +15,6 @@ import GridItem from '../../components/Grid/GridItem';
 import Button from '../../components/CustomButtons/Button';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import Card from '../../components/Card/Card';
-import CardHeader from '../../components/Card/CardHeader';
-import CardText from '../../components/Card/CardText';
 import CardBody from '../../components/Card/CardBody';
 
 import regularFormsStyle from '../../assets/jss/material-dashboard-pro-react/views/regularFormsStyle';
@@ -149,11 +147,11 @@ class PersonalDataForm extends React.Component {
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card>
-            <CardHeader color="rose" text>
+            {/* <CardHeader color="rose" text>
               <CardText color="rose">
                 <h4 className={classes.cardTitle}>Datos Empleado</h4>
               </CardText>
-            </CardHeader>
+            </CardHeader> */}
             <CardBody>
               <form>
                 <GridContainer>
