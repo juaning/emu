@@ -25,7 +25,7 @@ import {
   healthInsuranceConstant,
 } from '../../resources/constants';
 
-const employeeAPI = new API({ url: 'employee' });
+const employeeAPI = new API({ url: '/employee' });
 employeeAPI.createEntity({ name: 'health' });
 
 class HealthForm extends React.Component {

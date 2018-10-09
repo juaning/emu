@@ -48,7 +48,7 @@ const styles = {
   },
 };
 
-const employeeAPI = new API({ url: '' });
+const employeeAPI = new API({ url: '/employee' });
 employeeAPI.createEntity({ name: 'personal-data' });
 
 class TableList extends React.Component {

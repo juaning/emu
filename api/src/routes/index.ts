@@ -1,6 +1,6 @@
 import * as express from 'express';
 import LoginRoute from './login';
-import PersonalDataRoutes from './personalDataRoute';
+import EmployeeRoutes from './employeeRoutes';
 
 export default class Routes {
   public routes(app): void {
@@ -10,6 +10,6 @@ export default class Routes {
       });
     });
     app.use('/login', LoginRoute);
-    app.use('/employee/personal-data', PersonalDataRoutes);
+    app.use('/employee', EmployeeRoutes);
   }
 }

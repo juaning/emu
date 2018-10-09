@@ -36,7 +36,7 @@ import {
   // addDashesToPhoneNumber,
 } from '../../resources/helpers';
 
-const employeeAPI = new API({ url: '' });
+const employeeAPI = new API({ url: '/employee' });
 employeeAPI.createEntity({ name: 'personal-data' });
 
 const { startingDOBDate, dateFormat } = datesConstant;

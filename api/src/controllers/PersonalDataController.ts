@@ -44,9 +44,9 @@ class PersonalDataController {
     PersonalData.remove({
       _id: req.params.personalDataId,
     },
-    (err, personalData) => {
+    (err) => {
       if (err) res.send(err);
-      res.json({ message: 'Successfully deleted Personal Data' });
+      res.json({ message: `Successfully deleted Personal Data ${req.params.personalDataId}` });
     });
   }
 };
