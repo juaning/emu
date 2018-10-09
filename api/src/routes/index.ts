@@ -10,6 +10,6 @@ export default class Routes {
       });
     });
     app.use('/login', LoginRoute);
-    app.use('/personal-data', PersonalDataRoutes);
+    app.use('/employee/personal-data', PersonalDataRoutes);
   }
 }
