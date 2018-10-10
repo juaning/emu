@@ -19,7 +19,10 @@ import regularFormsStyle from '../../assets/jss/material-dashboard-pro-react/vie
 
 // API resources
 import API from '../../resources/api';
-import { logError } from '../../resources/helpers';
+import {
+  logError,
+  generateMenuItemList,
+} from '../../resources/helpers';
 import {
   bloodTypeConstant,
   healthInsuranceConstant,
@@ -31,22 +34,6 @@ employeeAPI.createEntity({ name: 'health' });
 class HealthForm extends React.Component {
   state = {
     entity: {},
-  }
-  generateMenuItemList(list) {
-    const classes = this.props;
-    const menuList = list.map(item => (
-      <MenuItem
-        key={item.value}
-        classes={{
-          root: classes.selectMenuItem,
-          selected: classes.selectMenuItemSelected,
-        }}
-        value={item.value}
-      >
-        {item.text}
-      </MenuItem>
-    ));
-    return menuList;
   }
   validateField(event, stateName, type) {
     const { value } = event.target;
@@ -69,8 +56,8 @@ class HealthForm extends React.Component {
   }
   render() {
     const { classes } = this.props;
-    const bloodTypeOptions = this.generateMenuItemList(bloodTypeConstant);
-    const healthInsuranceOptions = this.generateMenuItemList(healthInsuranceConstant);
+    const bloodTypeOptions = generateMenuItemList(bloodTypeConstant, classes);
+    const healthInsuranceOptions = generateMenuItemList(healthInsuranceConstant, classes);
     return (
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
@@ -94,10 +81,10 @@ class HealthForm extends React.Component {
                       value=""
                       onChange={this.handleSimple}
                       inputProps={{
-                        name: 'bloodType',
-                        id: 'bloodType',
+                        name: 'blood_type',
+                        id: 'blood_type',
                         onChange: event =>
-                          this.validateField(event, '', 'bloodType'),
+                          this.validateField(event, '', 'blood_type'),
                       }}
                       autoWidth
                     >

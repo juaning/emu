@@ -33,6 +33,7 @@ import {
   logError,
   verifyEmail,
   verifyPhoneNumber,
+  generateMenuItemList,
   // addDashesToPhoneNumber,
 } from '../../resources/helpers';
 
@@ -81,22 +82,6 @@ class PersonalDataForm extends React.Component {
     this.validateField(event, stateName, type);
   }
   checkIfRequired = this.checkIfRequired.bind(this)
-  generateMenuItemList(list) {
-    const classes = this.props;
-    const menuList = list.map(item => (
-      <MenuItem
-        key={item.value}
-        classes={{
-          root: classes.selectMenuItem,
-          selected: classes.selectMenuItemSelected,
-        }}
-        value={item.value}
-      >
-        {item.text}
-      </MenuItem>
-    ));
-    return menuList;
-  }
   validateField(event, stateName, type) {
     let state = '';
     const { value } = event.target;
@@ -140,18 +125,13 @@ class PersonalDataForm extends React.Component {
   saveClick = this.saveClick.bind(this);
   render() {
     const { classes } = this.props;
-    const maritalStatusOptions = this.generateMenuItemList(maritalStatusConstant);
-    const countryListOptions = this.generateMenuItemList(countryListConstant);
-    const genderListOptions = this.generateMenuItemList(genderListConstant);
+    const maritalStatusOptions = generateMenuItemList(maritalStatusConstant, classes);
+    const countryListOptions = generateMenuItemList(countryListConstant, classes);
+    const genderListOptions = generateMenuItemList(genderListConstant, classes);
     return (
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card>
-            {/* <CardHeader color="rose" text>
-              <CardText color="rose">
-                <h4 className={classes.cardTitle}>Datos Empleado</h4>
-              </CardText>
-            </CardHeader> */}
             <CardBody>
               <form>
                 <GridContainer>
