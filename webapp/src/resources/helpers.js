@@ -1,3 +1,6 @@
+import React from 'react';
+import MenuItem from '@material-ui/core/MenuItem';
+
 function verifyEmail(value) {
   const emailRex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return emailRex.test(value);
@@ -18,9 +21,26 @@ function logError(error) {
   console.error(error);
 }
 
+function generateMenuItemList(list, classes) {
+  const menuList = list.map(item => (
+    <MenuItem
+      key={item.value}
+      classes={{
+        root: classes.selectMenuItem,
+        selected: classes.selectMenuItemSelected,
+      }}
+      value={item.value}
+    >
+      {item.text}
+    </MenuItem>
+  ));
+  return menuList;
+}
+
 export {
   verifyEmail,
   verifyPhoneNumber,
   addDashesToPhoneNumber,
   logError,
+  generateMenuItemList,
 };
