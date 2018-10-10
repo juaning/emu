@@ -15,9 +15,11 @@ import HealthForm from './healthForm';
 class EditEmployee extends React.Component {
   state = {
     redirectToList: false,
+    employee: {},
   }
-  updateRedirectToList(redirectToList) {
-    this.setState({ redirectToList });
+  updateRedirectToList(redirectToList, employeeId) {
+    const employee = { id: employeeId };
+    this.setState({ employee });
   }
   updateRedirectToList = this.updateRedirectToList.bind(this)
   render() {
@@ -28,9 +30,11 @@ class EditEmployee extends React.Component {
     return (
       <NavPills
         color="rose"
-        style={{ width: '100%' }}
-        scrollable
-        scrollButtons="on"
+        direction="x"
+        horizontal={{
+          tabsGrid: { xs: 12, sm: 12, md: 12 },
+          contentGrid: { xs: 12, sm: 12, md: 12 },
+        }}
         tabs={[
           {
             tabButton: 'Datos personales',
@@ -38,7 +42,7 @@ class EditEmployee extends React.Component {
           },
           {
             tabButton: 'Salud',
-            tabContent: <HealthForm styles={{ width: '100%' }} />,
+            tabContent: <HealthForm styles={{ width: '100%' }} employee={this.state.employee} />,
           },
           {
             tabButton: 'Familia',
