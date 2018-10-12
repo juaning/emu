@@ -40,6 +40,7 @@ class Sidebar extends React.Component {
     return this.props.location.pathname.indexOf(routeName) > -1;
   }
   openCollapse(collapse) {
+    console.log(collapse);
     const st = {};
     st[collapse] = !this.state[collapse];
     this.setState(st);
@@ -355,10 +356,6 @@ class Sidebar extends React.Component {
         </Hidden>
         <Hidden smDown>
           <Drawer
-            onMouseOver={() => this.setState({ miniActive: false })}
-            onFocus={() => this.setState({ miniActive: false })}
-            onMouseOut={() => this.setState({ miniActive: true })}
-            onBlur={() => this.setState({ miniActive: true })}
             anchor={rtlActive ? 'right' : 'left'}
             variant="permanent"
             open
