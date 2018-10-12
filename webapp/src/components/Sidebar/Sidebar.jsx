@@ -355,10 +355,6 @@ class Sidebar extends React.Component {
         </Hidden>
         <Hidden smDown>
           <Drawer
-            onMouseOver={() => this.setState({ miniActive: false })}
-            onFocus={() => this.setState({ miniActive: false })}
-            onMouseOut={() => this.setState({ miniActive: true })}
-            onBlur={() => this.setState({ miniActive: true })}
             anchor={rtlActive ? 'right' : 'left'}
             variant="permanent"
             open
