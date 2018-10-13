@@ -35,6 +35,10 @@ class HealthForm extends React.Component {
   state = {
     entity: {},
   }
+  handleSimple(event) {
+    this.setState({ [event.target.name]: event.target.value });
+  }
+  handleSimple = this.handleSimple.bind(this);
   validateField(event, stateName, type) {
     const { value } = event.target;
     const { entity } = this.state;
@@ -78,13 +82,14 @@ class HealthForm extends React.Component {
                       classes={{
                         select: classes.select,
                       }}
-                      value=""
-                      onChange={this.handleSimple}
+                      value={this.state.blood_type || ""}
                       inputProps={{
                         name: 'blood_type',
                         id: 'blood_type',
-                        onChange: event =>
-                          this.validateField(event, '', 'blood_type'),
+                        onChange: event =>{
+                          this.handleSimple(event);
+                          this.validateField(event, '', 'blood_type')
+                        },
                       }}
                       autoWidth
                     >
@@ -194,13 +199,14 @@ class HealthForm extends React.Component {
                       classes={{
                         select: classes.select,
                       }}
-                      value=""
-                      onChange={this.handleSimple}
+                      value={this.state.health_insurance || ""}
                       inputProps={{
                         name: 'health_insurance',
                         id: 'health_insurance',
-                        onChange: event =>
-                          this.validateField(event, '', 'health_insurance'),
+                        onChange: event => {
+                          this.handleSimple(event);
+                          this.validateField(event, '', 'health_insurance')
+                        },
                       }}
                       autoWidth
                     >
