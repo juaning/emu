@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+// react component plugin for creating a beautiful datetime dropdown picker
+import Datetime from 'react-datetime';
 
 // @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -17,47 +19,99 @@ import CardBody from '../../components/Card/CardBody';
 
 import regularFormsStyle from '../../assets/jss/material-dashboard-pro-react/views/regularFormsStyle';
 
-// API resources
-import API from '../../resources/api';
 import {
   logError,
   generateMenuItemList,
+  generateMenuWithNumbers,
 } from '../../resources/helpers';
-import {
-  bloodTypeConstant,
-  healthInsuranceConstant,
-} from '../../resources/constants';
+
+import { datesConstant } from '../../resources/constants';
+
+// API resources
+import API from '../../resources/api';
 
 const employeeAPI = new API({ url: '/employee' });
-employeeAPI.createEntity({ name: 'health' });
+employeeAPI.createEntity({ name: 'family' });
 
-class HealthForm extends React.Component {
+const { startingDOBDate, dateFormat, dateFormatDB } = datesConstant;
+
+class FamilyForm extends React.Component {
   state = {
-    entity: {},
+    familyEntity: {},
   }
-  validateField(event, stateName, type) {
+  onDOBChange(date, name) {
+    const { familyEntity } = this.state;
+    const { childs = {} } = familyEntity;
+    childs[name] = date.format(dateFormatDB);
+    familyEntity.childs = childs;
+    this.setState({ familyEntity });
+  }
+  onDOBChange = this.onDOBChange.bind(this)
+  storeChangedField(event, name) {
     const { value } = event.target;
-    const { entity } = this.state;
-    entity[type] = value;
+    const { familyEntity } = this.state;
+    familyEntity[name] = value;
+    this.setState({ familyEntity });
   }
+  storeChangedField = this.storeChangedField.bind(this)
+  generateChildsDOB() {
+    const { classes } = this.props;
+    const { familyEntity } = this.state;
+    const { childNumber = 0, childs = {} } = familyEntity;
+    const dates = [];
+    if (childNumber > 0) {
+      for (let i = 0; i < childNumber; i += 1) {
+        const childID = `childDOB-${i}`;
+        dates.push(<GridContainer>
+          <GridItem xs={12} sm={2} key={childID}>
+            <FormLabel className={classes.labelHorizontal}>
+              Fecha de Nacimiento hijo #{i + 1}
+            </FormLabel>
+          </GridItem>
+          <GridItem xs={12} sm={10}>
+            {/* TODO: add classes to match padding */}
+            <Datetime
+              id={childID}
+              timeFormat={false}
+              dateFormat={dateFormat}
+              viewDate={startingDOBDate}
+              value={childs[i]}
+              inputProps={{
+                name: childID,
+                id: childID,
+              }}
+              onChange={momentObj => this.onDOBChange(momentObj, childID)}
+              closeOnSelect
+            />
+          </GridItem>
+        </GridContainer>); // eslint-disable-line
+      }
+    }
+    return dates;
+  }
+  generateChildsDOB = this.generateChildsDOB.bind(this)
   saveClick() {
-    const { entity } = this.state;
-    employeeAPI
-      .endpoints.health
-      .create(entity)
+    const { familyEntity } = this.state;
+    familyEntity.employeeId = this.props.employee.id;
+    console.log(familyEntity);
+    employeeAPI.endpoints.family
+      .create(familyEntity)
       .then(response => response.json())
-      .then((data) => {
-        const { errors } = data;
+      .then((savedFamilyEntity) => {
+        const { errors } = savedFamilyEntity;
         if (errors) {
           logError(errors);
         }
       })
       .catch(error => logError(error));
   }
+  saveClick = this.saveClick.bind(this)
   render() {
     const { classes } = this.props;
-    const bloodTypeOptions = generateMenuItemList(bloodTypeConstant, classes);
-    const healthInsuranceOptions = generateMenuItemList(healthInsuranceConstant, classes);
+    const numbersList = generateMenuWithNumbers(10);
+    const childNumberOptions = generateMenuItemList(numbersList, classes);
+    const childDOBList = this.generateChildsDOB();
+    const { childNumber } = this.state.familyEntity;
     return (
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
@@ -67,7 +121,7 @@ class HealthForm extends React.Component {
                 <GridContainer>
                   <GridItem xs={12} sm={2}>
                     <FormLabel className={classes.labelHorizontal}>
-                      Tipo de sangre
+                      Cantidad de hijos
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
@@ -78,13 +132,11 @@ class HealthForm extends React.Component {
                       classes={{
                         select: classes.select,
                       }}
-                      value=""
-                      onChange={this.handleSimple}
+                      value={childNumber}
                       inputProps={{
-                        name: 'blood_type',
-                        id: 'blood_type',
-                        onChange: event =>
-                          this.validateField(event, '', 'blood_type'),
+                        name: 'childNumber',
+                        id: 'childNumber',
+                        onChange: event => this.storeChangedField(event, 'childNumber'),
                       }}
                       autoWidth
                     >
@@ -94,29 +146,30 @@ class HealthForm extends React.Component {
                           root: classes.selectMenuItem,
                         }}
                       >
-                        Tipo de sangre
+                        Cantidad de hijos
                       </MenuItem>
-                      {bloodTypeOptions}
+                      {childNumberOptions}
                     </Select>
                   </GridItem>
                 </GridContainer>
+                {childDOBList}
                 <GridContainer>
                   <GridItem xs={12} sm={2}>
                     <FormLabel className={classes.labelHorizontal}>
-                      Alergias
+                      Nombre conyuge
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
                     <CustomInput
-                      id="alergies"
+                      id="firstNamePartner"
                       formControlProps={{
                         fullWidth: true,
                       }}
                       inputProps={{
+                        name: 'firstNamePartner',
+                        id: 'firstNamePartner',
                         onChange: event =>
-                          this.validateField(event, 'registerAlergies', 'alergies'),
-                        type: 'text',
-                        name: 'alergies',
+                          this.storeChangedField(event, 'firstNamePartner'),
                       }}
                     />
                   </GridItem>
@@ -124,20 +177,20 @@ class HealthForm extends React.Component {
                 <GridContainer>
                   <GridItem xs={12} sm={2}>
                     <FormLabel className={classes.labelHorizontal}>
-                      Enfermedades
+                      Apellido conyuge
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
                     <CustomInput
-                      id="conditions"
+                      id="lastNamePartner"
                       formControlProps={{
                         fullWidth: true,
                       }}
                       inputProps={{
+                        name: 'lastNamePartner',
+                        id: 'lastNamePartner',
                         onChange: event =>
-                          this.validateField(event, 'registerConditions', 'conditions'),
-                        type: 'text',
-                        name: 'conditions',
+                          this.storeChangedField(event, 'lastNamePartner'),
                       }}
                     />
                   </GridItem>
@@ -145,75 +198,22 @@ class HealthForm extends React.Component {
                 <GridContainer>
                   <GridItem xs={12} sm={2}>
                     <FormLabel className={classes.labelHorizontal}>
-                      Contacto de emergencia
+                      Lugar de trabajo conyuge
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
-                    <GridContainer>
-                      <GridItem xs={12} sm={12} md={6}>
-                        <CustomInput
-                          id="emergency_contact_name"
-                          formControlProps={{
-                            fullWidth: true,
-                          }}
-                          inputProps={{
-                            placeholder: 'Nombre',
-                            onChange: event =>
-                              this.validateField(event, '', 'emergency_contact_name'),
-                          }}
-                        />
-                      </GridItem>
-                      <GridItem xs={12} sm={12} md={6}>
-                        <CustomInput
-                          id="emergency_contact_number"
-                          formControlProps={{
-                            fullWidth: true,
-                          }}
-                          inputProps={{
-                            type: 'tel',
-                            placeholder: 'Teléfono',
-                            onChange: event =>
-                              this.validateField(event, '', 'emergency_contact_number'),
-                          }}
-                        />
-                      </GridItem>
-                    </GridContainer>
-                  </GridItem>
-                </GridContainer>
-                <GridContainer>
-                  <GridItem xs={12} sm={2}>
-                    <FormLabel className={classes.labelHorizontal}>
-                      Seguro medico
-                    </FormLabel>
-                  </GridItem>
-                  <GridItem xs={12} sm={10}>
-                    <Select
-                      MenuProps={{
-                        className: classes.selectMenu,
+                    <CustomInput
+                      id="workplacePartner"
+                      formControlProps={{
+                        fullWidth: true,
                       }}
-                      classes={{
-                        select: classes.select,
-                      }}
-                      value=""
-                      onChange={this.handleSimple}
                       inputProps={{
-                        name: 'health_insurance',
-                        id: 'health_insurance',
+                        name: 'workplacePartner',
+                        id: 'workplacePartner',
                         onChange: event =>
-                          this.validateField(event, '', 'health_insurance'),
+                          this.storeChangedField(event, 'workplacePartner'),
                       }}
-                      autoWidth
-                    >
-                      <MenuItem
-                        disabled
-                        classes={{
-                          root: classes.selectMenuItem,
-                        }}
-                      >
-                        Seguro medico
-                      </MenuItem>
-                      {healthInsuranceOptions}
-                    </Select>
+                    />
                   </GridItem>
                 </GridContainer>
                 <GridContainer justify="flex-end">
@@ -236,8 +236,11 @@ class HealthForm extends React.Component {
   }
 }
 
-HealthForm.propTypes = {
+FamilyForm.propTypes = {
   classes: PropTypes.shape({}).isRequired,
+  employee: PropTypes.shape({
+    id: PropTypes.string,
+  }).isRequired,
 };
 
-export default withStyles(regularFormsStyle)(HealthForm);
+export default withStyles(regularFormsStyle)(FamilyForm);

@@ -1,6 +1,7 @@
 const datesConstant = {
   startingDOBDate: '1/1/1990',
   dateFormat: 'D/M/YYYY',
+  dateFormatDB: 'YYYY-MM-D',
 };
 
 const maritalStatusConstant = [

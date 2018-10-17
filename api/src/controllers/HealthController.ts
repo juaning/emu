@@ -21,7 +21,7 @@ class HealthController {
     });
   }
 
-  public getHealthDataWithID(req: Request, res: Response) {
+  public getHealthDataWithId(req: Request, res: Response) {
     Health.findById(req.params.healthId, (err, health) => {
       if (err) res.send(err);
       res.json(health);
