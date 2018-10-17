@@ -9,7 +9,7 @@ router.route('/')
 .post(healthController.addHealthData);
 
 router.route('/:healthId')
-.get(healthController.getHealthDataWithID)
+.get(healthController.getHealthDataWithId)
 .put(healthController.updateHealthData)
 .delete(healthController.deleteHealthData);
 

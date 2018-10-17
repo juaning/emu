@@ -37,10 +37,15 @@ function generateMenuItemList(list, classes) {
   return menuList;
 }
 
+function generateMenuWithNumbers(top) {
+  return Array(top + 1).fill().map((item, i) => ({ value: i, text: i }));
+}
+
 export {
   verifyEmail,
   verifyPhoneNumber,
   addDashesToPhoneNumber,
   logError,
   generateMenuItemList,
+  generateMenuWithNumbers,
 };

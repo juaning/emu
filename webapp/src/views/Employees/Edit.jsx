@@ -11,6 +11,7 @@ import regularFormsStyle from '../../assets/jss/material-dashboard-pro-react/vie
 
 import PersonalDataForm from './personalDataForm';
 import HealthForm from './healthForm';
+import FamilyForm from './familyForm';
 
 class EditEmployee extends React.Component {
   state = {
@@ -27,6 +28,8 @@ class EditEmployee extends React.Component {
       return <Redirect to="/empleados/lista" />;
     }
 
+    const tabStyles = { width: '100%' };
+
     return (
       <NavPills
         color="rose"
@@ -38,15 +41,18 @@ class EditEmployee extends React.Component {
         tabs={[
           {
             tabButton: 'Datos personales',
-            tabContent: <PersonalDataForm styles={{ width: '100%' }} UpdateRedirect={this.updateRedirectToList} />,
+            tabContent: <PersonalDataForm
+              styles={tabStyles}
+              UpdateRedirect={this.updateRedirectToList}
+            />,
           },
           {
             tabButton: 'Salud',
-            tabContent: <HealthForm styles={{ width: '100%' }} employee={this.state.employee} />,
+            tabContent: <HealthForm styles={tabStyles} employee={this.state.employee} />,
           },
           {
             tabButton: 'Familia',
-            tabContent: (<div><span>Familia</span></div>),
+            tabContent: <FamilyForm styles={tabStyles} employee={this.state.employee} />,
           },
           {
             tabButton: 'Educación',
@@ -67,8 +73,6 @@ class EditEmployee extends React.Component {
         ]}
       />
     );
-
-    // return <PersonalDataPartial UpdateRedirect={this.updateRedirectToList} />;
   }
 }
 
