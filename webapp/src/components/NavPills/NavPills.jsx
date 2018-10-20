@@ -118,10 +118,6 @@ NavPills.defaultProps = {
   active: 0,
   color: 'primary',
   direction: '',
-  horizontal: {
-    tabsGrid: {},
-    contentGrid: {},
-  },
   alignCenter: true,
 };
 
