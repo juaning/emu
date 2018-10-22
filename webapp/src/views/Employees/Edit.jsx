@@ -34,10 +34,6 @@ class EditEmployee extends React.Component {
       <NavPills
         color="rose"
         direction="x"
-        horizontal={{
-          tabsGrid: { xs: 12, sm: 12, md: 12 },
-          contentGrid: { xs: 12, sm: 12, md: 12 },
-        }}
         tabs={[
           {
             tabButton: 'Datos personales',
