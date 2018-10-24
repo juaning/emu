@@ -301,6 +301,21 @@ const educationLevelConstant = [
   { value: 'phd', text: 'Doctorado' },
 ];
 
+const languagesConstant = ['español'];
+
+const paymentConstant = [
+  { value: 'cash', text: 'Efectivo' },
+  { value: 'deposit', text: 'Deposito' },
+];
+
+const bankConstant = [
+  { value: 'itau', text: 'Itau' },
+  { value: 'bbva', text: 'BBVA' },
+  { value: 'vision', text: 'Vision Banco' },
+  { value: 'familiar', text: 'Banco Familiar' },
+  { value: 'gnb', text: 'GNB' },
+];
+
 export {
   datesConstant,
   maritalStatusConstant,
@@ -309,4 +324,7 @@ export {
   bloodTypeConstant,
   healthInsuranceConstant,
   educationLevelConstant,
+  languagesConstant,
+  paymentConstant,
+  bankConstant,
 };

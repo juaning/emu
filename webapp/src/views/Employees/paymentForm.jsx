@@ -1,7 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// react component plugin for creating beatiful tags on an input
-import TagsInput from 'react-tagsinput';
 
 // @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -15,64 +13,37 @@ import GridItem from '../../components/Grid/GridItem';
 import Card from '../../components/Card/Card';
 import CardBody from '../../components/Card/CardBody';
 import Button from '../../components/CustomButtons/Button';
-
-import CourseView from './courseView';
-
-import regularFormsStyle from '../../assets/jss/material-dashboard-pro-react/views/regularFormsStyle';
+import CustomInput from '../../components/CustomInput/CustomInput';
 
 import {
   // logError,
   generateMenuItemList,
 } from '../../resources/helpers';
 import {
-  educationLevelConstant,
-  languagesConstant,
+  paymentConstant,
+  bankConstant,
 } from '../../resources/constants';
 
-class EducationForm extends React.Component {
+import regularFormsStyle from '../../assets/jss/material-dashboard-pro-react/views/regularFormsStyle';
+
+class PaymentForm extends React.Component {
   static propTypes = {
     classes: PropTypes.shape({}).isRequired,
   }
   state = {
-    courseCount: 0,
-    educationEntity: {
-      languages: languagesConstant,
-    },
+    paymentEntity: {},
   }
-  generateCourses() {
-    const { courseCount } = this.state;
-    const courseFields = [];
-    for (let i = 0; i < courseCount; i += 1) {
-      courseFields.push(<CourseView validateField={this.validateField} courseIndex={i} />);
-    }
-    return courseFields;
-  }
-  generateCourses = this.generateCourses.bind(this)
   validateField(event, type) {
     const { value } = event.target;
-    const { educationEntity } = this.state;
-    educationEntity[type] = value;
-    this.setState({ educationEntity });
+    const { paymentEntity } = this.state;
+    paymentEntity[type] = value;
+    this.setState({ paymentEntity });
   }
   validateField = this.validateField.bind(this)
-  handleTags(tags) {
-    this.validateField({ target: { value: tags } }, 'languages');
-  }
-  handleTags = this.handleTags.bind(this)
-  addCourse() {
-    let { courseCount } = this.state;
-    courseCount += 1;
-    this.setState({ courseCount });
-  }
-  addCourse = this.addCourse.bind(this)
   render() {
     const { classes } = this.props;
-    const educationalLevelOptions = generateMenuItemList(educationLevelConstant, classes);
-    const coursesFields = this.generateCourses();
-    const addCourseBtnStyles = {
-      float: 'right',
-      'margin-top': '39px',
-    };
+    const paymentOptions = generateMenuItemList(paymentConstant, classes);
+    const bankOptions = generateMenuItemList(bankConstant, classes);
     return (
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
@@ -82,7 +53,7 @@ class EducationForm extends React.Component {
                 <GridContainer>
                   <GridItem xs={12} sm={2}>
                     <FormLabel className={classes.labelHorizontal}>
-                      Nivel de educación
+                      Formas de pago
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
@@ -93,11 +64,11 @@ class EducationForm extends React.Component {
                       classes={{
                         select: classes.select,
                       }}
-                      value={this.state.educationEntity.educationalLevel || ''}
+                      value={this.state.paymentEntity.paymentOption || ''}
                       inputProps={{
-                        name: 'educationalLevel',
-                        id: 'educationalLevel',
-                        onChange: event => this.validateField(event, 'educationalLevel'),
+                        name: 'paymentOption',
+                        id: 'paymentOption',
+                        onChange: event => this.validateField(event, 'paymentOption'),
                       }}
                       autoWidth
                     >
@@ -107,37 +78,64 @@ class EducationForm extends React.Component {
                           root: classes.selectMenuItem,
                         }}
                       >
-                        Nivel de educación
+                        Formas de pago
                       </MenuItem>
-                      {educationalLevelOptions}
+                      {paymentOptions}
                     </Select>
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
                   <GridItem xs={12} sm={2}>
-                    <Button
-                      color="rose"
-                      onClick={this.addCourse}
-                      style={addCourseBtnStyles}
-                    >
-                      Agregar curso
-                    </Button>
-                  </GridItem>
-                </GridContainer>
-                {coursesFields}
-                <GridContainer>
-                  <GridItem xs={12} sm={2}>
                     <FormLabel className={classes.labelHorizontal}>
-                      Idiomas
+                      Banco
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
-                    <TagsInput
-                      value={this.state.educationEntity.languages}
-                      onChange={this.handleTags}
-                      tagProps={{
-                        className: 'react-tagsinput-tag info',
+                    <Select
+                      MenuProps={{
+                        className: classes.selectMenu,
+                      }}
+                      classes={{
+                        select: classes.select,
+                      }}
+                      value={this.state.paymentEntity.paymentOption || ''}
+                      inputProps={{
+                        name: 'bankName',
+                        id: 'bankName',
+                        onChange: event => this.validateField(event, 'bankName'),
+                      }}
+                      autoWidth
+                    >
+                      <MenuItem
+                        disabled
+                        classes={{
+                          root: classes.selectMenuItem,
+                        }}
+                      >
+                        Banco
+                      </MenuItem>
+                      {bankOptions}
+                    </Select>
+                  </GridItem>
+                </GridContainer>
+                <GridContainer>
+                  <GridItem xs={12} sm={2}>
+                    <FormLabel className={classes.labelHorizontal}>
+                      Número de cuenta
+                    </FormLabel>
+                  </GridItem>
+                  <GridItem xs={12} sm={10}>
+                    <CustomInput
+                      id="accountNo"
+                      formControlProps={{
                         fullWidth: true,
+                      }}
+                      inputProps={{
+                        name: 'accountNo',
+                        id: 'accountNo',
+                        required: true,
+                        onChange: event =>
+                          this.validateField(event, 'accountNo'),
                       }}
                     />
                   </GridItem>
@@ -162,4 +160,4 @@ class EducationForm extends React.Component {
   }
 }
 
-export default withStyles(regularFormsStyle)(EducationForm);
+export default withStyles(regularFormsStyle)(PaymentForm);

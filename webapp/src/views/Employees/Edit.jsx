@@ -13,6 +13,7 @@ import PersonalDataForm from './personalDataForm';
 import HealthForm from './healthForm';
 import FamilyForm from './familyForm';
 import EducationForm from './educationForm';
+import PaymentForm from './paymentForm';
 
 class EditEmployee extends React.Component {
   state = {
@@ -65,7 +66,7 @@ class EditEmployee extends React.Component {
           // },
           {
             tabButton: 'Datos pago',
-            tabContent: (<div><span>Datos Pago</span></div>),
+            tabContent: <PaymentForm styles={tabStyles} employee={this.state.employee} />,
           },
         ]}
       />
