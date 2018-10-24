@@ -12,6 +12,7 @@ import regularFormsStyle from '../../assets/jss/material-dashboard-pro-react/vie
 import PersonalDataForm from './personalDataForm';
 import HealthForm from './healthForm';
 import FamilyForm from './familyForm';
+import EducationForm from './educationForm';
 
 class EditEmployee extends React.Component {
   state = {
@@ -56,16 +57,16 @@ class EditEmployee extends React.Component {
           },
           {
             tabButton: 'Educación',
-            tabContent: (<div><span>Educación</span></div>),
+            tabContent: <EducationForm styles={tabStyles} employee={this.state.employee} />,
           },
           {
             tabButton: 'Datos laborales',
             tabContent: (<div><span>Datos laborales</span></div>),
           },
-          {
-            tabButton: 'Adjuntos',
-            tabContent: (<div><span>Adjuntos</span></div>),
-          },
+          // {
+          //   tabButton: 'Adjuntos',
+          //   tabContent: (<div><span>Adjuntos</span></div>),
+          // },
           {
             tabButton: 'Datos pago',
             tabContent: (<div><span>Datos Pago</span></div>),

@@ -236,13 +236,13 @@ class PersonalDataForm extends React.Component {
                       classes={{
                         select: classes.select,
                       }}
-                      value={this.state.maritalStatus || ""}
+                      value={this.state.maritalStatus || ''}
                       inputProps={{
                         name: 'maritalStatus',
                         id: 'maritalStatus',
-                        onChange: event => {
+                        onChange: (event) => {
                           this.handleSimple(event);
-                          this.validateField(event, '', 'maritalStatus')
+                          this.validateField(event, '', 'maritalStatus');
                         },
                       }}
                       autoWidth
@@ -318,13 +318,13 @@ class PersonalDataForm extends React.Component {
                       classes={{
                         select: classes.select,
                       }}
-                      value={this.state.nationality || ""}
+                      value={this.state.nationality || ''}
                       inputProps={{
                         name: 'nationality',
                         id: 'nationality',
-                        onChange: event => {
+                        onChange: (event) => {
                           this.handleSimple(event);
-                          this.validateField(event, '', 'nationality')
+                          this.validateField(event, '', 'nationality');
                         },
                       }}
                       autoWidth
@@ -355,14 +355,14 @@ class PersonalDataForm extends React.Component {
                       classes={{
                         select: classes.select,
                       }}
-                      value={this.state.gender || ""}
+                      value={this.state.gender || ''}
                       inputProps={{
                         name: 'gender',
                         id: 'gender',
-                        onChange: event => {
+                        onChange: (event) => {
                           this.handleSimple(event);
                           this.validateField(event, '', 'gender');
-                        }
+                        },
                       }}
                       autoWidth
                     >

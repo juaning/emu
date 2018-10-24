@@ -43,6 +43,7 @@ class HealthForm extends React.Component {
     const { value } = event.target;
     const { entity } = this.state;
     entity[type] = value;
+    this.setState({ entity });
   }
   saveClick() {
     const { entity } = this.state;
@@ -82,13 +83,13 @@ class HealthForm extends React.Component {
                       classes={{
                         select: classes.select,
                       }}
-                      value={this.state.blood_type || ""}
+                      value={this.state.blood_type || ''}
                       inputProps={{
                         name: 'blood_type',
                         id: 'blood_type',
-                        onChange: event =>{
+                        onChange: (event) => {
                           this.handleSimple(event);
-                          this.validateField(event, '', 'blood_type')
+                          this.validateField(event, '', 'blood_type');
                         },
                       }}
                       autoWidth
@@ -199,13 +200,13 @@ class HealthForm extends React.Component {
                       classes={{
                         select: classes.select,
                       }}
-                      value={this.state.health_insurance || ""}
+                      value={this.state.health_insurance || ''}
                       inputProps={{
                         name: 'health_insurance',
                         id: 'health_insurance',
-                        onChange: event => {
+                        onChange: (event) => {
                           this.handleSimple(event);
-                          this.validateField(event, '', 'health_insurance')
+                          this.validateField(event, '', 'health_insurance');
                         },
                       }}
                       autoWidth
