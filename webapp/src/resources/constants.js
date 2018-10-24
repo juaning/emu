@@ -293,6 +293,14 @@ const healthInsuranceConstant = [
   { value: 'santa_clara', text: 'Santa Clara' },
 ];
 
+const educationLevelConstant = [
+  { value: 'elementary', text: 'Primaria' },
+  { value: 'secondary', text: 'Secundaria' },
+  { value: 'undergrad', text: 'Universitario' },
+  { value: 'master', text: 'Maestria' },
+  { value: 'phd', text: 'Doctorado' },
+];
+
 export {
   datesConstant,
   maritalStatusConstant,
@@ -300,4 +308,5 @@ export {
   genderListConstant,
   bloodTypeConstant,
   healthInsuranceConstant,
+  educationLevelConstant,
 };
