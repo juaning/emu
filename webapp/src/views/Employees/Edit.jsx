@@ -9,12 +9,12 @@ import NavPills from '../../components/NavPills/NavPills';
 
 import regularFormsStyle from '../../assets/jss/material-dashboard-pro-react/views/regularFormsStyle';
 
-import PersonalDataForm from './personalDataForm';
-import HealthForm from './healthForm';
-import FamilyForm from './familyForm';
-import EducationForm from './educationForm';
-import PaymentForm from './paymentForm';
-import WorkForm from './workForm';
+import PersonalDataForm from './EditForms/personalDataForm';
+import HealthForm from './EditForms/healthForm';
+import FamilyForm from './EditForms/familyForm';
+import EducationForm from './EditForms/educationForm';
+import PaymentForm from './EditForms/paymentForm';
+import WorkForm from './EditForms/workForm';
 
 class EditEmployee extends React.Component {
   state = {

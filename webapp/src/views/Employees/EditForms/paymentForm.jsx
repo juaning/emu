@@ -8,23 +8,23 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
 // core components
-import GridContainer from '../../components/Grid/GridContainer';
-import GridItem from '../../components/Grid/GridItem';
-import Card from '../../components/Card/Card';
-import CardBody from '../../components/Card/CardBody';
-import Button from '../../components/CustomButtons/Button';
-import CustomInput from '../../components/CustomInput/CustomInput';
+import GridContainer from '../../../components/Grid/GridContainer';
+import GridItem from '../../../components/Grid/GridItem';
+import Card from '../../../components/Card/Card';
+import CardBody from '../../../components/Card/CardBody';
+import Button from '../../../components/CustomButtons/Button';
+import CustomInput from '../../../components/CustomInput/CustomInput';
 
 import {
   // logError,
   generateMenuItemList,
-} from '../../resources/helpers';
+} from '../../../resources/helpers';
 import {
   paymentConstant,
   bankConstant,
-} from '../../resources/constants';
+} from '../../../resources/constants';
 
-import regularFormsStyle from '../../assets/jss/material-dashboard-pro-react/views/regularFormsStyle';
+import regularFormsStyle from '../../../assets/jss/material-dashboard-pro-react/views/regularFormsStyle';
 
 class PaymentForm extends React.Component {
   static propTypes = {
