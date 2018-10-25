@@ -2,6 +2,7 @@ const datesConstant = {
   startingDOBDate: '1/1/1990',
   dateFormat: 'D/M/YYYY',
   dateFormatDB: 'YYYY-MM-D',
+  timeFormat: 'kk:mm',
 };
 
 const maritalStatusConstant = [
@@ -316,6 +317,32 @@ const bankConstant = [
   { value: 'gnb', text: 'GNB' },
 ];
 
+const contractTypeConstant = [
+  { value: 'permanent', text: 'Permanente' },
+  { value: 'contractor', text: 'Contratado' },
+  { value: 'casual', text: 'Casual' },
+];
+
+const jobTitleConstant = [
+  { value: 'manager', text: 'Gerente' },
+  { value: 'assistant_manager', text: 'Subgerente' },
+  { value: 'supervisor', text: 'Supervisor' },
+  { value: 'administrative', text: 'Empleado administrativo' },
+  { value: 'intern', text: 'Pasante' },
+];
+
+const costCentreConstant = [
+  { value: 'administrative', text: 'Administracion' },
+  { value: 'sales', text: 'Ventas' },
+  { value: 'marketing', text: 'Marketing' },
+];
+
+const shiftConstant = [
+  { value: 'morning', text: 'Mañana' },
+  { value: 'afternoon', text: 'Tarde' },
+  { value: 'night', text: 'Noche' },
+];
+
 export {
   datesConstant,
   maritalStatusConstant,
@@ -327,4 +354,8 @@ export {
   languagesConstant,
   paymentConstant,
   bankConstant,
+  contractTypeConstant,
+  jobTitleConstant,
+  costCentreConstant,
+  shiftConstant,
 };
