@@ -8,11 +8,11 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import FormLabel from '@material-ui/core/FormLabel';
 
 // core components
-import GridContainer from '../../components/Grid/GridContainer';
-import GridItem from '../../components/Grid/GridItem';
-import CustomInput from '../../components/CustomInput/CustomInput';
+import GridContainer from '../../../components/Grid/GridContainer';
+import GridItem from '../../../components/Grid/GridItem';
+import CustomInput from '../../../components/CustomInput/CustomInput';
 
-import regularFormsStyle from '../../assets/jss/material-dashboard-pro-react/views/regularFormsStyle';
+import regularFormsStyle from '../../../assets/jss/material-dashboard-pro-react/views/regularFormsStyle';
 
 class CourseView extends React.Component {
   static propTypes = {

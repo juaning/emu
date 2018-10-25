@@ -10,25 +10,25 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
 // core components
-import GridContainer from '../../components/Grid/GridContainer';
-import GridItem from '../../components/Grid/GridItem';
-import Button from '../../components/CustomButtons/Button';
-import CustomInput from '../../components/CustomInput/CustomInput';
-import Card from '../../components/Card/Card';
-import CardBody from '../../components/Card/CardBody';
+import GridContainer from '../../../components/Grid/GridContainer';
+import GridItem from '../../../components/Grid/GridItem';
+import Button from '../../../components/CustomButtons/Button';
+import CustomInput from '../../../components/CustomInput/CustomInput';
+import Card from '../../../components/Card/Card';
+import CardBody from '../../../components/Card/CardBody';
 
-import regularFormsStyle from '../../assets/jss/material-dashboard-pro-react/views/regularFormsStyle';
+import regularFormsStyle from '../../../assets/jss/material-dashboard-pro-react/views/regularFormsStyle';
 
 import {
   logError,
   generateMenuItemList,
   generateMenuWithNumbers,
-} from '../../resources/helpers';
+} from '../../../resources/helpers';
 
-import { datesConstant } from '../../resources/constants';
+import { datesConstant } from '../../../resources/constants';
 
 // API resources
-import API from '../../resources/api';
+import API from '../../../resources/api';
 
 const employeeAPI = new API({ url: '/employee' });
 employeeAPI.createEntity({ name: 'family' });
