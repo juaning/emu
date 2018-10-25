@@ -3,6 +3,7 @@ import ContentPaste from '@material-ui/icons/ContentPaste';
 
 import Employees from '../../views/Employees/List';
 import EditEmployee from '../../views/Employees/Edit';
+import MonthlyAttendance from '../../views/Employees/MonthlyAttendance';
 
 const dashRoutes = [
   {
@@ -24,10 +25,16 @@ const dashRoutes = [
         mini: 'AE',
         component: EditEmployee,
       },
+      {
+        path: '/empleados/asistencia-mensual',
+        name: 'Asistencia Mensual',
+        mini: 'AM',
+        component: MonthlyAttendance,
+      },
     ],
   },
   {
-    redirect: true, path: '/', pathTo: '/dashboard', name: 'Dashboard',
+    redirect: true, path: '/', pathTo: '/empleados/lista', name: 'Empleados',
   },
 ];
 export default dashRoutes;
