@@ -40,7 +40,7 @@ import {
 const employeeAPI = new API({ url: '/employee' });
 employeeAPI.createEntity({ name: 'personal-data' });
 
-const { startingDOBDate, dateFormat } = datesConstant;
+const { startingDOBDate, dateFormat, dateFormatDB } = datesConstant;
 
 class PersonalDataForm extends React.Component {
   state = {
@@ -63,7 +63,7 @@ class PersonalDataForm extends React.Component {
   onDOBChange(momentObj, stateName, type) {
     const event = {
       target: {
-        value: momentObj.format('YYYY-MM-D'),
+        value: momentObj.format(dateFormatDB),
       },
     };
     this.validateField(event, stateName, type);

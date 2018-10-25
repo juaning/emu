@@ -14,9 +14,11 @@ import HealthForm from './healthForm';
 import FamilyForm from './familyForm';
 import EducationForm from './educationForm';
 import PaymentForm from './paymentForm';
+import WorkForm from './workForm';
 
 class EditEmployee extends React.Component {
   state = {
+    activeTab: 0,
     redirectToList: false,
     employee: {},
   }
@@ -36,6 +38,7 @@ class EditEmployee extends React.Component {
       <NavPills
         color="rose"
         direction="x"
+        active={this.state.activeTab}
         tabs={[
           {
             tabButton: 'Datos personales',
@@ -58,7 +61,7 @@ class EditEmployee extends React.Component {
           },
           {
             tabButton: 'Datos laborales',
-            tabContent: (<div><span>Datos laborales</span></div>),
+            tabContent: <WorkForm styles={tabStyles} employee={this.state.employee} />,
           },
           // {
           //   tabButton: 'Adjuntos',
