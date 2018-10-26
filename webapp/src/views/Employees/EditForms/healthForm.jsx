@@ -83,13 +83,13 @@ class HealthForm extends React.Component {
                       classes={{
                         select: classes.select,
                       }}
-                      value={this.state.blood_type || ''}
+                      value={this.state.bloodType || ''}
                       inputProps={{
-                        name: 'blood_type',
-                        id: 'blood_type',
+                        name: 'bloodType',
+                        id: 'bloodType',
                         onChange: (event) => {
                           this.handleSimple(event);
-                          this.validateField(event, '', 'blood_type');
+                          this.validateField(event, '', 'bloodType');
                         },
                       }}
                       autoWidth
@@ -158,20 +158,20 @@ class HealthForm extends React.Component {
                     <GridContainer>
                       <GridItem xs={12} sm={12} md={6}>
                         <CustomInput
-                          id="emergency_contact_name"
+                          id="emergencyContactName"
                           formControlProps={{
                             fullWidth: true,
                           }}
                           inputProps={{
                             placeholder: 'Nombre',
                             onChange: event =>
-                              this.validateField(event, '', 'emergency_contact_name'),
+                              this.validateField(event, '', 'emergencyContactName'),
                           }}
                         />
                       </GridItem>
                       <GridItem xs={12} sm={12} md={6}>
                         <CustomInput
-                          id="emergency_contact_number"
+                          id="emergencyContactNumber"
                           formControlProps={{
                             fullWidth: true,
                           }}
@@ -179,7 +179,7 @@ class HealthForm extends React.Component {
                             type: 'tel',
                             placeholder: 'Teléfono',
                             onChange: event =>
-                              this.validateField(event, '', 'emergency_contact_number'),
+                              this.validateField(event, '', 'emergencyContactNumber'),
                           }}
                         />
                       </GridItem>
@@ -200,13 +200,13 @@ class HealthForm extends React.Component {
                       classes={{
                         select: classes.select,
                       }}
-                      value={this.state.health_insurance || ''}
+                      value={this.state.healthInsurance || ''}
                       inputProps={{
-                        name: 'health_insurance',
-                        id: 'health_insurance',
+                        name: 'healthInsurance',
+                        id: 'healthInsurance',
                         onChange: (event) => {
                           this.handleSimple(event);
-                          this.validateField(event, '', 'health_insurance');
+                          this.validateField(event, '', 'healthInsurance');
                         },
                       }}
                       autoWidth
