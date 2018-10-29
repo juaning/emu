@@ -4,15 +4,15 @@ import * as validate from 'mongoose-validator';
 const { Schema } = mongoose;
 
 const HealthSchema = Schema({
-  personal_data_id: { type: String, required: true },
-  blood_type: {
+  personalDataId: { type: String, required: true },
+  bloodType: {
     type: String,
     enum: ['a+', 'a-', 'b+', 'b-', 'o+', 'o-', 'ab+', 'ab-'],
   },
   alergies: { type: String },
   conditions: { type: String },
-  emergency_contact_name: { type: String },
-  emergency_contact_number: {
+  emergencyContactName: { type: String },
+  emergencyContactNumber: {
     type: String,
     lowercase: true,
     trim: true,
@@ -24,7 +24,7 @@ const HealthSchema = Schema({
       }),
     ],
   },
-  health_insurance: { type: String },
+  healthInsurance: { type: String },
 });
 
 export default HealthSchema;
