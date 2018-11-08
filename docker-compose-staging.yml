@@ -5,9 +5,9 @@ services:
       context: ./api
       dockerfile: Dockerfile
     command: npm run start-watch
-    volumes: 
-      - ./api:/usr/app/
-      - ./api/node_modules:/usr/app/node_modules
+    # volumes: 
+    #   - ./api:/usr/app/
+    #   - ./api/node_modules:/usr/app/node_modules
     ports:
       - "3000:3000"
     depends_on:
