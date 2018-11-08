@@ -343,6 +343,102 @@ const shiftConstant = [
   { value: 'night', text: 'Noche' },
 ];
 
+const monthNamesConstant = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre',
+];
+const employeesAttendanceListConstant = [
+  {
+    employeeId: 1234,
+    firstName: 'Juan',
+    lastName: 'Mignaco',
+    totalMonthDays: 30,
+    totalWorkedDays: 30,
+    totalWorkedSSDays: 30,
+    discountDays: false,
+    reportDiscountDays: false,
+    extraHours: {
+      total: 7,
+      nightlyHours: 1,
+      dailyExtraHours: 2,
+      nightlyExtraHours: 1,
+      sundayHolidaysHours: 1,
+      sundayHolidaysExtraHours: 2,
+    },
+    absence: {
+      excusedAbsence: {
+        days: 2,
+        discount: false,
+        socialSecurityDiscount: false,
+      },
+      unjustifiedAbsence: {
+        days: 4,
+        discount: false,
+        socialSecurityDiscount: false,
+      },
+      suspension: {
+        days: 1,
+        discount: false,
+        socialSecurityDiscount: false,
+      },
+      permission: {
+        days: 0,
+        discount: false,
+        socialSecurityDiscount: false,
+      },
+    },
+  },
+  {
+    employeeId: 720,
+    firstName: 'Fiorella',
+    lastName: 'Ardissone',
+    totalMonthDays: 30,
+    totalWorkedDays: 12,
+    totalWorkedSSDays: 20,
+    discountDays: false,
+    reportDiscountDays: false,
+    extraHours: {
+      total: 5,
+      nightlyHours: 1,
+      dailyExtraHours: 1,
+      nightlyExtraHours: 1,
+      sundayHolidaysHours: 1,
+      sundayHolidaysExtraHours: 1,
+    },
+    absence: {
+      excusedAbsence: {
+        days: 4,
+        discount: false,
+        socialSecurityDiscount: false,
+      },
+      unjustifiedAbsence: {
+        days: 1,
+        discount: false,
+        socialSecurityDiscount: false,
+      },
+      suspension: {
+        days: 0,
+        discount: false,
+        socialSecurityDiscount: false,
+      },
+      permission: {
+        days: 0,
+        discount: false,
+        socialSecurityDiscount: false,
+      },
+    },
+  },
+];
 export {
   datesConstant,
   maritalStatusConstant,
@@ -358,4 +454,6 @@ export {
   jobTitleConstant,
   costCentreConstant,
   shiftConstant,
+  monthNamesConstant,
+  employeesAttendanceListConstant,
 };

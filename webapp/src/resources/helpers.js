@@ -41,6 +41,11 @@ function generateMenuWithNumbers(top) {
   return Array(top + 1).fill().map((item, i) => ({ value: i, text: i }));
 }
 
+function calculateOffDays(obj, field) {
+  return Object.entries(obj) // eslint-disable-next-line
+    .reduce((accu, [key, item]) => (item[field] ? accu + (item.days * 1) : accu), 0);
+}
+
 export {
   verifyEmail,
   verifyPhoneNumber,
@@ -48,4 +53,5 @@ export {
   logError,
   generateMenuItemList,
   generateMenuWithNumbers,
+  calculateOffDays,
 };
