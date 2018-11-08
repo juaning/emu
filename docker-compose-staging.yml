@@ -1,0 +1,38 @@
+version: "3"
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    command: npm run start-watch
+    volumes: 
+      - ./api:/usr/app/
+      - ./api/node_modules:/usr/app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    environment:
+      NODE_ENV: development
+      MONGO_URL: mongodb://mongo:27017/${MONGO_INITDB_DATABASE}
+  mongo:
+    image: mongo
+    restart: always
+    volumes:
+      - ./data/mongo:/data/db
+    ports:
+      - "27017:27017"
+  webapp:
+    build:
+      context: ./webapp
+      dockerfile: Dockerfile
+    command: npm run start
+    volumes:
+      - ./webapp:/usr/app/
+      - ./webapp/node_modules:/usr/app/node_modules
+    ports:
+      - "80:8080"
+    depends_on:
+      - api
+    environment:
+      NODE_ENV: development

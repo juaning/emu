@@ -14,7 +14,7 @@ import MoreVert from '@material-ui/icons/MoreVert';
 import ViewList from '@material-ui/icons/ViewList';
 
 // core components
-import HeaderLinks from './HeaderLinks';
+// import HeaderLinks from './HeaderLinks';
 import Button from '../../components/CustomButtons/Button';
 
 import headerStyle from '../../assets/jss/material-dashboard-pro-react/components/headerStyle';
