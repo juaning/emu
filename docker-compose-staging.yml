@@ -10,18 +10,18 @@ services:
       - ./api/node_modules:/usr/app/node_modules
     ports:
       - "3000:3000"
-    depends_on:
-      - mongo
+    # depends_on:
+    #   - mongo
     environment:
       NODE_ENV: development
-      MONGO_URL: mongodb://mongo:27017/${MONGO_INITDB_DATABASE}
-  mongo:
-    image: mongo
-    restart: always
-    volumes:
-      - ./data/mongo:/data/db
-    ports:
-      - "27017:27017"
+      MONGO_URL: mongodb://127.0.0.1:27017/${MONGO_INITDB_DATABASE}
+  # mongo:
+  #   image: mongo
+  #   restart: always
+  #   volumes:
+  #     - ./data/mongo:/data/db
+  #   ports:
+  #     - "27017:27017"
   webapp:
     build:
       context: ./webapp
