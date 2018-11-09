@@ -12,7 +12,7 @@ services:
       - "3000:3000"
     environment:
       NODE_ENV: development
-      MONGO_URL: mongodb://192.81.212.107:27017/${MONGO_INITDB_DATABASE}
+      MONGO_URL: mongodb://host.docker.internal:27017/${MONGO_INITDB_DATABASE}
   webapp:
     build:
       context: ./webapp
