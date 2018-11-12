@@ -7,6 +7,9 @@ class App {
   public app: express.Application;
   public routePrv: Routes = new Routes();
   public mongoUrl: string = process.env.MONGO_URL;
+  public mongoUser: string = process.env.MONGO_USER;
+  public mongoPwd: string = process.env.MONGO_PWD;
+  public isLocal: string = process.env.IS_LOCAL;
 
   constructor() {
     this.app = express();
@@ -25,7 +28,13 @@ class App {
 
   private mongoSetup(): void {
     mongoose.Promise = global.Promise;
-    mongoose.connect(this.mongoUrl, { useNewUrlParser: true });
+    const options = {
+      useNewUrlParser: true,
+      user: this.isLocal ? '' : this.mongoUser,
+      pass: this.isLocal ? '' : this.mongoPwd,
+    };
+    console.log(options);
+    mongoose.connect(this.mongoUrl, options);
   }
 }
 
