@@ -9,7 +9,7 @@ class App {
   public mongoUrl: string = process.env.MONGO_URL;
   public mongoUser: string = process.env.MONGO_USER;
   public mongoPwd: string = process.env.MONGO_PWD;
-  public isLocal: string = process.env.IS_LOCAL;
+  public isLocal: boolean = process.env.IS_LOCAL === 'true';
 
   constructor() {
     this.app = express();
