@@ -20,7 +20,7 @@ yarn-debug.log*
 yarn-error.log*
 
 *.log
-**.env.*
+**.env*
 
 # db dump
 db-data/
