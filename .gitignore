@@ -21,6 +21,7 @@ yarn-error.log*
 
 *.log
 **.env*
+dockere-compose-*
 
 # db dump
 db-data/
