@@ -46,6 +46,11 @@ function calculateOffDays(obj, field) {
     .reduce((accu, [key, item]) => (item[field] ? accu + (item.days * 1) : accu), 0);
 }
 
+function calculateExtraHours(obj) {
+  return Object.entries(obj) // eslint-disable-next-line
+    .reduce((accu, [key, item]) => key !== 'total' ? accu + (item * 1) : accu, 0);
+}
+
 export {
   verifyEmail,
   verifyPhoneNumber,
@@ -54,4 +59,5 @@ export {
   generateMenuItemList,
   generateMenuWithNumbers,
   calculateOffDays,
+  calculateExtraHours,
 };
