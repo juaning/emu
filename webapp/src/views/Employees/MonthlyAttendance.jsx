@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTable from 'react-table';
-// import shortid from 'shortid';
+import Datetime from 'react-datetime';
+import moment from 'moment';
+import 'moment/locale/es';
 
 // @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -11,11 +13,6 @@ import Switch from '@material-ui/core/Switch';
 
 // @material-ui/icons
 import Assignment from '@material-ui/icons/Assignment';
-// import Dvr from '@material-ui/icons/Dvr';
-// import Favorite from '@material-ui/icons/Favorite';
-// import Close from '@material-ui/icons/Close';
-
-// import 'react-table/react-table.css';
 
 // core components
 import GridContainer from '../../components/Grid/GridContainer';
@@ -25,43 +22,83 @@ import CardBody from '../../components/Card/CardBody';
 import CardHeader from '../../components/Card/CardHeader';
 import CardIcon from '../../components/Card/CardIcon';
 import CustomInput from '../../components/CustomInput/CustomInput';
+import Button from '../../components/CustomButtons/Button';
 
 import regularFormsStyle from '../../assets/jss/material-dashboard-pro-react/views/regularFormsStyle';
-// import { cardTitle } from '../../assets/jss/material-dashboard-pro-react';
 
 import {
-  logError,
   calculateOffDays,
+  calculateExtraHours,
+  logError,
 } from '../../resources/helpers';
 import {
-  monthNamesConstant,
   employeesAttendanceListConstant,
+  datesConstant,
 } from '../../resources/constants';
 
 // API resources
 import API from '../../resources/api';
 
+moment.locale('es');
+
 const employeeAPI = new API({ url: '/employee' });
 employeeAPI.createEntity({ name: 'personal-data' });
+const { monthYear } = datesConstant;
 
 class MonthlyAttendanceForm extends React.Component {
+  static generateEmployeeAttendanceObj() {
+    return {
+      employeeId: '',
+      firstName: '',
+      lastName: '',
+      totalMonthDays: 30,
+      totalWorkedDays: 30,
+      totalWorkedSSDays: 30,
+      discountDays: false,
+      reportDiscountDays: false,
+      extraHours: {
+        total: 0,
+        nightlyHours: 0,
+        dailyExtraHours: 0,
+        nightlyExtraHours: 0,
+        sundayHolidaysHours: 0,
+        sundayHolidaysExtraHours: 0,
+      },
+      absence: {
+        excusedAbsence: {
+          days: 0,
+          discount: false,
+          socialSecurityDiscount: false,
+        },
+        unjustifiedAbsence: {
+          days: 0,
+          discount: false,
+          socialSecurityDiscount: false,
+        },
+        suspension: {
+          days: 0,
+          discount: false,
+          socialSecurityDiscount: false,
+        },
+        permission: {
+          days: 0,
+          discount: false,
+          socialSecurityDiscount: false,
+        },
+      },
+    };
+  }
   static propTypes = {
     classes: PropTypes.shape({}).isRequired,
   }
   state = {
-    checkedA: false,
-    checkedB: false,
-    checkedC: false,
     attendanceEntity: {
-      month: monthNamesConstant[(new Date()).getMonth()],
-      employees: employeesAttendanceListConstant,
+      monthName: moment().format('MMMM'),
+      month: moment().format('MM'),
+      year: moment().format('YYYY'),
+      employees: [],
+      // employees: employeesAttendanceListConstant,
     },
-  }
-  componentDidMount() {
-    // employeeAPI.endpoints['personal-data'].getAll()
-    //   .then(results => results.json())
-    //   .then(data => this.setState({ personalData: data }))
-    //   .catch(err => logError(err));
   }
   createColumns() {
     const columns = [
@@ -70,7 +107,7 @@ class MonthlyAttendanceForm extends React.Component {
         columns: [
           {
             Header: 'Código',
-            accessor: 'employeeId',
+            accessor: 'employeeDocumentId',
             maxWidth: 100,
           },
           {
@@ -153,8 +190,9 @@ class MonthlyAttendanceForm extends React.Component {
       employeeId,
     } = params;
     const { classes } = this.props;
+    const containerKey = `absence-${employeeId}`;
     return (
-      <GridContainer key={employeeId}>
+      <GridContainer key={containerKey}>
         <GridItem xs={12} sm={12} md={12}>
           <GridContainer>
             <GridItem xs={12} sm={3}>
@@ -389,7 +427,7 @@ class MonthlyAttendanceForm extends React.Component {
   };
   storeAbsenceChangedField(event, objName, employeeId, field) {
     let { value } = event.target;
-    if (value === '') value = event.target.checked;
+    if (field === 'discount') value = event.target.checked;
     const { attendanceEntity } = this.state;
     const { employees } = attendanceEntity;
     const employee = employees.find(emp => emp.employeeId === employeeId);
@@ -413,6 +451,7 @@ class MonthlyAttendanceForm extends React.Component {
     const employee = employees.find(emp => emp.employeeId === employeeId);
     const { extraHours } = employee;
     extraHours[field] = value;
+    extraHours.total = calculateExtraHours(extraHours);
     employee.extraHours = extraHours;
     const employeeIndex = employees.findIndex(x => x.employeeId === employeeId);
     employees[employeeIndex] = employee;
@@ -432,11 +471,84 @@ class MonthlyAttendanceForm extends React.Component {
     this.setState({ attendanceEntity });
   }
   handleSwitchChange = this.handleSwitchChange.bind(this);
+  attendanceDateChange(momentObj) {
+    const { attendanceEntity } = this.state;
+    let { monthName, month, year } = attendanceEntity;
+    monthName = momentObj.format('MMMM');
+    month = momentObj.format('MM');
+    year = momentObj.format('YYYY');
+    const newAttendanceEntity = Object.assign({}, attendanceEntity, {
+      monthName,
+      month,
+      year,
+      employees: [],
+    });
+    this.setState({ attendanceEntity: newAttendanceEntity });
+    // TODO: Fetch if date changed
+  }
+  saveClick() {
+    const { attendanceEntity } = this.state;
+    console.log('save', attendanceEntity);
+  }
+  saveClick = this.saveClick.bind(this)
+  importClick() {
+    const { attendanceEntity } = this.state;
+    console.log('import', attendanceEntity);
+  }
+  importClick = this.importClick.bind(this);
+  generateClick() {
+    const { attendanceEntity } = this.state;
+    employeeAPI.endpoints['personal-data'].getAll()
+      .then(results => results.json())
+      .then((data) => {
+        const newEmployees = data.map((person) => {
+          const employee = MonthlyAttendanceForm.generateEmployeeAttendanceObj();
+          employee.employeeId = person._id;
+          employee.employeeDocumentId = person.documentId;
+          employee.firstName = person.firstName;
+          employee.lastName = person.lastName;
+          return employee;
+        });
+        attendanceEntity.employees = newEmployees;
+        this.setState({ attendanceEntity });
+        return newEmployees;
+      })
+      .catch(err => logError(err));
+  }
+  generateClick = this.generateClick.bind(this)
+  onExpandedChange(newExpanded, index) {
+    const { attendanceEntity } = this.state;
+    const { employees } = attendanceEntity;
+    const close = newExpanded[index[0]];
+    if (close === false) {
+      // Set empty string for absence days and extra hours to 0
+      const { absence, extraHours } = employees[index[0]];
+      const {
+        excusedAbsence,
+        permission,
+        suspension,
+        unjustifiedAbsence,
+      } = absence;
+      const changeEmptyStrToZero = item => (item === '' ? 0 : item);
+      excusedAbsence.days = changeEmptyStrToZero(excusedAbsence.days);
+      permission.days = changeEmptyStrToZero(permission.days);
+      suspension.days = changeEmptyStrToZero(suspension.days);
+      unjustifiedAbsence.days = changeEmptyStrToZero(unjustifiedAbsence.days);
+      extraHours.dailyExtraHours = changeEmptyStrToZero(extraHours.dailyExtraHours);
+      extraHours.nightlyExtraHours = changeEmptyStrToZero(extraHours.nightlyExtraHours);
+      extraHours.nightlyHours = changeEmptyStrToZero(extraHours.nightlyHours);
+      extraHours.sundayHolidaysExtraHours = changeEmptyStrToZero(extraHours
+        .sundayHolidaysExtraHours);
+      extraHours.sundayHolidaysHours = changeEmptyStrToZero(extraHours.sundayHolidaysHours);
+      this.setState({ attendanceEntity });
+    }
+  }
   render() {
     const { classes } = this.props;
     const { attendanceEntity } = this.state;
-    const { employees, month } = attendanceEntity;
+    const { employees, monthName, year } = attendanceEntity;
     const styles = { 'text-align': 'left' };
+    const monthYearValue = `${monthName} ${year}`;
     return (
       <GridContainer>
         <GridItem xs={12}>
@@ -445,9 +557,54 @@ class MonthlyAttendanceForm extends React.Component {
               <CardIcon color="primary">
                 <Assignment />
               </CardIcon>
-              <h4 className={classes.cardIconTitle}>Asistencia Mensual {month}</h4>
+              <h4 className={classes.cardIconTitle}>Asistencia Mensual {monthName}</h4>
             </CardHeader>
             <CardBody>
+              <GridContainer>
+                <GridItem xs={12} sm={2}>
+                  <FormLabel className={classes.labelHorizontal}>
+                    Seleccione fecha de asistencia
+                  </FormLabel>
+                </GridItem>
+                <GridItem xs={12} sm={6}>
+                  <Datetime
+                    id="monthYear"
+                    timeFormat={false}
+                    dateFormat={monthYear}
+                    value={monthYearValue}
+                    inputProps={{
+                      name: 'monthYear',
+                      id: 'monthYear',
+                    }}
+                    onChange={momentObj =>
+                        this.attendanceDateChange(momentObj)}
+                    closeOnSelect
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={4} style={{ textAlign: 'right' }}>
+                  <Button
+                    color="rose"
+                    onClick={this.saveClick}
+                    className={classes.registerButton}
+                  >
+                    Guardar
+                  </Button>
+                  <Button
+                    color="primary"
+                    onClick={this.importClick}
+                    className={classes.registerButton}
+                  >
+                    Importar
+                  </Button>
+                  <Button
+                    color="info"
+                    onClick={this.generateClick}
+                    className={classes.registerButton}
+                  >
+                    Generar
+                  </Button>
+                </GridItem>
+              </GridContainer>
               <ReactTable
                 data={employees}
                 filterable
@@ -456,6 +613,8 @@ class MonthlyAttendanceForm extends React.Component {
                 showPaginationTop={false}
                 showPaginationBottom
                 SubComponent={this.generateSubComponent}
+                onExpandedChange={(newExpanded, index) =>
+                  this.onExpandedChange(newExpanded, index)}
                 className="-striped -highlight"
                 styles={styles}
                 previousText="Anterior"
@@ -463,6 +622,9 @@ class MonthlyAttendanceForm extends React.Component {
                 pageText="Pagina"
                 ofText="de"
                 rowsText="filas"
+                noDataText="No hay datos. Genere o importe datos de asistencia."
+                loadingText="Loading..."
+                collapseOnDataChange={false}
               />
             </CardBody>
           </Card>

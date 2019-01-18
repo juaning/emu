@@ -3,6 +3,7 @@ const datesConstant = {
   dateFormat: 'D/M/YYYY',
   dateFormatDB: 'YYYY-MM-D',
   timeFormat: 'kk:mm',
+  monthYear: 'MM-YYYY',
 };
 
 const maritalStatusConstant = [
@@ -343,20 +344,6 @@ const shiftConstant = [
   { value: 'night', text: 'Noche' },
 ];
 
-const monthNamesConstant = [
-  'Enero',
-  'Febrero',
-  'Marzo',
-  'Abril',
-  'Mayo',
-  'Junio',
-  'Julio',
-  'Agosto',
-  'Septiembre',
-  'Octubre',
-  'Noviembre',
-  'Diciembre',
-];
 const employeesAttendanceListConstant = [
   {
     employeeId: 1234,
@@ -454,6 +441,5 @@ export {
   jobTitleConstant,
   costCentreConstant,
   shiftConstant,
-  monthNamesConstant,
   employeesAttendanceListConstant,
 };
