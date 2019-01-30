@@ -30,10 +30,10 @@ class App {
     mongoose.Promise = global.Promise;
     const options = {
       useNewUrlParser: true,
+      useCreateIndex: true,
       user: this.isLocal ? '' : this.mongoUser,
       pass: this.isLocal ? '' : this.mongoPwd,
     };
-    console.log(options);
     mongoose.connect(this.mongoUrl, options);
   }
 }

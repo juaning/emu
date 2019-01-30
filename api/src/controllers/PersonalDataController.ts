@@ -14,7 +14,6 @@ class PersonalDataController {
 
   public addPersonalData(req: Request, res: Response) {
     const newPersonalData = new PersonalData(req.body);
-
     newPersonalData.save((err, personalData) => {
       if (err) res.send(err);
       res.json(personalData);
