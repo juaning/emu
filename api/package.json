@@ -14,23 +14,23 @@
   "author": "@juaning",
   "license": "ISC",
   "dependencies": {
-    "@types/express": "^4.16.0",
+    "@types/express": "^4.16.1",
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.3",
-    "debug": "^3.1.0",
+    "debug": "^3.2.6",
     "dotenv": "^5.0.1",
-    "express": "^4.16.3",
-    "mongoose": "^5.4.6",
-    "mongoose-validator": "^2.0.2",
-    "morgan": "^1.9.0",
+    "express": "^4.16.4",
+    "mongoose": "^5.4.8",
+    "mongoose-validator": "^2.1.0",
+    "morgan": "^1.9.1",
     "parse-error": "^0.2.0"
   },
   "devDependencies": {
-    "@types/node": "^10.3.1",
+    "@types/node": "^10.12.19",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-import": "^2.12.0",
-    "nodemon": "^1.17.5"
+    "eslint-plugin-import": "^2.16.0",
+    "nodemon": "^1.18.9"
   },
   "nodemonConfig": {
     "ignore": [
