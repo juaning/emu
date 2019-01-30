@@ -31,10 +31,7 @@ import {
   calculateExtraHours,
   logError,
 } from '../../resources/helpers';
-import {
-  employeesAttendanceListConstant,
-  datesConstant,
-} from '../../resources/constants';
+import { datesConstant } from '../../resources/constants';
 
 // API resources
 import API from '../../resources/api';
@@ -99,6 +96,33 @@ class MonthlyAttendanceForm extends React.Component {
       employees: [],
       // employees: employeesAttendanceListConstant,
     },
+  }
+  onExpandedChange(newExpanded, index) {
+    const { attendanceEntity } = this.state;
+    const { employees } = attendanceEntity;
+    const close = newExpanded[index[0]];
+    if (close === false) {
+      // Set empty string for absence days and extra hours to 0
+      const { absence, extraHours } = employees[index[0]];
+      const {
+        excusedAbsence,
+        permission,
+        suspension,
+        unjustifiedAbsence,
+      } = absence;
+      const changeEmptyStrToZero = item => (item === '' ? 0 : item);
+      excusedAbsence.days = changeEmptyStrToZero(excusedAbsence.days);
+      permission.days = changeEmptyStrToZero(permission.days);
+      suspension.days = changeEmptyStrToZero(suspension.days);
+      unjustifiedAbsence.days = changeEmptyStrToZero(unjustifiedAbsence.days);
+      extraHours.dailyExtraHours = changeEmptyStrToZero(extraHours.dailyExtraHours);
+      extraHours.nightlyExtraHours = changeEmptyStrToZero(extraHours.nightlyExtraHours);
+      extraHours.nightlyHours = changeEmptyStrToZero(extraHours.nightlyHours);
+      extraHours.sundayHolidaysExtraHours = changeEmptyStrToZero(extraHours
+        .sundayHolidaysExtraHours);
+      extraHours.sundayHolidaysHours = changeEmptyStrToZero(extraHours.sundayHolidaysHours);
+      this.setState({ attendanceEntity });
+    }
   }
   createColumns() {
     const columns = [
@@ -516,33 +540,6 @@ class MonthlyAttendanceForm extends React.Component {
       .catch(err => logError(err));
   }
   generateClick = this.generateClick.bind(this)
-  onExpandedChange(newExpanded, index) {
-    const { attendanceEntity } = this.state;
-    const { employees } = attendanceEntity;
-    const close = newExpanded[index[0]];
-    if (close === false) {
-      // Set empty string for absence days and extra hours to 0
-      const { absence, extraHours } = employees[index[0]];
-      const {
-        excusedAbsence,
-        permission,
-        suspension,
-        unjustifiedAbsence,
-      } = absence;
-      const changeEmptyStrToZero = item => (item === '' ? 0 : item);
-      excusedAbsence.days = changeEmptyStrToZero(excusedAbsence.days);
-      permission.days = changeEmptyStrToZero(permission.days);
-      suspension.days = changeEmptyStrToZero(suspension.days);
-      unjustifiedAbsence.days = changeEmptyStrToZero(unjustifiedAbsence.days);
-      extraHours.dailyExtraHours = changeEmptyStrToZero(extraHours.dailyExtraHours);
-      extraHours.nightlyExtraHours = changeEmptyStrToZero(extraHours.nightlyExtraHours);
-      extraHours.nightlyHours = changeEmptyStrToZero(extraHours.nightlyHours);
-      extraHours.sundayHolidaysExtraHours = changeEmptyStrToZero(extraHours
-        .sundayHolidaysExtraHours);
-      extraHours.sundayHolidaysHours = changeEmptyStrToZero(extraHours.sundayHolidaysHours);
-      this.setState({ attendanceEntity });
-    }
-  }
   render() {
     const { classes } = this.props;
     const { attendanceEntity } = this.state;

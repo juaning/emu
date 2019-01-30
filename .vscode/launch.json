@@ -7,10 +7,22 @@
     {
       "type": "chrome",
       "request": "launch",
-      "name": "Launch Chrome against localhost",
+      "name": "Launch FE Chrome against localhost",
       "url": "http://localhost:8080/dashboard",
       "webRoot": "${workspaceFolder}/webapp/src",
       "sourceMaps": true
-    }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch RESTful API",
+      "preLaunchTask": "typescript",
+      "program": "${workspaceFolder}/api/src/server.ts",
+      "cwd": "${workspaceRoot}/api",
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceRoot}/api/build/*.js"
+      ]
+    },
   ]
 }
