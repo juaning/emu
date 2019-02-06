@@ -4,6 +4,7 @@ import ContentPaste from '@material-ui/icons/ContentPaste';
 import Employees from '../../views/Employees/List';
 import EditEmployee from '../../views/Employees/Edit';
 import MonthlyAttendance from '../../views/Employees/MonthlyAttendance';
+import MonthlySalary from '../../views/Employees/MonthlySalary';
 
 const dashRoutes = [
   {
@@ -30,6 +31,12 @@ const dashRoutes = [
         name: 'Asistencia Mensual',
         mini: 'AM',
         component: MonthlyAttendance,
+      },
+      {
+        path: '/empleados/salarios',
+        name: 'Salarios',
+        mini: 'S',
+        component: MonthlySalary,
       },
     ],
   },
