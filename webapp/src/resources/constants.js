@@ -426,6 +426,22 @@ const employeesAttendanceListConstant = [
     },
   },
 ];
+
+const reactTableTextMsg = {
+  previousText: 'Anterior',
+  nextText: 'Siguiente',
+  pageText: 'Pagina',
+  ofText: 'de',
+  rowsText: 'filas',
+  noDataTextAssistance: 'No hay datos. Genere o importe datos de asistencia.',
+  noDataTextSalary: 'No hay datos. Genere datos de salarios.',
+  loadingText: 'Cargando datos...',
+};
+
+const minimumWage = {
+  monthly: 2112562,
+};
+
 export {
   datesConstant,
   maritalStatusConstant,
@@ -442,4 +458,6 @@ export {
   costCentreConstant,
   shiftConstant,
   employeesAttendanceListConstant,
+  reactTableTextMsg,
+  minimumWage,
 };
