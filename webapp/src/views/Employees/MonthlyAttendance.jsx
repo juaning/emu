@@ -31,7 +31,7 @@ import {
   calculateExtraHours,
   logError,
 } from '../../resources/helpers';
-import { datesConstant } from '../../resources/constants';
+import { datesConstant, reactTableTextMsg } from '../../resources/constants';
 
 // API resources
 import API from '../../resources/api';
@@ -40,6 +40,8 @@ moment.locale('es');
 
 const employeeAPI = new API({ url: '/employee' });
 employeeAPI.createEntity({ name: 'personal-data' });
+const attendanceAPI = new API({ url: '/employee' });
+attendanceAPI.createEntity({ name: 'attendance' });
 const { monthYear } = datesConstant;
 
 class MonthlyAttendanceForm extends React.Component {
@@ -96,6 +98,15 @@ class MonthlyAttendanceForm extends React.Component {
       employees: [],
       // employees: employeesAttendanceListConstant,
     },
+  }
+  componentDidMount() {
+    const date = new Date();
+    const month = date.getMonth();
+    const year = date.getFullYear();
+    attendanceAPI.endpoints['attendance'].getOne({ id: `${month}-${year}` })
+      .then(results => console.log(results.json()));
+      // .then(data => this.setState({ raw: data }))
+      // .catch(err => console.error(err));
   }
   onExpandedChange(newExpanded, index) {
     const { attendanceEntity } = this.state;
@@ -614,13 +625,13 @@ class MonthlyAttendanceForm extends React.Component {
                   this.onExpandedChange(newExpanded, index)}
                 className="-striped -highlight"
                 styles={styles}
-                previousText="Anterior"
-                nextText="Siguiente"
-                pageText="Pagina"
-                ofText="de"
-                rowsText="filas"
-                noDataText="No hay datos. Genere o importe datos de asistencia."
-                loadingText="Loading..."
+                previousText={reactTableTextMsg.previousText}
+                nextText={reactTableTextMsg.nextText}
+                pageText={reactTableTextMsg.pageText}
+                ofText={reactTableTextMsg.ofText}
+                rowsText={reactTableTextMsg.rowsText}
+                noDataText={reactTableTextMsg.noDataTextAssistance}
+                loadingText={reactTableTextMsg.loadingText}
                 collapseOnDataChange={false}
               />
             </CardBody>
