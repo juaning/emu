@@ -527,42 +527,28 @@ class MonthlySalaryForm extends React.Component {
   saveClick = this.saveClick.bind(this)
   generateClick() {
     const { salaryEntity } = this.state;
-    // employeeAPI.endpoints['personal-data'].getAll()
-    employeeAPI.endpoints['personal-data'].getOne({ id: '5b3c05c82836d90028bde7bb' })
+    employeeAPI.endpoints['personal-data'].getAll()
       .then(results => results.json())
       .then((data) => {
         // TODO get the full list once testing is done
-        // const newEmployees = data.map((person) => {
-        //   let employee = MonthlySalaryForm.generateEmployeeSalaryObj();
-        //   const { wage } = employee;
-        //   const dailyWage = wage / 30;
-        //   employee.employeeId = person._id;
-        //   employee.employeeDocumentId = person.documentId;
-        //   employee.firstName = person.firstName;
-        //   employee.lastName = person.lastName;
-        //   // TODO update this calculation to data from API
-        //   employee = MonthlySalaryForm.calculateExtraHours(employee);
-        //   employee.unjustifiedAbsenceAmount = employee.unjustifiedAbsenceDays * dailyWage;
-        //   employee.suspensionAmount = employee.suspensionDays * dailyWage;
-        //   employee = MonthlySalaryForm.makeTotalsCalculations(employee);
-        //   return employee;
-        // });
-        // salaryEntity.employees = newEmployees;
-        let employee = MonthlySalaryForm.generateEmployeeSalaryObj();
-        const { wage } = employee;
-        const dailyWage = wage / 30;
-        employee.employeeId = data._id;
-        employee.employeeDocumentId = data.documentId;
-        employee.firstName = data.firstName;
-        employee.lastName = data.lastName;
-        // TODO update this calculation to data from API
-        employee = MonthlySalaryForm.calculateExtraHours(employee);
-        employee.unjustifiedAbsenceAmount = employee.unjustifiedAbsenceDays * dailyWage;
-        employee.suspensionAmount = employee.suspensionDays * dailyWage;
-        employee = MonthlySalaryForm.makeTotalsCalculations(employee);
-        salaryEntity.employees = [employee];
+        const newEmployees = data.map((person) => {
+          let employee = MonthlySalaryForm.generateEmployeeSalaryObj();
+          const { wage } = employee;
+          const dailyWage = wage / 30;
+          employee.employeeId = person._id;
+          employee.employeeDocumentId = person.documentId;
+          employee.firstName = person.firstName;
+          employee.lastName = person.lastName;
+          // TODO update this calculation to data from API
+          employee = MonthlySalaryForm.calculateExtraHours(employee);
+          employee.unjustifiedAbsenceAmount = employee.unjustifiedAbsenceDays * dailyWage;
+          employee.suspensionAmount = employee.suspensionDays * dailyWage;
+          employee = MonthlySalaryForm.makeTotalsCalculations(employee);
+          return employee;
+        });
+        salaryEntity.employees = newEmployees;
         this.setState({ salaryEntity });
-        return [employee];
+        return newEmployees;
       })
       .catch(err => logError(err));
   }
