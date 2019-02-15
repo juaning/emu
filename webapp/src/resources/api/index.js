@@ -26,12 +26,17 @@ class API {
       headers: this.headers,
       body: JSON.stringify(body),
     });
-    endpoints.createWithId = ({ id, body }) => fetch(`${resourceURL}/${id}`, {
+    endpoints.createWithUrl = ({ url, body }) => fetch(`${resourceURL}/${url}`, {
       method: 'POST',
       headers: this.headers,
       body: JSON.stringify(body),
     });
     endpoints.update = body => fetch(`${resourceURL}/${body.id}`, {
+      method: 'PUT',
+      headers: this.headers,
+      body: JSON.stringify(body),
+    });
+    endpoints.updateWithUrl = ({ url, body }) => fetch(`${resourceURL}/${url}`, {
       method: 'PUT',
       headers: this.headers,
       body: JSON.stringify(body),

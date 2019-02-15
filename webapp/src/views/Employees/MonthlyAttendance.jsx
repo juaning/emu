@@ -101,14 +101,14 @@ class MonthlyAttendanceForm extends React.Component {
     },
   }
   componentDidMount() {
-    const date = new Date();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
+    const month = moment().format('MM');
+    const year = moment().format('YYYY');
     employeeAPI.endpoints.attendance.getOne({ id: `${month}-${year}` })
       .then(results => results.json())
       .then((data) => {
         const { attendanceEntity } = this.state;
         attendanceEntity.employees = data;
+        this.setState({ attendanceEntity });
       })
       .catch(err => logError(err));
   }
@@ -532,14 +532,26 @@ class MonthlyAttendanceForm extends React.Component {
   }
   saveClick() {
     const { attendanceEntity } = this.state;
-    let { month, year } = attendanceEntity;
-    employeeAPI.endpoints.attendance.createWithId({
-      id: `${month}-${year}`,
-      body: attendanceEntity,
-    }).then(results => results.json())
-    .then(data => console.log(data))
-    .catch(err => logError(err));
-    console.log('save', attendanceEntity);
+    let { month, year, employees } = attendanceEntity;
+    if (employees.length > 0) {
+      const employee = employees[0];
+      const params = {
+        url: `${month}-${year}`,
+        body: attendanceEntity,
+      };
+      let promise;
+      if (employee.createdAt !== undefined) {
+        promise = employeeAPI.endpoints.attendance.updateWithUrl(params);
+      } else {
+        promise = employeeAPI.endpoints.attendance.createWithUrl(params);
+      }
+      promise.then(results => results.json())
+        .then(data => {
+          attendanceEntity.employees = data;
+          this.setState({ attendanceEntity });
+        })
+        .catch(err => logError(err));
+    } else {} // Generate popup with can't save empty
   }
   saveClick = this.saveClick.bind(this)
   importClick() {
