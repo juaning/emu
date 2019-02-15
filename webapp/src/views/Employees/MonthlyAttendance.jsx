@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import ReactTable from 'react-table';
 import Datetime from 'react-datetime';
 import moment from 'moment';
+import * as _ from 'lodash';
+// import { DotLoader } from 'react-spinners';
 import 'moment/locale/es';
 
 // @material-ui/core components
@@ -40,8 +42,7 @@ moment.locale('es');
 
 const employeeAPI = new API({ url: '/employee' });
 employeeAPI.createEntity({ name: 'personal-data' });
-const attendanceAPI = new API({ url: '/employee' });
-attendanceAPI.createEntity({ name: 'attendance' });
+employeeAPI.createEntity({ name: 'attendance' });
 const { monthYear } = datesConstant;
 
 class MonthlyAttendanceForm extends React.Component {
@@ -91,22 +92,25 @@ class MonthlyAttendanceForm extends React.Component {
     classes: PropTypes.shape({}).isRequired,
   }
   state = {
+    loading: true,
     attendanceEntity: {
-      monthName: moment().format('MMMM'),
+      monthName: _.startCase(moment().format('MMMM')),
       month: moment().format('MM'),
       year: moment().format('YYYY'),
       employees: [],
-      // employees: employeesAttendanceListConstant,
     },
   }
   componentDidMount() {
     const date = new Date();
-    const month = date.getMonth();
+    const month = date.getMonth() + 1;
     const year = date.getFullYear();
-    attendanceAPI.endpoints['attendance'].getOne({ id: `${month}-${year}` })
-      .then(results => console.log(results.json()));
-      // .then(data => this.setState({ raw: data }))
-      // .catch(err => console.error(err));
+    employeeAPI.endpoints.attendance.getOne({ id: `${month}-${year}` })
+      .then(results => results.json())
+      .then((data) => {
+        const { attendanceEntity } = this.state;
+        attendanceEntity.employees = data;
+      })
+      .catch(err => logError(err));
   }
   onExpandedChange(newExpanded, index) {
     const { attendanceEntity } = this.state;
@@ -509,7 +513,7 @@ class MonthlyAttendanceForm extends React.Component {
   attendanceDateChange(momentObj) {
     const { attendanceEntity } = this.state;
     let { monthName, month, year } = attendanceEntity;
-    monthName = momentObj.format('MMMM');
+    monthName = _.startCase(momentObj.format('MMMM'));
     month = momentObj.format('MM');
     year = momentObj.format('YYYY');
     const newAttendanceEntity = Object.assign({}, attendanceEntity, {
@@ -518,11 +522,23 @@ class MonthlyAttendanceForm extends React.Component {
       year,
       employees: [],
     });
-    this.setState({ attendanceEntity: newAttendanceEntity });
-    // TODO: Fetch if date changed
+    employeeAPI.endpoints.attendance.getOne({ id: `${month}-${year}` })
+      .then(results => results.json())
+      .then((data) => {
+        newAttendanceEntity.employees = data;
+        this.setState({ attendanceEntity: newAttendanceEntity });
+      })
+      .catch(err => logError(err));
   }
   saveClick() {
     const { attendanceEntity } = this.state;
+    let { month, year } = attendanceEntity;
+    employeeAPI.endpoints.attendance.createWithId({
+      id: `${month}-${year}`,
+      body: attendanceEntity,
+    }).then(results => results.json())
+    .then(data => console.log(data))
+    .catch(err => logError(err));
     console.log('save', attendanceEntity);
   }
   saveClick = this.saveClick.bind(this)
