@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ReactTable from 'react-table';
 import Datetime from 'react-datetime';
 import moment from 'moment';
+import * as _ from 'lodash';
 import 'moment/locale/es';
 
 // @material-ui/core components
@@ -41,6 +42,7 @@ moment.locale('es');
 const { monthYear } = datesConstant;
 const employeeAPI = new API({ url: '/employee' });
 employeeAPI.createEntity({ name: 'personal-data' });
+employeeAPI.createEntity({ name: 'attendance'});
 
 class MonthlySalaryForm extends React.Component {
   static createEmpleadoColumns() {
@@ -124,34 +126,46 @@ class MonthlySalaryForm extends React.Component {
       ],
     });
   }
-  static generateEmployeeSalaryObj() {
+  static generateEmployeeSalaryObj(employee) {
+    const { absence, extraHours } = employee;
+    const unjustifiedAbsenceDays = (absence
+      && absence.unjustifiedAbsence
+      && absence.unjustifiedAbsence.discount
+      && absence.unjustifiedAbsence.days)
+      || 0;
+    const suspensionDays = (absence
+      && absence.suspension
+      && absence.suspension.discount
+      && absence.suspension.days)
+      || 0;
     return {
-      employeeId: '',
-      firstName: '',
-      lastName: '',
+      employeeId: employee._id || '',
+      firstName: employee.firstName || '',
+      lastName: employee.lastName || '',
+      employeeDocumentId: employee.documentId || '',
       wage: minimumWage.monthly,
-      totalWorkedDays: 30,
-      nightHoursHours: 1,
+      totalWorkedDays: employee.totalWorkedDays || 30,
+      nightHoursHours: extraHours.nightlyHours || 0,
       nightHoursAmount: 0,
-      dailyExtraHoursHours: 1,
+      dailyExtraHoursHours: extraHours.dailyExtraHours || 0,
       dailyExtraHoursAmount: 0,
-      nightlyExtraHoursHours: 1,
+      nightlyExtraHoursHours: extraHours.nightlyExtraHours || 0,
       nightlyExtraHoursAmount: 0,
-      weekendHoursHours: 1,
+      weekendHoursHours: extraHours.sundayHolidaysHours || 0,
       weekendHoursAmount: 0,
-      nightlyWeekendExtraHoursHours: 1,
+      nightlyWeekendExtraHoursHours: extraHours.sundayHolidaysExtraHours || 0,
       nightlyWeekendExtraHoursAmount: 0,
       holidaysDays: 0,
       holidaysAmount: 0,
       otherIncomes: 0,
-      unjustifiedAbsenceDays: 1,
+      unjustifiedAbsenceDays,
       unjustifiedAbsenceAmount: 0,
       subTotal: 0,
       discountIps: 0,
       discountAdvancePayment: 0,
       discountLoans: 0,
       discountJudicial: 0,
-      suspensionDays: 1,
+      suspensionDays,
       suspensionAmount: 0,
       lateArrivalHours: 0,
       lateArrivalMinutes: 0,
@@ -241,7 +255,7 @@ class MonthlySalaryForm extends React.Component {
   }
   state = {
     salaryEntity: {
-      monthName: moment().format('MMMM'),
+      monthName: _.startCase(moment().format('MMMM')),
       month: moment().format('MM'),
       year: moment().format('YYYY'),
       employees: [],
@@ -527,19 +541,24 @@ class MonthlySalaryForm extends React.Component {
   saveClick = this.saveClick.bind(this)
   generateClick() {
     const { salaryEntity } = this.state;
-    employeeAPI.endpoints['personal-data'].getAll()
-      .then(results => results.json())
-      .then((data) => {
-        // TODO get the full list once testing is done
-        const newEmployees = data.map((person) => {
-          let employee = MonthlySalaryForm.generateEmployeeSalaryObj();
+    const { month, year } = salaryEntity;
+    const promises = [];
+    promises.push(employeeAPI.endpoints['personal-data'].getAll());
+    promises.push(employeeAPI.endpoints['attendance'].getOne({
+      id: `${month}-${year}`,
+    }));
+    Promise.all(promises)
+      .then(results => Promise.all(results.map(result => result.json())))
+      .then(([personalData, attendanceData]) => {
+        const newEmployees = personalData.map((person) => {
+          const attendance = attendanceData
+            .find(personAttendance => personAttendance.employeeId === person._id);
+          const newPerson = _.assignWith(person, attendance,
+            (objValue, srcValue) => _.isUndefined(objValue) ? srcValue : objValue);
+          let employee = MonthlySalaryForm.generateEmployeeSalaryObj(newPerson);
+          // TODO wage should come from personal data
           const { wage } = employee;
           const dailyWage = wage / 30;
-          employee.employeeId = person._id;
-          employee.employeeDocumentId = person.documentId;
-          employee.firstName = person.firstName;
-          employee.lastName = person.lastName;
-          // TODO update this calculation to data from API
           employee = MonthlySalaryForm.calculateExtraHours(employee);
           employee.unjustifiedAbsenceAmount = employee.unjustifiedAbsenceDays * dailyWage;
           employee.suspensionAmount = employee.suspensionDays * dailyWage;
