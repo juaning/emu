@@ -10,6 +10,7 @@ const SalarySchema = Schema({
   lastName: { type: String },
   employeeDocumentId: { type: String },
   wage: { type: Number },
+  date: { type: Date, required: true },
   attendanceId: { type: String, required: true },
   totalWorkedDays: { type: Number, default: 30 },
   nightHoursHours: { type: Number, default: 0 },
