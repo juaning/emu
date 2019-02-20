@@ -144,6 +144,7 @@ class MonthlySalaryForm extends React.Component {
       lastName: employee.lastName || '',
       employeeDocumentId: employee.documentId || '',
       wage: minimumWage.monthly,
+      attendanceId: 
       totalWorkedDays: employee.totalWorkedDays || 30,
       nightHoursHours: extraHours.nightlyHours || 0,
       nightHoursAmount: 0,
@@ -555,6 +556,7 @@ class MonthlySalaryForm extends React.Component {
             .find(personAttendance => personAttendance.employeeId === person._id);
           const newPerson = _.assignWith(person, attendance,
             (objValue, srcValue) => _.isUndefined(objValue) ? srcValue : objValue);
+          newPerson.attendanceId = attendance._id;
           let employee = MonthlySalaryForm.generateEmployeeSalaryObj(newPerson);
           // TODO wage should come from personal data
           const { wage } = employee;
