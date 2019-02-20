@@ -13,7 +13,7 @@ router.route('/:monthYear')
 .put(salaryController.updateSalaryMonthYear)
 .delete(salaryController.deleteSalaryMonthYear);
 
-router.route('id/:salaryId')
+router.route('/id/:salaryId')
 .get(salaryController.getSalaryById)
 .put(salaryController.updateSalaryById)
 .delete(salaryController.deleteSalaryById);

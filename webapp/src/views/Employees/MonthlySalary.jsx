@@ -42,7 +42,10 @@ moment.locale('es');
 const { monthYear } = datesConstant;
 const employeeAPI = new API({ url: '/employee' });
 employeeAPI.createEntity({ name: 'personal-data' });
-employeeAPI.createEntity({ name: 'attendance'});
+employeeAPI.createEntity({ name: 'attendance' });
+employeeAPI.createEntity({ name: 'salary' });
+
+// TODO: add read only to fields if salaries has been saved
 
 class MonthlySalaryForm extends React.Component {
   static createEmpleadoColumns() {
@@ -144,7 +147,7 @@ class MonthlySalaryForm extends React.Component {
       lastName: employee.lastName || '',
       employeeDocumentId: employee.documentId || '',
       wage: minimumWage.monthly,
-      attendanceId: 
+      attendanceId: employee.attendanceId || '',
       totalWorkedDays: employee.totalWorkedDays || 30,
       nightHoursHours: extraHours.nightlyHours || 0,
       nightHoursAmount: 0,
@@ -261,6 +264,18 @@ class MonthlySalaryForm extends React.Component {
       year: moment().format('YYYY'),
       employees: [],
     },
+  }
+  componentDidMount() {
+    const month = moment().format('MM');
+    const year = moment().format('YYYY');
+    employeeAPI.endpoints.salary.getOne({ id: `${month}-${year}` })
+      .then(results => results.json())
+      .then((data) => {
+        const { salaryEntity } = this.state;
+        salaryEntity.employees = data;
+        this.setState({ salaryEntity });
+      })
+      .catch(err => logError(err));
   }
   createColumns() {
     return [
@@ -492,10 +507,10 @@ class MonthlySalaryForm extends React.Component {
     this.setState({ salaryEntity });
   }
   singleCellChanged = this.singleCellChanged.bind(this)
-  attendanceDateChange(momentObj) {
+  salaryDateChange(momentObj) {
     const { salaryEntity } = this.state;
     let { monthName, month, year } = salaryEntity;
-    monthName = momentObj.format('MMMM');
+    monthName = _.startCase(momentObj.format('MMMM'));
     month = momentObj.format('MM');
     year = momentObj.format('YYYY');
     const newSalaryEntity = Object.assign({}, salaryEntity, {
@@ -504,10 +519,15 @@ class MonthlySalaryForm extends React.Component {
       year,
       employees: [],
     });
-    this.setState({ salaryEntity: newSalaryEntity });
-    // TODO: Fetch if date changed
+    employeeAPI.endpoints.salary.getOne({ id: `${month}-${year}`})
+      .then(results => results.json())
+      .then((data) => {
+        newSalaryEntity.employees = data;
+        this.setState({ salaryEntity: newSalaryEntity });
+      })
+      .catch(err => logError(err));
   }
-  attendanceDateChange = this.attendanceDateChange.bind(this)
+  salaryDateChange = this.salaryDateChange.bind(this)
   dayAmountChanged(event, nameDay, nameAmount, employeeId) {
     const { salaryEntity } = this.state;
     const { employees } = salaryEntity;
@@ -537,7 +557,27 @@ class MonthlySalaryForm extends React.Component {
   lateArrivalsChanged = this.lateArrivalsChanged.bind(this)
   saveClick() {
     const { salaryEntity } = this.state;
-    console.log('save', salaryEntity);
+    let { month, year, employees } = salaryEntity;
+
+    if (employees.length > 0) {
+      const employee = employees[0];
+      const params = {
+        url: `${month}-${year}`,
+        body: salaryEntity,
+      };
+      let promise;
+      if (employee.createdAt !== undefined) {
+        promise = employeeAPI.endpoints.salary.updateWithUrl(params);
+      } else {
+        promise = employeeAPI.endpoints.salary.createWithUrl(params);
+      }
+      promise.then(results => results.json())
+        .then(data => {
+          salaryEntity.employees = data;
+          this.setState({ salaryEntity });
+        })
+        .catch(err => logError(err));
+    } else {} // Popup can't save no employee
   }
   saveClick = this.saveClick.bind(this)
   generateClick() {
@@ -594,7 +634,7 @@ class MonthlySalaryForm extends React.Component {
               <GridContainer>
                 <GridItem xs={12} sm={2}>
                   <FormLabel className={classes.labelHorizontal}>
-                    Seleccione fecha de asistencia
+                    Seleccione fecha de salarios
                   </FormLabel>
                 </GridItem>
                 <GridItem xs={12} sm={6}>
@@ -608,7 +648,7 @@ class MonthlySalaryForm extends React.Component {
                       id: 'monthYear',
                     }}
                     onChange={momentObj =>
-                        this.attendanceDateChange(momentObj)}
+                        this.salaryDateChange(momentObj)}
                     closeOnSelect
                   />
                 </GridItem>
