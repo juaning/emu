@@ -107,7 +107,6 @@ class EducationForm extends React.Component {
         if (errors) logError(errors);
       })
       .catch(err => logError(err));
-    console.log(educationEntity);
   }
   saveClick = this.saveClick.bind(this)
   render() {
