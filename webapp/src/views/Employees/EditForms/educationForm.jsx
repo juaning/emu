@@ -20,30 +20,43 @@ import CourseView from './courseView';
 
 import regularFormsStyle from '../../../assets/jss/material-dashboard-pro-react/views/regularFormsStyle';
 
+// API resources
+import API from '../../../resources/api';
+
 import {
   // logError,
-  generateMenuItemList,
+  generateMenuItemList, logError,
 } from '../../../resources/helpers';
 import {
   educationLevelConstant,
   languagesConstant,
 } from '../../../resources/constants';
 
+const employeeAPI = new API({ url: '/employee' });
+employeeAPI.createEntity({ name: 'education' });
+
 class EducationForm extends React.Component {
   static propTypes = {
     classes: PropTypes.shape({}).isRequired,
+    employee: PropTypes.shape({}).isRequired,
   }
   state = {
     courseCount: 0,
     educationEntity: {
+      employeeId: this.props.employee.id,
       languages: languagesConstant,
+      courses: [],
     },
   }
   generateCourses() {
     const { courseCount } = this.state;
     const courseFields = [];
     for (let i = 0; i < courseCount; i += 1) {
-      courseFields.push(<CourseView validateField={this.validateField} courseIndex={i} />);
+      courseFields.push(<CourseView
+        courseDataChanged={this.courseDataChanged}
+        courseIndex={i}
+        courseDateChanged={this.courseDateChanged}
+      />);
     }
     return courseFields;
   }
@@ -55,6 +68,26 @@ class EducationForm extends React.Component {
     this.setState({ educationEntity });
   }
   validateField = this.validateField.bind(this)
+  courseDataChanged(event, index, type) {
+    const { value } = event.target;
+    const { educationEntity } = this.state;
+    const { courses } = educationEntity;
+    if (courses[index] === undefined) courses[index] = {};
+    courses[index][type] = value;
+    educationEntity.courses = courses;
+    this.setState({ educationEntity });
+  }
+  courseDataChanged = this.courseDataChanged.bind(this)
+  courseDateChanged(momentObj, index) {
+    const year = momentObj.format('YYYY');
+    const { educationEntity } = this.state;
+    const { courses } = educationEntity;
+    if (courses[index] === undefined) courses[index] = {};
+    courses[index].year = year;
+    educationEntity.courses = courses;
+    this.setState(educationEntity);
+  }
+  courseDateChanged = this.courseDateChanged.bind(this)
   handleTags(tags) {
     this.validateField({ target: { value: tags } }, 'languages');
   }
@@ -65,6 +98,18 @@ class EducationForm extends React.Component {
     this.setState({ courseCount });
   }
   addCourse = this.addCourse.bind(this)
+  saveClick() {
+    const { educationEntity } = this.state;
+    employeeAPI.endpoints.education.create(educationEntity)
+      .then(response => response.json())
+      .then(data => {
+        const { errors } = data;
+        if (errors) logError(errors);
+      })
+      .catch(err => logError(err));
+    console.log(educationEntity);
+  }
+  saveClick = this.saveClick.bind(this)
   render() {
     const { classes } = this.props;
     const educationalLevelOptions = generateMenuItemList(educationLevelConstant, classes);

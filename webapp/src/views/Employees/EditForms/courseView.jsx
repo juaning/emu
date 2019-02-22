@@ -18,6 +18,8 @@ class CourseView extends React.Component {
   static propTypes = {
     classes: PropTypes.shape({}).isRequired,
     courseIndex: PropTypes.number.isRequired,
+    courseDataChanged: PropTypes.func.isRequired,
+    courseDateChanged: PropTypes.func.isRequired,
   }
 
   render() {
@@ -43,8 +45,8 @@ class CourseView extends React.Component {
                 name: title,
                 id: title,
                 required: true,
-                onChange: event =>
-                  this.validateField(event, title, title),
+                onBlur: event =>
+                  this.props.courseDataChanged(event, courseIndex, 'courseTitle'),
               }}
             />
           </GridItem>
@@ -65,8 +67,8 @@ class CourseView extends React.Component {
                 name: intitution,
                 id: intitution,
                 required: true,
-                onChange: event =>
-                  this.validateField(event, intitution, intitution),
+                onBlur: event =>
+                  this.props.courseDataChanged(event, courseIndex, 'courseInstitution'),
               }}
             />
           </GridItem>
@@ -88,7 +90,7 @@ class CourseView extends React.Component {
                 id: year,
               }}
               onChange={momentObj =>
-                  this.onDOBChange(momentObj, year, year)}
+                  this.props.courseDateChanged(momentObj, courseIndex)}
               closeOnSelect
             />
           </GridItem>
