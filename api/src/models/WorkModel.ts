@@ -3,9 +3,14 @@ import * as mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const WorkSchema = Schema({
+  // employeeId: {
+  //   type: Schema.Types.ObjectId,
+  //   ref: 'PersonalData',
+  //   required: true,
+  //   index: true,
+  // },
   employeeId: {
-    type: Schema.Types.ObjectId,
-    ref: 'PersonalData',
+    type: String,
     required: true,
     index: true,
   },

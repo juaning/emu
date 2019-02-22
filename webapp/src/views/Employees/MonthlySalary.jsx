@@ -42,6 +42,7 @@ moment.locale('es');
 const { monthYear } = datesConstant;
 const employeeAPI = new API({ url: '/employee' });
 employeeAPI.createEntity({ name: 'personal-data' });
+employeeAPI.createEntity({ name: 'work' });
 employeeAPI.createEntity({ name: 'attendance' });
 employeeAPI.createEntity({ name: 'salary' });
 
@@ -146,7 +147,7 @@ class MonthlySalaryForm extends React.Component {
       firstName: employee.firstName || '',
       lastName: employee.lastName || '',
       employeeDocumentId: employee.documentId || '',
-      wage: minimumWage.monthly,
+      wage: employee.wage || minimumWage.monthly,
       attendanceId: employee.attendanceId || '',
       totalWorkedDays: employee.totalWorkedDays || 30,
       nightHoursHours: extraHours.nightlyHours || 0,
@@ -585,18 +586,27 @@ class MonthlySalaryForm extends React.Component {
     const { month, year } = salaryEntity;
     const promises = [];
     promises.push(employeeAPI.endpoints['personal-data'].getAll());
+    promises.push(employeeAPI.endpoints.work.getAll());
     promises.push(employeeAPI.endpoints['attendance'].getOne({
       id: `${month}-${year}`,
     }));
     Promise.all(promises)
       .then(results => Promise.all(results.map(result => result.json())))
-      .then(([personalData, attendanceData]) => {
+      .then(([personalData, workData, attendanceData]) => {
+        const yesterday = ( d => new Date(d.setDate(d.getDate()-1)) )(new Date());
+        // const yesterdayUTC = new Date(Date.UTC(yesterday.getFullYear()
+        //   , yesterday.getMonth()));
         const newEmployees = personalData.map((person) => {
+          const work = workData
+            .find(employeeWork => employeeWork.employeeId === person._id
+              && (employeeWork.endDateContract > yesterday.toJSON()
+              || employeeWork.endDateContract === undefined));
           const attendance = attendanceData
             .find(personAttendance => personAttendance.employeeId === person._id);
           const newPerson = _.assignWith(person, attendance,
             (objValue, srcValue) => _.isUndefined(objValue) ? srcValue : objValue);
           newPerson.attendanceId = attendance._id;
+          newPerson.wage = work && work.monthlySalary;
           let employee = MonthlySalaryForm.generateEmployeeSalaryObj(newPerson);
           // TODO wage should come from personal data
           const { wage } = employee;
