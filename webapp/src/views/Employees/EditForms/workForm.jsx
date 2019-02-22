@@ -19,6 +19,9 @@ import CardBody from '../../../components/Card/CardBody';
 
 import regularFormsStyle from '../../../assets/jss/material-dashboard-pro-react/views/regularFormsStyle';
 
+// API resources
+import API from '../../../resources/api';
+
 import {
   datesConstant,
   contractTypeConstant,
@@ -28,17 +31,22 @@ import {
 } from '../../../resources/constants';
 import {
   // logError,
-  generateMenuItemList,
+  generateMenuItemList, logError,
 } from '../../../resources/helpers';
 
 const { dateFormat, dateFormatDB, timeFormat } = datesConstant;
+
+const employeeAPI = new API({ url: '/employee' });
+employeeAPI.createEntity({ name: 'work' });
 
 class WorkForm extends React.Component {
   static propTypes = {
     classes: PropTypes.shape({}).isRequired,
   }
   state = {
-    workEntity: {},
+    workEntity: {
+      employeeId: this.props.employee.id,
+    },
   }
   onDateChange(momentObj, type) {
     const event = {
@@ -65,7 +73,13 @@ class WorkForm extends React.Component {
   }
   saveClick() {
     const { workEntity } = this.state;
-    console.log(workEntity);
+    employeeAPI.endpoints.work.create(workEntity)
+      .then(response => response.json())
+      .then(data => {
+        const { errors } = data;
+        if (errors) logError(errors);
+      })
+      .catch(err => logError(err));
   }
   saveClick = this.saveClick.bind(this)
   render() {
@@ -147,7 +161,7 @@ class WorkForm extends React.Component {
                         id: 'endDateContract',
                       }}
                       onChange={momentObj =>
-                          this.onDateChange(momentObj, '', 'endDateContract')}
+                          this.onDateChange(momentObj, 'endDateContract')}
                       closeOnSelect
                     />
                   </GridItem>
