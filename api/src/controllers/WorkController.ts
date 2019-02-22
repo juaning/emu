@@ -38,6 +38,27 @@ class WorkController {
       .then(() => res.json({ message: `Successfully deleted Work data: ${workId}` }))
       .catch(err => res.send(err));
   }
+
+  public getAllWordDataFromEployee(req: Request, res: Response) {
+    const { employeeId } = req.params;
+    
+    WorkModel.find({ employeeId })
+      .then(workList => res.json(workList))
+      .catch(err => res.send(err));
+  }
+
+  public getActiveWorkDataFromEmploeyee(req: Request, res: Response) {
+    const { employeeId } = req.params;
+    const yesterday = ( d => new Date(d.setDate(d.getDate()-1)) )(new Date());
+    WorkModel.findOne({
+      $or: [
+        { endDateContract: { $exists: false } },
+        { endDateContract: { $gt: yesterday } }
+      ],
+      employeeId,
+    }).then(workList => res.json(workList))
+      .catch(err => res.send(err));
+  }
 }
 
 export default WorkController;
