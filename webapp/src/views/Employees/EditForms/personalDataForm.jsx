@@ -125,6 +125,7 @@ class PersonalDataForm extends React.Component {
   saveClick = this.saveClick.bind(this);
   render() {
     const { classes } = this.props;
+    const { entity } = this.state;
     const maritalStatusOptions = generateMenuItemList(maritalStatusConstant, classes);
     const countryListOptions = generateMenuItemList(countryListConstant, classes);
     const genderListOptions = generateMenuItemList(genderListConstant, classes);
@@ -147,11 +148,12 @@ class PersonalDataForm extends React.Component {
                       formControlProps={{
                         fullWidth: true,
                       }}
+                      value={entity.documentId || ''}
                       inputProps={{
                         name: 'documentId',
                         id: 'documentId',
                         required: true,
-                        onChange: event =>
+                        onBlur: event =>
                           this.validateField(event, 'documentId', 'documentId'),
                       }}
                     />
@@ -169,10 +171,11 @@ class PersonalDataForm extends React.Component {
                       formControlProps={{
                         fullWidth: true,
                       }}
+                      value={entity.firstName || ''}
                       inputProps={{
                         name: 'firstName',
                         id: 'firstName',
-                        onChange: event =>
+                        onBlur: event =>
                           this.validateField(event, '', 'firstName'),
                       }}
                     />
@@ -190,10 +193,11 @@ class PersonalDataForm extends React.Component {
                       formControlProps={{
                         fullWidth: true,
                       }}
+                      value={entity.lastName || ''}
                       inputProps={{
                         name: 'lastName',
                         id: 'lastName',
-                        onChange: event =>
+                        onBlur: event =>
                           this.validateField(event, '', 'lastName'),
                       }}
                     />
@@ -216,7 +220,8 @@ class PersonalDataForm extends React.Component {
                         name: 'DOB',
                         id: 'DOB',
                       }}
-                      onChange={momentObj =>
+                      value={entity.DOB || ''}
+                      onBlur={momentObj =>
                           this.onDOBChange(momentObj, '', 'DOB')}
                       closeOnSelect
                     />
@@ -236,12 +241,12 @@ class PersonalDataForm extends React.Component {
                       classes={{
                         select: classes.select,
                       }}
-                      value={this.state.maritalStatus || ''}
+                      value={entity.maritalStatus || ''}
                       inputProps={{
                         name: 'maritalStatus',
                         id: 'maritalStatus',
                         onChange: (event) => {
-                          this.handleSimple(event);
+                          // this.handleSimple(event);
                           this.validateField(event, '', 'maritalStatus');
                         },
                       }}
@@ -271,10 +276,11 @@ class PersonalDataForm extends React.Component {
                       formControlProps={{
                         fullWidth: true,
                       }}
+                      value={entity.address || ''}
                       inputProps={{
                         name: 'address',
                         id: 'address',
-                        onChange: event =>
+                        onBlur: event =>
                           this.validateField(event, '', 'address'),
                       }}
                     />
@@ -295,10 +301,11 @@ class PersonalDataForm extends React.Component {
                       formControlProps={{
                         fullWidth: true,
                       }}
+                      value={entity.phone || ''}
                       inputProps={{
                         type: 'tel',
                         name: 'phone',
-                        onChange: event =>
+                        onBlur: event =>
                           this.onPhoneChange(event, 'registerPhone', 'phone'),
                       }}
                     />
@@ -318,12 +325,12 @@ class PersonalDataForm extends React.Component {
                       classes={{
                         select: classes.select,
                       }}
-                      value={this.state.nationality || ''}
+                      value={entity.nationality || ''}
                       inputProps={{
                         name: 'nationality',
                         id: 'nationality',
                         onChange: (event) => {
-                          this.handleSimple(event);
+                          // this.handleSimple(event);
                           this.validateField(event, '', 'nationality');
                         },
                       }}
@@ -355,12 +362,11 @@ class PersonalDataForm extends React.Component {
                       classes={{
                         select: classes.select,
                       }}
-                      value={this.state.gender || ''}
+                      value={entity.gender || ''}
                       inputProps={{
                         name: 'gender',
                         id: 'gender',
                         onChange: (event) => {
-                          this.handleSimple(event);
                           this.validateField(event, '', 'gender');
                         },
                       }}
@@ -393,6 +399,7 @@ class PersonalDataForm extends React.Component {
                       formControlProps={{
                         fullWidth: true,
                       }}
+                      value={entity.email || ''}
                       inputProps={{
                         onChange: event =>
                           this.validateField(event, 'registerEmail', 'email'),
