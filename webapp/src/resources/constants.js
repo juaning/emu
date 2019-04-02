@@ -14,6 +14,7 @@ const maritalStatusConstant = [
 ];
 
 const countryListConstant = [
+  { value: 'PY', text: 'Paraguay' },
   { value: 'AF', text: 'Afganistán' },
   { value: 'AL', text: 'Albania' },
   { value: 'DE', text: 'Alemania' },
@@ -193,7 +194,6 @@ const countryListConstant = [
   { value: 'PW', text: 'Palaos' },
   { value: 'PA', text: 'Panamá' },
   { value: 'PG', text: 'Papúa Nueva Guinea' },
-  { value: 'PY', text: 'Paraguay' },
   { value: 'PE', text: 'Perú' },
   { value: 'PF', text: 'Polinesia Francesa' },
   { value: 'PL', text: 'Polonia' },
