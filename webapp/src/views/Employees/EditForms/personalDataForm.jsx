@@ -8,6 +8,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import FormLabel from '@material-ui/core/FormLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
 
 // core components
 import GridContainer from '../../../components/Grid/GridContainer';
@@ -210,21 +211,22 @@ class PersonalDataForm extends React.Component {
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
-                    {/* TODO: add classes to match padding */}
-                    <Datetime
-                      id="DOB"
-                      timeFormat={false}
-                      dateFormat={dateFormat}
-                      viewDate={startingDOBDate}
-                      inputProps={{
-                        name: 'DOB',
-                        id: 'DOB',
-                      }}
-                      value={entity.DOB || ''}
-                      onBlur={momentObj =>
-                          this.onDOBChange(momentObj, '', 'DOB')}
-                      closeOnSelect
-                    />
+                    <FormControl fullWidth className={classes.formControlCustomInput}>
+                      <Datetime
+                        id="DOB"
+                        timeFormat={false}
+                        dateFormat={dateFormat}
+                        viewDate={startingDOBDate}
+                        inputProps={{
+                          name: 'DOB',
+                          id: 'DOB',
+                        }}
+                        value={entity.DOB || ''}
+                        onBlur={momentObj =>
+                            this.onDOBChange(momentObj, '', 'DOB')}
+                        closeOnSelect
+                      />
+                    </FormControl>
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
@@ -234,34 +236,36 @@ class PersonalDataForm extends React.Component {
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
-                    <Select
-                      MenuProps={{
-                        className: classes.selectMenu,
-                      }}
-                      classes={{
-                        select: classes.select,
-                      }}
-                      value={entity.maritalStatus || ''}
-                      inputProps={{
-                        name: 'maritalStatus',
-                        id: 'maritalStatus',
-                        onChange: (event) => {
-                          // this.handleSimple(event);
-                          this.validateField(event, '', 'maritalStatus');
-                        },
-                      }}
-                      autoWidth
-                    >
-                      <MenuItem
-                        disabled
-                        classes={{
-                          root: classes.selectMenuItem,
+                    <FormControl fullWidth className={classes.formControlCustomInput}>
+                      <Select
+                        MenuProps={{
+                          className: classes.selectMenu,
                         }}
+                        classes={{
+                          select: classes.select,
+                        }}
+                        value={entity.maritalStatus || ''}
+                        inputProps={{
+                          name: 'maritalStatus',
+                          id: 'maritalStatus',
+                          onChange: (event) => {
+                            // this.handleSimple(event);
+                            this.validateField(event, '', 'maritalStatus');
+                          },
+                        }}
+                        autoWidth
                       >
-                        Elegir Estado Civil
-                      </MenuItem>
-                      {maritalStatusOptions}
-                    </Select>
+                        <MenuItem
+                          disabled
+                          classes={{
+                            root: classes.selectMenuItem,
+                          }}
+                        >
+                          Elegir Estado Civil
+                        </MenuItem>
+                        {maritalStatusOptions}
+                      </Select>
+                    </FormControl>
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
@@ -318,34 +322,36 @@ class PersonalDataForm extends React.Component {
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
-                    <Select
-                      MenuProps={{
-                        className: classes.selectMenu,
-                      }}
-                      classes={{
-                        select: classes.select,
-                      }}
-                      value={entity.nationality || ''}
-                      inputProps={{
-                        name: 'nationality',
-                        id: 'nationality',
-                        onChange: (event) => {
-                          // this.handleSimple(event);
-                          this.validateField(event, '', 'nationality');
-                        },
-                      }}
-                      autoWidth
-                    >
-                      <MenuItem
-                        disabled
-                        classes={{
-                          root: classes.selectMenuItem,
+                    <FormControl fullWidth className={classes.formControlCustomInput}>
+                      <Select
+                        MenuProps={{
+                          className: classes.selectMenu,
                         }}
+                        classes={{
+                          select: classes.select,
+                        }}
+                        value={entity.nationality || ''}
+                        inputProps={{
+                          name: 'nationality',
+                          id: 'nationality',
+                          onChange: (event) => {
+                            // this.handleSimple(event);
+                            this.validateField(event, '', 'nationality');
+                          },
+                        }}
+                        autoWidth
                       >
-                        Nacionalidad
-                      </MenuItem>
-                      {countryListOptions}
-                    </Select>
+                        <MenuItem
+                          disabled
+                          classes={{
+                            root: classes.selectMenuItem,
+                          }}
+                        >
+                          Nacionalidad
+                        </MenuItem>
+                        {countryListOptions}
+                      </Select>
+                    </FormControl>
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
@@ -355,33 +361,35 @@ class PersonalDataForm extends React.Component {
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
-                    <Select
-                      MenuProps={{
-                        className: classes.selectMenu,
-                      }}
-                      classes={{
-                        select: classes.select,
-                      }}
-                      value={entity.gender || ''}
-                      inputProps={{
-                        name: 'gender',
-                        id: 'gender',
-                        onChange: (event) => {
-                          this.validateField(event, '', 'gender');
-                        },
-                      }}
-                      autoWidth
-                    >
-                      <MenuItem
-                        disabled
-                        classes={{
-                          root: classes.selectMenuItem,
+                    <FormControl fullWidth className={classes.formControlCustomInput}>
+                      <Select
+                        MenuProps={{
+                          className: classes.selectMenu,
                         }}
+                        classes={{
+                          select: classes.select,
+                        }}
+                        value={entity.gender || ''}
+                        inputProps={{
+                          name: 'gender',
+                          id: 'gender',
+                          onChange: (event) => {
+                            this.validateField(event, '', 'gender');
+                          },
+                        }}
+                        autoWidth
                       >
-                        G&eacute;nero
-                      </MenuItem>
-                      {genderListOptions}
-                    </Select>
+                        <MenuItem
+                          disabled
+                          classes={{
+                            root: classes.selectMenuItem,
+                          }}
+                        >
+                          G&eacute;nero
+                        </MenuItem>
+                        {genderListOptions}
+                      </Select>
+                    </FormControl>
                   </GridItem>
                 </GridContainer>
                 <GridContainer>

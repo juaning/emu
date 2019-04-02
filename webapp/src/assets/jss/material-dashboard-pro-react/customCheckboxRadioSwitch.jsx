@@ -68,6 +68,7 @@ const customCheckboxRadioSwitch = {
     marginRight: '0',
     '@media (min-width: 992px)': {
       float: 'right',
+      textAlign: 'right',
     },
   },
   labelHorizontalRadioCheckbox: {
