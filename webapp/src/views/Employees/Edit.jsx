@@ -1,6 +1,6 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
+// import { Redirect } from 'react-router-dom';
 
 // @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -20,7 +20,9 @@ class EditEmployee extends React.Component {
   state = {
     activeTab: 0,
     redirectToList: false,
-    employee: {},
+    employee: {
+      id: false,
+    },
   }
   updateRedirectToList(redirectToList, employeeId) {
     const employee = { id: employeeId };
@@ -28,11 +30,9 @@ class EditEmployee extends React.Component {
   }
   updateRedirectToList = this.updateRedirectToList.bind(this)
   render() {
-    if (this.state.redirectToList) {
-      return <Redirect to="/empleados/lista" />;
-    }
-
+    const { employee } = this.state;
     const tabStyles = { width: '100%' };
+    const disabled = employee.id === false;
 
     return (
       <NavPills
@@ -49,26 +49,32 @@ class EditEmployee extends React.Component {
           },
           {
             tabButton: 'Salud',
+            disabled,
             tabContent: <HealthForm styles={tabStyles} employee={this.state.employee} />,
           },
           {
             tabButton: 'Familia',
+            disabled,
             tabContent: <FamilyForm styles={tabStyles} employee={this.state.employee} />,
           },
           {
             tabButton: 'Educación',
+            disabled,
             tabContent: <EducationForm styles={tabStyles} employee={this.state.employee} />,
           },
           {
             tabButton: 'Datos laborales',
+            disabled,
             tabContent: <WorkForm styles={tabStyles} employee={this.state.employee} />,
           },
           // {
           //   tabButton: 'Adjuntos',
+          //   disabled,
           //   tabContent: (<div><span>Adjuntos</span></div>),
           // },
           {
             tabButton: 'Datos pago',
+            disabled,
             tabContent: <PaymentForm styles={tabStyles} employee={this.state.employee} />,
           },
         ]}

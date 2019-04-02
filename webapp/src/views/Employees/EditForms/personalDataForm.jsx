@@ -119,6 +119,7 @@ class PersonalDataForm extends React.Component {
           logError(errors);
           return;
         }
+        this.setState({ entity: data });
         this.props.UpdateRedirect(true, data._id);
       })
       .catch(error => logError(error));
