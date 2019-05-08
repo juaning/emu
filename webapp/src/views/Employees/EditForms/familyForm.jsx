@@ -8,6 +8,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import FormLabel from '@material-ui/core/FormLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
 
 // core components
 import GridContainer from '../../../components/Grid/GridContainer';
@@ -37,7 +38,9 @@ const { startingDOBDate, dateFormat, dateFormatDB } = datesConstant;
 
 class FamilyForm extends React.Component {
   state = {
-    familyEntity: {},
+    familyEntity: {
+      employeeId: this.props.employee._id,
+    },
   }
   onDOBChange(date, name) {
     const { familyEntity } = this.state;
@@ -69,20 +72,21 @@ class FamilyForm extends React.Component {
             </FormLabel>
           </GridItem>
           <GridItem xs={12} sm={10}>
-            {/* TODO: add classes to match padding */}
-            <Datetime
-              id={childID}
-              timeFormat={false}
-              dateFormat={dateFormat}
-              viewDate={startingDOBDate}
-              value={childs[i]}
-              inputProps={{
-                name: childID,
-                id: childID,
-              }}
-              onChange={momentObj => this.onDOBChange(momentObj, childID)}
-              closeOnSelect
-            />
+            <FormControl fullWidth className={classes.formControlCustomInput}>
+              <Datetime
+                id={childID}
+                timeFormat={false}
+                dateFormat={dateFormat}
+                viewDate={startingDOBDate}
+                value={childs[i]}
+                inputProps={{
+                  name: childID,
+                  id: childID,
+                }}
+                onBlur={momentObj => this.onDOBChange(momentObj, childID)}
+                closeOnSelect
+              />
+            </FormControl>
           </GridItem>
         </GridContainer>); // eslint-disable-line
       }
@@ -92,16 +96,17 @@ class FamilyForm extends React.Component {
   generateChildsDOB = this.generateChildsDOB.bind(this)
   saveClick() {
     const { familyEntity } = this.state;
-    familyEntity.employeeId = this.props.employee.id;
-    console.log(familyEntity);
     employeeAPI.endpoints.family
       .create(familyEntity)
       .then(response => response.json())
       .then((savedFamilyEntity) => {
-        const { errors } = savedFamilyEntity;
-        if (errors) {
-          logError(errors);
+        const { errors, errmsg } = savedFamilyEntity;
+        if (errors || errmsg) {
+          const err = errors ? errors : errmsg;
+          logError(err);
+          return;
         }
+        this.props.updateEmployeeData(savedFamilyEntity, 'family');
       })
       .catch(error => logError(error));
   }
@@ -125,31 +130,33 @@ class FamilyForm extends React.Component {
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
-                    <Select
-                      MenuProps={{
-                        className: classes.selectMenu,
-                      }}
-                      classes={{
-                        select: classes.select,
-                      }}
-                      value={childNumber}
-                      inputProps={{
-                        name: 'childNumber',
-                        id: 'childNumber',
-                        onChange: event => this.storeChangedField(event, 'childNumber'),
-                      }}
-                      autoWidth
-                    >
-                      <MenuItem
-                        disabled
-                        classes={{
-                          root: classes.selectMenuItem,
+                    <FormControl fullWidth className={classes.formControlCustomInput}>
+                      <Select
+                        MenuProps={{
+                          className: classes.selectMenu,
                         }}
+                        classes={{
+                          select: classes.select,
+                        }}
+                        value={childNumber}
+                        inputProps={{
+                          name: 'childNumber',
+                          id: 'childNumber',
+                          onChange: event => this.storeChangedField(event, 'childNumber'),
+                        }}
+                        autoWidth
                       >
-                        Cantidad de hijos
-                      </MenuItem>
-                      {childNumberOptions}
-                    </Select>
+                        <MenuItem
+                          disabled
+                          classes={{
+                            root: classes.selectMenuItem,
+                          }}
+                        >
+                          Cantidad de hijos
+                        </MenuItem>
+                        {childNumberOptions}
+                      </Select>
+                    </FormControl>
                   </GridItem>
                 </GridContainer>
                 {childDOBList}
@@ -238,9 +245,8 @@ class FamilyForm extends React.Component {
 
 FamilyForm.propTypes = {
   classes: PropTypes.shape({}).isRequired,
-  employee: PropTypes.shape({
-    id: PropTypes.string,
-  }).isRequired,
+  updateEmployeeData: PropTypes.func.isRequired,
+  employee: PropTypes.shape({}).isRequired,
 };
 
 export default withStyles(regularFormsStyle)(FamilyForm);
