@@ -165,10 +165,6 @@ class PersonalDataForm extends React.Component {
                         // value: entity.documentId ? entity.documentId : '',
                         onChange: event =>
                           this.validateField(event, 'documentId', 'documentId'),
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <NewReleases />
-                          </InputAdornment>),
                       }}
                     />
                   </GridItem>
