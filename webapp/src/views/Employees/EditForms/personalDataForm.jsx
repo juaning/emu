@@ -9,6 +9,9 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
+import InputAdornment from "@material-ui/core/InputAdornment";
+
+import NewReleases from '@material-ui/icons/NewReleases';
 
 // core components
 import GridContainer from '../../../components/Grid/GridContainer';
@@ -146,7 +149,7 @@ class PersonalDataForm extends React.Component {
                 <GridContainer>
                   <GridItem xs={12} sm={2}>
                     <FormLabel className={classes.labelHorizontal}>
-                      Documento de Identidad
+                      Documento de Identidad *
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
@@ -162,6 +165,10 @@ class PersonalDataForm extends React.Component {
                         // value: entity.documentId ? entity.documentId : '',
                         onChange: event =>
                           this.validateField(event, 'documentId', 'documentId'),
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <NewReleases />
+                          </InputAdornment>),
                       }}
                     />
                   </GridItem>
@@ -169,7 +176,7 @@ class PersonalDataForm extends React.Component {
                 <GridContainer>
                   <GridItem xs={12} sm={2}>
                     <FormLabel className={classes.labelHorizontal}>
-                      Nombre
+                      Nombre *
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
@@ -181,6 +188,7 @@ class PersonalDataForm extends React.Component {
                       inputProps={{
                         name: 'firstName',
                         id: 'firstName',
+                        required: true,
                         // value: entity.firstName ? entity.firstName : '',
                         onBlur: event =>
                           this.validateField(event, '', 'firstName'),
@@ -191,7 +199,7 @@ class PersonalDataForm extends React.Component {
                 <GridContainer>
                   <GridItem xs={12} sm={2}>
                     <FormLabel className={classes.labelHorizontal}>
-                      Apellido
+                      Apellido *
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
@@ -204,6 +212,7 @@ class PersonalDataForm extends React.Component {
                       inputProps={{
                         name: 'lastName',
                         id: 'lastName',
+                        required: true,
                         onBlur: event =>
                           this.validateField(event, '', 'lastName'),
                       }}
@@ -213,7 +222,7 @@ class PersonalDataForm extends React.Component {
                 <GridContainer>
                   <GridItem xs={12} sm={2}>
                     <FormLabel className={classes.labelHorizontal}>
-                      Fecha de Nacimiento
+                      Fecha de Nacimiento *
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
@@ -226,6 +235,7 @@ class PersonalDataForm extends React.Component {
                         inputProps={{
                           name: 'DOB',
                           id: 'DOB',
+                          required: true,
                         }}
                         value={entity.DOB || ''}
                         onBlur={momentObj =>
