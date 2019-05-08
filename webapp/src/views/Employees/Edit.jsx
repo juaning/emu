@@ -54,22 +54,38 @@ class EditEmployee extends React.Component {
           {
             tabButton: 'Salud',
             disabled,
-            tabContent: <HealthForm styles={tabStyles} employee={this.state.employee} />,
+            tabContent: <HealthForm
+              styles={tabStyles}
+              updateEmployeeData={this.updateEmployeeData}
+              employee={employee.personalData || {}}
+            />,
           },
           {
             tabButton: 'Familia',
             disabled,
-            tabContent: <FamilyForm styles={tabStyles} employee={this.state.employee} />,
+            tabContent: <FamilyForm
+              styles={tabStyles}
+              updateEmployeeData={this.updateEmployeeData}
+              employee={employee.personalData || {}}
+            />,
           },
           {
             tabButton: 'Educación',
             disabled,
-            tabContent: <EducationForm styles={tabStyles} employee={this.state.employee} />,
+            tabContent: <EducationForm
+              styles={tabStyles}
+              updateEmployeeData={this.updateEmployeeData}
+              employee={employee.personalData || {}}
+            />,
           },
           {
             tabButton: 'Datos laborales',
             disabled,
-            tabContent: <WorkForm styles={tabStyles} employee={this.state.employee} />,
+            tabContent: <WorkForm
+              styles={tabStyles}
+              updateEmployeeData={this.updateEmployeeData}
+              employee={employee.personalData || {}}
+            />,
           },
           // {
           //   tabButton: 'Adjuntos',
@@ -79,7 +95,11 @@ class EditEmployee extends React.Component {
           {
             tabButton: 'Datos pago',
             disabled,
-            tabContent: <PaymentForm styles={tabStyles} employee={this.state.employee} />,
+            tabContent: <PaymentForm
+              styles={tabStyles}
+              updateEmployeeData={this.updateEmployeeData}
+              employee={employee.personalData || {}}
+            />,
           },
         ]}
       />

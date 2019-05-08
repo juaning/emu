@@ -9,9 +9,6 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
-import InputAdornment from "@material-ui/core/InputAdornment";
-
-import NewReleases from '@material-ui/icons/NewReleases';
 
 // core components
 import GridContainer from '../../../components/Grid/GridContainer';
@@ -121,9 +118,10 @@ class PersonalDataForm extends React.Component {
     employeeAPI.endpoints['personal-data'].create(entity)
       .then(response => response.json())
       .then((data) => {
-        const { errors } = data;
-        if (errors) {
-          logError(errors);
+        const { errors, errmsg } = data;
+        if (errors || errmsg) {
+          const err = errors ? errors : errmsg;
+          logError(err);
           return;
         }
         this.props.updateEmployeeData(data, 'personalData');

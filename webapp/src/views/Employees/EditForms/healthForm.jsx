@@ -51,16 +51,18 @@ class HealthForm extends React.Component {
   validateField = this.validateField.bind(this);
   saveClick() {
     const { entity } = this.state;
-    console.log(`entity ${entity}`);
     employeeAPI
       .endpoints.health
       .create(entity)
       .then(response => response.json())
       .then((data) => {
-        const { errors } = data;
-        if (errors) {
-          logError(errors);
+        const { errors, errmsg } = data;
+        if (errors || errmsg) {
+          const err = errors ? errors : errmsg;
+          logError(err);
+          return;
         }
+        this.props.updateEmployeeData(data, 'health');
       })
       .catch(error => logError(error));
   }
