@@ -1,6 +1,6 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
+// import { Redirect } from 'react-router-dom';
 
 // @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -16,23 +16,26 @@ import EducationForm from './EditForms/educationForm';
 import PaymentForm from './EditForms/paymentForm';
 import WorkForm from './EditForms/workForm';
 
+import { isObjEmpty } from './../../resources/helpers';
+
 class EditEmployee extends React.Component {
   state = {
     activeTab: 0,
-    redirectToList: false,
     employee: {},
   }
-  updateRedirectToList(redirectToList, employeeId) {
-    const employee = { id: employeeId };
+  updateEmployeeData(data, key) {
+    const { employee } = this.state;
+    if (isObjEmpty(employee)) {
+      employee.id = data._id;
+    }
+    employee[key] = data;
     this.setState({ employee });
   }
-  updateRedirectToList = this.updateRedirectToList.bind(this)
+  updateEmployeeData = this.updateEmployeeData.bind(this)
   render() {
-    if (this.state.redirectToList) {
-      return <Redirect to="/empleados/lista" />;
-    }
-
+    const { employee } = this.state;
     const tabStyles = { width: '100%' };
+    const disabled = isObjEmpty(employee);
 
     return (
       <NavPills
@@ -44,31 +47,38 @@ class EditEmployee extends React.Component {
             tabButton: 'Datos personales',
             tabContent: <PersonalDataForm
               styles={tabStyles}
-              UpdateRedirect={this.updateRedirectToList}
+              updateEmployeeData={this.updateEmployeeData}
+              employee={employee.personalData || {}}
             />,
           },
           {
             tabButton: 'Salud',
+            disabled,
             tabContent: <HealthForm styles={tabStyles} employee={this.state.employee} />,
           },
           {
             tabButton: 'Familia',
+            disabled,
             tabContent: <FamilyForm styles={tabStyles} employee={this.state.employee} />,
           },
           {
             tabButton: 'Educación',
+            disabled,
             tabContent: <EducationForm styles={tabStyles} employee={this.state.employee} />,
           },
           {
             tabButton: 'Datos laborales',
+            disabled,
             tabContent: <WorkForm styles={tabStyles} employee={this.state.employee} />,
           },
           // {
           //   tabButton: 'Adjuntos',
+          //   disabled,
           //   tabContent: (<div><span>Adjuntos</span></div>),
           // },
           {
             tabButton: 'Datos pago',
+            disabled,
             tabContent: <PaymentForm styles={tabStyles} employee={this.state.employee} />,
           },
         ]}

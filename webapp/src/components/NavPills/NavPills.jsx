@@ -66,6 +66,7 @@ class NavPills extends React.Component {
             [classes.pillsWithIcons]: prop.tabIcon !== undefined,
           });
           const key = shortid.generate();
+          icon.disabled = prop.disabled ? 'disabled' : '';
           return (
             <Tab
               label={prop.tabButton}
