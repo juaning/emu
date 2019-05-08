@@ -51,6 +51,10 @@ function calculateExtraHours(obj) {
     .reduce((accu, [key, item]) => key !== 'total' ? accu + (item * 1) : accu, 0);
 }
 
+function isObjEmpty(obj) {
+  return Object.keys(obj).length === 0 && obj.constructor === Object;
+}
+
 export {
   verifyEmail,
   verifyPhoneNumber,
@@ -60,4 +64,5 @@ export {
   generateMenuWithNumbers,
   calculateOffDays,
   calculateExtraHours,
+  isObjEmpty,
 };

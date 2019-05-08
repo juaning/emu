@@ -16,23 +16,26 @@ import EducationForm from './EditForms/educationForm';
 import PaymentForm from './EditForms/paymentForm';
 import WorkForm from './EditForms/workForm';
 
+import { isObjEmpty } from './../../resources/helpers';
+
 class EditEmployee extends React.Component {
   state = {
     activeTab: 0,
-    redirectToList: false,
-    employee: {
-      id: false,
-    },
+    employee: {},
   }
-  updateRedirectToList(redirectToList, employeeId) {
-    const employee = { id: employeeId };
+  updateEmployeeData(data, key) {
+    const { employee } = this.state;
+    if (isObjEmpty(employee)) {
+      employee.id = data._id;
+    }
+    employee[key] = data;
     this.setState({ employee });
   }
-  updateRedirectToList = this.updateRedirectToList.bind(this)
+  updateEmployeeData = this.updateEmployeeData.bind(this)
   render() {
     const { employee } = this.state;
     const tabStyles = { width: '100%' };
-    const disabled = employee.id === false;
+    const disabled = isObjEmpty(employee);
 
     return (
       <NavPills
@@ -44,7 +47,8 @@ class EditEmployee extends React.Component {
             tabButton: 'Datos personales',
             tabContent: <PersonalDataForm
               styles={tabStyles}
-              UpdateRedirect={this.updateRedirectToList}
+              updateEmployeeData={this.updateEmployeeData}
+              employee={employee.personalData || {}}
             />,
           },
           {

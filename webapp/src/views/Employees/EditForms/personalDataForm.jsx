@@ -35,6 +35,7 @@ import {
   verifyEmail,
   verifyPhoneNumber,
   generateMenuItemList,
+  isObjEmpty,
   // addDashesToPhoneNumber,
 } from '../../../resources/helpers';
 
@@ -100,9 +101,12 @@ class PersonalDataForm extends React.Component {
         break;
       default:
     }
+    console.log(`type: ${type} - value: ${value}`);
     entity[type] = value;
-    this.setState({ entity });
-    this.setState({ [`${stateName}State`]: state });
+    this.setState({
+      entity,
+      [`${stateName}State`]: state,
+    });
   }
   validateField = this.validateField.bind(this)
   handleSimple(event) {
@@ -119,18 +123,20 @@ class PersonalDataForm extends React.Component {
           logError(errors);
           return;
         }
-        this.setState({ entity: data });
-        this.props.UpdateRedirect(true, data._id);
+        this.props.updateEmployeeData(data, 'personalData');
       })
       .catch(error => logError(error));
   }
   saveClick = this.saveClick.bind(this);
   render() {
     const { classes } = this.props;
-    const { entity } = this.state;
+    const entity = isObjEmpty(this.state.entity) ? this.props.employee : this.state.entity;
     const maritalStatusOptions = generateMenuItemList(maritalStatusConstant, classes);
     const countryListOptions = generateMenuItemList(countryListConstant, classes);
     const genderListOptions = generateMenuItemList(genderListConstant, classes);
+    // console.log(entity, this.props.employee);
+    // entity.documentId = 23;
+    // entity.firstName = 'Local';
     return (
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
@@ -146,16 +152,15 @@ class PersonalDataForm extends React.Component {
                   <GridItem xs={12} sm={10}>
                     <CustomInput
                       error={this.state.documentIdState === 'error'}
-                      id="documentId"
                       formControlProps={{
                         fullWidth: true,
                       }}
-                      value={entity.documentId || ''}
                       inputProps={{
-                        name: 'documentId',
-                        id: 'documentId',
+                        id: "documentId",
+                        name: "documentId",
                         required: true,
-                        onBlur: event =>
+                        // value: entity.documentId ? entity.documentId : '',
+                        onChange: event =>
                           this.validateField(event, 'documentId', 'documentId'),
                       }}
                     />
@@ -173,10 +178,10 @@ class PersonalDataForm extends React.Component {
                       formControlProps={{
                         fullWidth: true,
                       }}
-                      value={entity.firstName || ''}
                       inputProps={{
                         name: 'firstName',
                         id: 'firstName',
+                        // value: entity.firstName ? entity.firstName : '',
                         onBlur: event =>
                           this.validateField(event, '', 'firstName'),
                       }}
@@ -195,7 +200,7 @@ class PersonalDataForm extends React.Component {
                       formControlProps={{
                         fullWidth: true,
                       }}
-                      value={entity.lastName || ''}
+                      // value={entity.lastName || ''}
                       inputProps={{
                         name: 'lastName',
                         id: 'lastName',
@@ -410,7 +415,7 @@ class PersonalDataForm extends React.Component {
                       }}
                       value={entity.email || ''}
                       inputProps={{
-                        onChange: event =>
+                        onBlur: event =>
                           this.validateField(event, 'registerEmail', 'email'),
                         type: 'email',
                         name: 'email',
@@ -440,7 +445,8 @@ class PersonalDataForm extends React.Component {
 
 PersonalDataForm.propTypes = {
   classes: PropTypes.shape({}).isRequired,
-  UpdateRedirect: PropTypes.func.isRequired,
+  updateEmployeeData: PropTypes.func.isRequired,
+  employee: PropTypes.shape({}).isRequired,
 };
 
 export default withStyles(regularFormsStyle)(PersonalDataForm);
