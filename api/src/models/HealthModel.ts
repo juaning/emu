@@ -4,7 +4,7 @@ import * as validate from 'mongoose-validator';
 const { Schema } = mongoose;
 
 const HealthSchema = Schema({
-  personalDataId: { type: String, required: true },
+  employeeId: { type: String, required: true },
   bloodType: {
     type: String,
     enum: ['a+', 'a-', 'b+', 'b-', 'o+', 'o-', 'ab+', 'ab-'],

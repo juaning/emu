@@ -6,6 +6,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import FormLabel from '@material-ui/core/FormLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
 
 // core components
 import GridContainer from '../../../components/Grid/GridContainer';
@@ -33,7 +34,9 @@ employeeAPI.createEntity({ name: 'health' });
 
 class HealthForm extends React.Component {
   state = {
-    entity: {},
+    entity: {
+      employeeId: this.props.employee.id,
+    },
   }
   handleSimple(event) {
     this.setState({ [event.target.name]: event.target.value });
@@ -45,8 +48,10 @@ class HealthForm extends React.Component {
     entity[type] = value;
     this.setState({ entity });
   }
+  validateField = this.validateField.bind(this);
   saveClick() {
     const { entity } = this.state;
+    console.log(`entity ${entity}`);
     employeeAPI
       .endpoints.health
       .create(entity)
@@ -59,6 +64,7 @@ class HealthForm extends React.Component {
       })
       .catch(error => logError(error));
   }
+  saveClick = this.saveClick.bind(this);
   render() {
     const { classes } = this.props;
     const bloodTypeOptions = generateMenuItemList(bloodTypeConstant, classes);
@@ -76,34 +82,36 @@ class HealthForm extends React.Component {
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
-                    <Select
-                      MenuProps={{
-                        className: classes.selectMenu,
-                      }}
-                      classes={{
-                        select: classes.select,
-                      }}
-                      value={this.state.bloodType || ''}
-                      inputProps={{
-                        name: 'bloodType',
-                        id: 'bloodType',
-                        onChange: (event) => {
-                          this.handleSimple(event);
-                          this.validateField(event, '', 'bloodType');
-                        },
-                      }}
-                      autoWidth
-                    >
-                      <MenuItem
-                        disabled
-                        classes={{
-                          root: classes.selectMenuItem,
+                    <FormControl fullWidth className={classes.formControlCustomInput}>
+                      <Select
+                        MenuProps={{
+                          className: classes.selectMenu,
                         }}
+                        classes={{
+                          select: classes.select,
+                        }}
+                        value={this.state.bloodType || ''}
+                        inputProps={{
+                          name: 'bloodType',
+                          id: 'bloodType',
+                          onChange: (event) => {
+                            this.handleSimple(event);
+                            this.validateField(event, '', 'bloodType');
+                          },
+                        }}
+                        autoWidth
                       >
-                        Tipo de sangre
-                      </MenuItem>
-                      {bloodTypeOptions}
-                    </Select>
+                        <MenuItem
+                          disabled
+                          classes={{
+                            root: classes.selectMenuItem,
+                          }}
+                        >
+                          Tipo de sangre
+                        </MenuItem>
+                        {bloodTypeOptions}
+                      </Select>
+                    </FormControl>
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
@@ -159,11 +167,11 @@ class HealthForm extends React.Component {
                       <GridItem xs={12} sm={12} md={6}>
                         <CustomInput
                           id="emergencyContactName"
+                          labelText="Nombre"
                           formControlProps={{
                             fullWidth: true,
                           }}
                           inputProps={{
-                            placeholder: 'Nombre',
                             onChange: event =>
                               this.validateField(event, '', 'emergencyContactName'),
                           }}
@@ -172,12 +180,12 @@ class HealthForm extends React.Component {
                       <GridItem xs={12} sm={12} md={6}>
                         <CustomInput
                           id="emergencyContactNumber"
+                          labelText="Teléfono"
                           formControlProps={{
                             fullWidth: true,
                           }}
                           inputProps={{
                             type: 'tel',
-                            placeholder: 'Teléfono',
                             onChange: event =>
                               this.validateField(event, '', 'emergencyContactNumber'),
                           }}
@@ -193,34 +201,36 @@ class HealthForm extends React.Component {
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
-                    <Select
-                      MenuProps={{
-                        className: classes.selectMenu,
-                      }}
-                      classes={{
-                        select: classes.select,
-                      }}
-                      value={this.state.healthInsurance || ''}
-                      inputProps={{
-                        name: 'healthInsurance',
-                        id: 'healthInsurance',
-                        onChange: (event) => {
-                          this.handleSimple(event);
-                          this.validateField(event, '', 'healthInsurance');
-                        },
-                      }}
-                      autoWidth
-                    >
-                      <MenuItem
-                        disabled
-                        classes={{
-                          root: classes.selectMenuItem,
+                    <FormControl fullWidth className={classes.formControlCustomInput}>
+                      <Select
+                        MenuProps={{
+                          className: classes.selectMenu,
                         }}
+                        classes={{
+                          select: classes.select,
+                        }}
+                        value={this.state.healthInsurance || ''}
+                        inputProps={{
+                          name: 'healthInsurance',
+                          id: 'healthInsurance',
+                          onChange: (event) => {
+                            this.handleSimple(event);
+                            this.validateField(event, '', 'healthInsurance');
+                          },
+                        }}
+                        autoWidth
                       >
-                        Seguro medico
-                      </MenuItem>
-                      {healthInsuranceOptions}
-                    </Select>
+                        <MenuItem
+                          disabled
+                          classes={{
+                            root: classes.selectMenuItem,
+                          }}
+                        >
+                          Seguro medico
+                        </MenuItem>
+                        {healthInsuranceOptions}
+                      </Select>
+                    </FormControl>
                   </GridItem>
                 </GridContainer>
                 <GridContainer justify="flex-end">
