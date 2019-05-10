@@ -8,6 +8,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import FormLabel from '@material-ui/core/FormLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
 
 // core components
 import GridContainer from '../../../components/Grid/GridContainer';
@@ -43,7 +44,7 @@ class EducationForm extends React.Component {
   state = {
     courseCount: 0,
     educationEntity: {
-      employeeId: this.props.employee.id,
+      employeeId: this.props.employee._id,
       languages: languagesConstant,
       courses: [],
     },
@@ -103,8 +104,13 @@ class EducationForm extends React.Component {
     employeeAPI.endpoints.education.create(educationEntity)
       .then(response => response.json())
       .then(data => {
-        const { errors } = data;
-        if (errors) logError(errors);
+        const { errors, errmsg } = data;
+        if (errors || errmsg) {
+          const err = errors ? errors : errmsg;
+          logError(err);
+          return;
+        }
+        this.props.updateEmployeeData(educationEntity, 'education');
       })
       .catch(err => logError(err));
   }
@@ -130,31 +136,33 @@ class EducationForm extends React.Component {
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
-                    <Select
-                      MenuProps={{
-                        className: classes.selectMenu,
-                      }}
-                      classes={{
-                        select: classes.select,
-                      }}
-                      value={this.state.educationEntity.educationalLevel || ''}
-                      inputProps={{
-                        name: 'educationalLevel',
-                        id: 'educationalLevel',
-                        onChange: event => this.validateField(event, 'educationalLevel'),
-                      }}
-                      autoWidth
-                    >
-                      <MenuItem
-                        disabled
-                        classes={{
-                          root: classes.selectMenuItem,
+                    <FormControl fullWidth className={classes.formControlCustomInput}>
+                      <Select
+                        MenuProps={{
+                          className: classes.selectMenu,
                         }}
+                        classes={{
+                          select: classes.select,
+                        }}
+                        value={this.state.educationEntity.educationalLevel || ''}
+                        inputProps={{
+                          name: 'educationalLevel',
+                          id: 'educationalLevel',
+                          onChange: event => this.validateField(event, 'educationalLevel'),
+                        }}
+                        autoWidth
                       >
-                        Nivel de educación
-                      </MenuItem>
-                      {educationalLevelOptions}
-                    </Select>
+                        <MenuItem
+                          disabled
+                          classes={{
+                            root: classes.selectMenuItem,
+                          }}
+                        >
+                          Nivel de educación
+                        </MenuItem>
+                        {educationalLevelOptions}
+                      </Select>
+                    </FormControl>
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
@@ -176,14 +184,16 @@ class EducationForm extends React.Component {
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
-                    <TagsInput
-                      value={this.state.educationEntity.languages}
-                      onChange={this.handleTags}
-                      tagProps={{
-                        className: 'react-tagsinput-tag info',
-                        fullWidth: true,
-                      }}
-                    />
+                    <FormControl fullWidth className={classes.formControlCustomInput}>
+                      <TagsInput
+                        value={this.state.educationEntity.languages}
+                        onChange={this.handleTags}
+                        tagProps={{
+                          className: 'react-tagsinput-tag info',
+                          fullWidth: true,
+                        }}
+                      />
+                    </FormControl>
                   </GridItem>
                 </GridContainer>
                 <GridContainer justify="flex-end">
