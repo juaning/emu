@@ -47,9 +47,11 @@ class WorkForm extends React.Component {
     workEntity: {
       employeeId: this.props.employee._id,
       contractType: '',
+      startDate: '',
     },
   }
   onDateChange(momentObj, type) {
+    if (!momentObj || !momentObj._isAMomentObject) return;
     const event = {
       target: {
         value: momentObj.format(dateFormatDB),
@@ -59,6 +61,7 @@ class WorkForm extends React.Component {
   }
   onDateChange = this.onDateChange.bind(this)
   onTimeChange(momentObj, type) {
+    if (!momentObj || !momentObj._isAMomentObject) return;
     const event = {
       target: {
         value: momentObj.format(timeFormat),
@@ -113,7 +116,7 @@ class WorkForm extends React.Component {
                           name: 'startDate',
                           id: 'startDate',
                         }}
-                        onChange={momentObj =>
+                        onBlur={momentObj =>
                             this.onDateChange(momentObj, 'startDate')}
                         closeOnSelect
                       />
@@ -137,7 +140,7 @@ class WorkForm extends React.Component {
                           name: 'startDateContract',
                           id: 'startDateContract',
                         }}
-                        onChange={momentObj =>
+                        onBlur={momentObj =>
                             this.onDateChange(momentObj, 'startDateContract')}
                         closeOnSelect
                       />
@@ -159,7 +162,7 @@ class WorkForm extends React.Component {
                           name: 'endDateContract',
                           id: 'endDateContract',
                         }}
-                        onChange={momentObj =>
+                        onBlur={momentObj =>
                             this.onDateChange(momentObj, 'endDateContract')}
                         closeOnSelect
                       />
@@ -290,7 +293,7 @@ class WorkForm extends React.Component {
                           name: 'startTime',
                           id: 'startTime',
                         }}
-                        onChange={momentObj =>
+                        onBlur={momentObj =>
                             this.onTimeChange(momentObj, 'startTime')}
                         closeOnSelect
                       />
@@ -313,7 +316,7 @@ class WorkForm extends React.Component {
                           name: 'endTime',
                           id: 'endTime',
                         }}
-                        onChange={momentObj =>
+                        onBlur={momentObj =>
                             this.onTimeChange(momentObj, 'endTime')}
                         closeOnSelect
                       />
