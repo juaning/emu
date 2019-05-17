@@ -101,7 +101,6 @@ class PersonalDataForm extends React.Component {
         break;
       default:
     }
-    console.log(`type: ${type} - value: ${value}`);
     entity[type] = value;
     this.setState({
       entity,

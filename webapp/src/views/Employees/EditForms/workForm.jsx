@@ -2,12 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 // react component plugin for creating a beautiful datetime dropdown picker
 import Datetime from 'react-datetime';
+import NumberFormat from 'react-number-format';
 
 // @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
 import FormLabel from '@material-ui/core/FormLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
 
 // core components
 import GridContainer from '../../../components/Grid/GridContainer';
@@ -30,8 +32,7 @@ import {
   shiftConstant,
 } from '../../../resources/constants';
 import {
-  // logError,
-  generateMenuItemList, logError,
+  generateMenuItemList, logError
 } from '../../../resources/helpers';
 
 const { dateFormat, dateFormatDB, timeFormat } = datesConstant;
@@ -39,16 +40,44 @@ const { dateFormat, dateFormatDB, timeFormat } = datesConstant;
 const employeeAPI = new API({ url: '/employee' });
 employeeAPI.createEntity({ name: 'work' });
 
+function NumberFormatCustom(props) {
+  const { inputRef, onChange, ...other } = props;
+
+  return (
+    <NumberFormat
+      {...other}
+      getInputRef={inputRef}
+      onValueChange= {values => {
+        onChange({
+          target: {
+            value: values.value,
+          },
+        });
+      }}
+      thousandSeparator="."
+      decimalSeparator=","
+    />
+  );
+}
+
+NumberFormatCustom.propTypes = {
+  inputRef: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+}
+
 class WorkForm extends React.Component {
   static propTypes = {
     classes: PropTypes.shape({}).isRequired,
   }
   state = {
     workEntity: {
-      employeeId: this.props.employee.id,
+      employeeId: this.props.employee._id,
+      contractType: '',
+      startDate: '',
     },
   }
   onDateChange(momentObj, type) {
+    if (!momentObj || !momentObj._isAMomentObject) return;
     const event = {
       target: {
         value: momentObj.format(dateFormatDB),
@@ -58,6 +87,7 @@ class WorkForm extends React.Component {
   }
   onDateChange = this.onDateChange.bind(this)
   onTimeChange(momentObj, type) {
+    if (!momentObj || !momentObj._isAMomentObject) return;
     const event = {
       target: {
         value: momentObj.format(timeFormat),
@@ -89,10 +119,6 @@ class WorkForm extends React.Component {
     const jobTitleOptions = generateMenuItemList(jobTitleConstant, classes);
     const costCentreOptions = generateMenuItemList(costCentreConstant, classes);
     const shiftOptions = generateMenuItemList(shiftConstant, classes);
-    const contractTypeValue = contractTypeConstant[workEntity.contractType] || '';
-    const jobTitleValue = jobTitleConstant[workEntity.jobTitle] || '';
-    const costCentreValue = costCentreConstant[workEntity.costCentre] || '';
-    const shiftValue = shiftConstant[workEntity.shift] || '';
     return (
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
@@ -106,20 +132,21 @@ class WorkForm extends React.Component {
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
-                    {/* TODO: add classes to match padding */}
-                    <Datetime
-                      id="startDate"
-                      timeFormat={false}
-                      dateFormat={dateFormat}
-                      value={workEntity.startDate}
-                      inputProps={{
-                        name: 'startDate',
-                        id: 'startDate',
-                      }}
-                      onChange={momentObj =>
-                          this.onDateChange(momentObj, 'startDate')}
-                      closeOnSelect
-                    />
+                    <FormControl fullWidth className={classes.formControlCustomInput}>
+                      <Datetime
+                        id="startDate"
+                        timeFormat={false}
+                        dateFormat={dateFormat}
+                        value={workEntity.startDate}
+                        inputProps={{
+                          name: 'startDate',
+                          id: 'startDate',
+                        }}
+                        onBlur={momentObj =>
+                            this.onDateChange(momentObj, 'startDate')}
+                        closeOnSelect
+                      />
+                    </FormControl>
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
@@ -129,20 +156,21 @@ class WorkForm extends React.Component {
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={4}>
-                    {/* TODO: add classes to match padding */}
-                    <Datetime
-                      id="startDateContract"
-                      timeFormat={false}
-                      dateFormat={dateFormat}
-                      value={workEntity.startDateContract}
-                      inputProps={{
-                        name: 'startDateContract',
-                        id: 'startDateContract',
-                      }}
-                      onChange={momentObj =>
-                          this.onDateChange(momentObj, 'startDateContract')}
-                      closeOnSelect
-                    />
+                    <FormControl fullWidth className={classes.formControlCustomInput}>
+                      <Datetime
+                        id="startDateContract"
+                        timeFormat={false}
+                        dateFormat={dateFormat}
+                        value={workEntity.startDateContract}
+                        inputProps={{
+                          name: 'startDateContract',
+                          id: 'startDateContract',
+                        }}
+                        onBlur={momentObj =>
+                            this.onDateChange(momentObj, 'startDateContract')}
+                        closeOnSelect
+                      />
+                    </FormControl>
                   </GridItem>
                   <GridItem xs={12} sm={2}>
                     <FormLabel className={classes.labelHorizontal}>
@@ -150,20 +178,21 @@ class WorkForm extends React.Component {
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={4}>
-                    {/* TODO: add classes to match padding */}
-                    <Datetime
-                      id="endDateContract"
-                      timeFormat={false}
-                      dateFormat={dateFormat}
-                      value={workEntity.endDateContract}
-                      inputProps={{
-                        name: 'endDateContract',
-                        id: 'endDateContract',
-                      }}
-                      onChange={momentObj =>
-                          this.onDateChange(momentObj, 'endDateContract')}
-                      closeOnSelect
-                    />
+                    <FormControl fullWidth className={classes.formControlCustomInput}>
+                      <Datetime
+                        id="endDateContract"
+                        timeFormat={false}
+                        dateFormat={dateFormat}
+                        value={workEntity.endDateContract}
+                        inputProps={{
+                          name: 'endDateContract',
+                          id: 'endDateContract',
+                        }}
+                        onBlur={momentObj =>
+                            this.onDateChange(momentObj, 'endDateContract')}
+                        closeOnSelect
+                      />
+                    </FormControl>
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
@@ -173,31 +202,33 @@ class WorkForm extends React.Component {
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
-                    <Select
-                      MenuProps={{
-                        className: classes.selectMenu,
-                      }}
-                      classes={{
-                        select: classes.select,
-                      }}
-                      value={contractTypeValue}
-                      inputProps={{
-                        name: 'contractType',
-                        id: 'contractType',
-                        onChange: event => this.fieldChange(event, 'contractType'),
-                      }}
-                      autoWidth
-                    >
-                      <MenuItem
-                        disabled
-                        classes={{
-                          root: classes.selectMenuItem,
+                    <FormControl fullWidth className={classes.formControlCustomInput}>
+                      <Select
+                        MenuProps={{
+                          className: classes.selectMenu,
                         }}
+                        classes={{
+                          select: classes.select,
+                        }}
+                        value={workEntity.contractType}
+                        inputProps={{
+                          name: 'contractType',
+                          id: 'contractType',
+                          onChange: event => this.fieldChange(event, 'contractType'),
+                        }}
+                        autoWidth
                       >
-                        Tipo de Contrato
-                      </MenuItem>
-                      {contractTypeOptions}
-                    </Select>
+                        <MenuItem
+                          disabled
+                          classes={{
+                            root: classes.selectMenuItem,
+                          }}
+                        >
+                          Tipo de Contrato
+                        </MenuItem>
+                        {contractTypeOptions}
+                      </Select>
+                    </FormControl>
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
@@ -207,31 +238,33 @@ class WorkForm extends React.Component {
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={4}>
-                    <Select
-                      MenuProps={{
-                        className: classes.selectMenu,
-                      }}
-                      classes={{
-                        select: classes.select,
-                      }}
-                      value={jobTitleValue}
-                      inputProps={{
-                        name: 'jobTitle',
-                        id: 'jobTitle',
-                        onChange: event => this.fieldChange(event, 'jobTitle'),
-                      }}
-                      autoWidth
-                    >
-                      <MenuItem
-                        disabled
-                        classes={{
-                          root: classes.selectMenuItem,
+                    <FormControl fullWidth className={classes.formControlCustomInput}>
+                      <Select
+                        MenuProps={{
+                          className: classes.selectMenu,
                         }}
+                        classes={{
+                          select: classes.select,
+                        }}
+                        value={workEntity.jobTitle}
+                        inputProps={{
+                          name: 'jobTitle',
+                          id: 'jobTitle',
+                          onChange: event => this.fieldChange(event, 'jobTitle'),
+                        }}
+                        autoWidth
                       >
-                        Cargo
-                      </MenuItem>
-                      {jobTitleOptions}
-                    </Select>
+                        <MenuItem
+                          disabled
+                          classes={{
+                            root: classes.selectMenuItem,
+                          }}
+                        >
+                          Cargo
+                        </MenuItem>
+                        {jobTitleOptions}
+                      </Select>
+                    </FormControl>
                   </GridItem>
                   <GridItem xs={12} sm={2}>
                     <FormLabel className={classes.labelHorizontal}>
@@ -239,31 +272,33 @@ class WorkForm extends React.Component {
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={4}>
-                    <Select
-                      MenuProps={{
-                        className: classes.selectMenu,
-                      }}
-                      classes={{
-                        select: classes.select,
-                      }}
-                      value={costCentreValue}
-                      inputProps={{
-                        name: 'costCentre',
-                        id: 'costCentre',
-                        onChange: event => this.fieldChange(event, 'costCentre'),
-                      }}
-                      autoWidth
-                    >
-                      <MenuItem
-                        disabled
-                        classes={{
-                          root: classes.selectMenuItem,
+                    <FormControl fullWidth className={classes.formControlCustomInput}>
+                      <Select
+                        MenuProps={{
+                          className: classes.selectMenu,
                         }}
+                        classes={{
+                          select: classes.select,
+                        }}
+                        value={workEntity.costCentre}
+                        inputProps={{
+                          name: 'costCentre',
+                          id: 'costCentre',
+                          onChange: event => this.fieldChange(event, 'costCentre'),
+                        }}
+                        autoWidth
                       >
-                        Centro de Costo
-                      </MenuItem>
-                      {costCentreOptions}
-                    </Select>
+                        <MenuItem
+                          disabled
+                          classes={{
+                            root: classes.selectMenuItem,
+                          }}
+                        >
+                          Centro de Costo
+                        </MenuItem>
+                        {costCentreOptions}
+                      </Select>
+                    </FormControl>
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
@@ -273,21 +308,22 @@ class WorkForm extends React.Component {
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={2}>
-                    {/* TODO: add classes to match padding */}
-                    <Datetime
-                      id="startTime"
-                      timeFormat
-                      dateFormat={false}
-                      // value={workEntity.startTime}
-                      viewMode="time"
-                      inputProps={{
-                        name: 'startTime',
-                        id: 'startTime',
-                      }}
-                      onChange={momentObj =>
-                          this.onTimeChange(momentObj, 'startTime')}
-                      closeOnSelect
-                    />
+                    <FormControl fullWidth className={classes.formControlCustomInput}>
+                      <Datetime
+                        id="startTime"
+                        timeFormat
+                        dateFormat={false}
+                        // value={workEntity.startTime}
+                        viewMode="time"
+                        inputProps={{
+                          name: 'startTime',
+                          id: 'startTime',
+                        }}
+                        onBlur={momentObj =>
+                            this.onTimeChange(momentObj, 'startTime')}
+                        closeOnSelect
+                      />
+                    </FormControl>
                   </GridItem>
                   <GridItem xs={12} sm={2}>
                     <FormLabel className={classes.labelHorizontal}>
@@ -295,21 +331,22 @@ class WorkForm extends React.Component {
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={2}>
-                    {/* TODO: add classes to match padding */}
-                    <Datetime
-                      id="endTime"
-                      timeFormat
-                      dateFormat={false}
-                      // value={workEntity.endTime}
-                      viewMode="time"
-                      inputProps={{
-                        name: 'endTime',
-                        id: 'endTime',
-                      }}
-                      onChange={momentObj =>
-                          this.onTimeChange(momentObj, 'endTime')}
-                      closeOnSelect
-                    />
+                    <FormControl fullWidth className={classes.formControlCustomInput}>
+                      <Datetime
+                        id="endTime"
+                        timeFormat
+                        dateFormat={false}
+                        // value={workEntity.endTime}
+                        viewMode="time"
+                        inputProps={{
+                          name: 'endTime',
+                          id: 'endTime',
+                        }}
+                        onBlur={momentObj =>
+                            this.onTimeChange(momentObj, 'endTime')}
+                        closeOnSelect
+                      />
+                    </FormControl>
                   </GridItem>
                   <GridItem xs={12} sm={2}>
                     <FormLabel className={classes.labelHorizontal}>
@@ -317,31 +354,33 @@ class WorkForm extends React.Component {
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={2}>
-                    <Select
-                      MenuProps={{
-                        className: classes.selectMenu,
-                      }}
-                      classes={{
-                        select: classes.select,
-                      }}
-                      value={shiftValue}
-                      inputProps={{
-                        name: 'shift',
-                        id: 'shift',
-                        onChange: event => this.fieldChange(event, 'shift'),
-                      }}
-                      autoWidth
-                    >
-                      <MenuItem
-                        disabled
-                        classes={{
-                          root: classes.selectMenuItem,
+                    <FormControl fullWidth className={classes.formControlCustomInput}>
+                      <Select
+                        MenuProps={{
+                          className: classes.selectMenu,
                         }}
+                        classes={{
+                          select: classes.select,
+                        }}
+                        value={workEntity.shift}
+                        inputProps={{
+                          name: 'shift',
+                          id: 'shift',
+                          onChange: event => this.fieldChange(event, 'shift'),
+                        }}
+                        autoWidth
                       >
-                        Turno
-                      </MenuItem>
-                      {shiftOptions}
-                    </Select>
+                        <MenuItem
+                          disabled
+                          classes={{
+                            root: classes.selectMenuItem,
+                          }}
+                        >
+                          Turno
+                        </MenuItem>
+                        {shiftOptions}
+                      </Select>
+                    </FormControl>
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
@@ -361,6 +400,7 @@ class WorkForm extends React.Component {
                           this.fieldChange(event, 'dailySalary'),
                         id: 'dailySalary',
                         name: 'dailySalary',
+                        inputComponent: NumberFormatCustom,
                       }}
                     />
                   </GridItem>
@@ -380,6 +420,7 @@ class WorkForm extends React.Component {
                           this.fieldChange(event, 'monthlySalary'),
                         id: 'monthlySalary',
                         name: 'monthlySalary',
+                        inputComponent: NumberFormatCustom,
                       }}
                     />
                   </GridItem>
