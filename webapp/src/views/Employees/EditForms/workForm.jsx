@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 // react component plugin for creating a beautiful datetime dropdown picker
 import Datetime from 'react-datetime';
+import NumberFormat from 'react-number-format';
 
 // @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -31,13 +32,38 @@ import {
   shiftConstant,
 } from '../../../resources/constants';
 import {
-  generateMenuItemList, logError,
+  generateMenuItemList, logError
 } from '../../../resources/helpers';
 
 const { dateFormat, dateFormatDB, timeFormat } = datesConstant;
 
 const employeeAPI = new API({ url: '/employee' });
 employeeAPI.createEntity({ name: 'work' });
+
+function NumberFormatCustom(props) {
+  const { inputRef, onChange, ...other } = props;
+
+  return (
+    <NumberFormat
+      {...other}
+      getInputRef={inputRef}
+      onValueChange= {values => {
+        onChange({
+          target: {
+            value: values.value,
+          },
+        });
+      }}
+      thousandSeparator="."
+      decimalSeparator=","
+    />
+  );
+}
+
+NumberFormatCustom.propTypes = {
+  inputRef: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+}
 
 class WorkForm extends React.Component {
   static propTypes = {
@@ -374,6 +400,7 @@ class WorkForm extends React.Component {
                           this.fieldChange(event, 'dailySalary'),
                         id: 'dailySalary',
                         name: 'dailySalary',
+                        inputComponent: NumberFormatCustom,
                       }}
                     />
                   </GridItem>
@@ -393,6 +420,7 @@ class WorkForm extends React.Component {
                           this.fieldChange(event, 'monthlySalary'),
                         id: 'monthlySalary',
                         name: 'monthlySalary',
+                        inputComponent: NumberFormatCustom,
                       }}
                     />
                   </GridItem>
