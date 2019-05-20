@@ -466,7 +466,7 @@ class MonthlyAttendanceForm extends React.Component {
   };
   storeAbsenceChangedField(event, objName, employeeId, field) {
     let { value } = event.target;
-    if (field === 'discount') value = event.target.checked;
+    if (field === 'discount' || field === 'socialSecurityDiscount') value = event.target.checked;
     const { attendanceEntity } = this.state;
     const { employees } = attendanceEntity;
     const employee = employees.find(emp => emp.employeeId === employeeId);
