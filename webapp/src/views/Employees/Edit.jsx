@@ -94,7 +94,7 @@ class EditEmployee extends React.Component {
           // },
           {
             tabButton: 'Datos pago',
-            disabled,
+            // disabled,
             tabContent: <PaymentForm
               styles={tabStyles}
               updateEmployeeData={this.updateEmployeeData}
