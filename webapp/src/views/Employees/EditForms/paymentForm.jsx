@@ -6,6 +6,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import FormLabel from '@material-ui/core/FormLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
 
 // core components
 import GridContainer from '../../../components/Grid/GridContainer';
@@ -16,7 +17,7 @@ import Button from '../../../components/CustomButtons/Button';
 import CustomInput from '../../../components/CustomInput/CustomInput';
 
 import {
-  // logError,
+  logError,
   generateMenuItemList,
 } from '../../../resources/helpers';
 import {
@@ -26,12 +27,22 @@ import {
 
 import regularFormsStyle from '../../../assets/jss/material-dashboard-pro-react/views/regularFormsStyle';
 
+// API resources
+import API from '../../../resources/api';
+
+const employeeAPI = new API({ url: '/employee' });
+employeeAPI.createEntity({ name: 'payment' });
+
 class PaymentForm extends React.Component {
   static propTypes = {
     classes: PropTypes.shape({}).isRequired,
+    updateEmployeeData: PropTypes.func.isRequired,
+    employee: PropTypes.shape({}).isRequired,
   }
   state = {
-    paymentEntity: {},
+    paymentEntity: {
+      employeeId: this.props.employee._id || '5ce2cc45ec6352003c305756',
+    },
   }
   validateField(event, type) {
     const { value } = event.target;
@@ -40,6 +51,22 @@ class PaymentForm extends React.Component {
     this.setState({ paymentEntity });
   }
   validateField = this.validateField.bind(this)
+  saveClick = () => {
+    const { paymentEntity } = this.state;
+    console.log(paymentEntity);
+    employeeAPI.endpoints.payment.create(paymentEntity)
+      .then(response => response.json())
+      .then(data => {
+        const { errors, errmsg } = data;
+        if (errors || errmsg) {
+          const err = errors ? errors : errmsg;
+          logError(err);
+          return;
+        }
+        this.props.updateEmployeeData(data, 'payment');
+      })
+      .catch(err => logError(err));
+  }
   render() {
     const { classes } = this.props;
     const paymentOptions = generateMenuItemList(paymentConstant, classes);
@@ -57,31 +84,33 @@ class PaymentForm extends React.Component {
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
-                    <Select
-                      MenuProps={{
-                        className: classes.selectMenu,
-                      }}
-                      classes={{
-                        select: classes.select,
-                      }}
-                      value={this.state.paymentEntity.paymentOption || ''}
-                      inputProps={{
-                        name: 'paymentOption',
-                        id: 'paymentOption',
-                        onChange: event => this.validateField(event, 'paymentOption'),
-                      }}
-                      autoWidth
-                    >
-                      <MenuItem
-                        disabled
-                        classes={{
-                          root: classes.selectMenuItem,
+                    <FormControl fullWidth className={classes.formControlCustomInput}>
+                      <Select
+                        MenuProps={{
+                          className: classes.selectMenu,
                         }}
+                        classes={{
+                          select: classes.select,
+                        }}
+                        value={this.state.paymentEntity.paymentOption || ''}
+                        inputProps={{
+                          name: 'paymentOption',
+                          id: 'paymentOption',
+                          onChange: event => this.validateField(event, 'paymentOption'),
+                        }}
+                        autoWidth
                       >
-                        Formas de pago
-                      </MenuItem>
-                      {paymentOptions}
-                    </Select>
+                        <MenuItem
+                          disabled
+                          classes={{
+                            root: classes.selectMenuItem,
+                          }}
+                        >
+                          Formas de pago
+                        </MenuItem>
+                        {paymentOptions}
+                      </Select>
+                    </FormControl>
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
@@ -91,31 +120,33 @@ class PaymentForm extends React.Component {
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={10}>
-                    <Select
-                      MenuProps={{
-                        className: classes.selectMenu,
-                      }}
-                      classes={{
-                        select: classes.select,
-                      }}
-                      value={this.state.paymentEntity.paymentOption || ''}
-                      inputProps={{
-                        name: 'bankName',
-                        id: 'bankName',
-                        onChange: event => this.validateField(event, 'bankName'),
-                      }}
-                      autoWidth
-                    >
-                      <MenuItem
-                        disabled
-                        classes={{
-                          root: classes.selectMenuItem,
+                    <FormControl fullWidth className={classes.formControlCustomInput}>
+                      <Select
+                        MenuProps={{
+                          className: classes.selectMenu,
                         }}
+                        classes={{
+                          select: classes.select,
+                        }}
+                        value={this.state.paymentEntity.bankName || ''}
+                        inputProps={{
+                          name: 'bankName',
+                          id: 'bankName',
+                          onChange: event => this.validateField(event, 'bankName'),
+                        }}
+                        autoWidth
                       >
-                        Banco
-                      </MenuItem>
-                      {bankOptions}
-                    </Select>
+                        <MenuItem
+                          disabled
+                          classes={{
+                            root: classes.selectMenuItem,
+                          }}
+                        >
+                          Banco
+                        </MenuItem>
+                        {bankOptions}
+                      </Select>
+                    </FormControl>
                   </GridItem>
                 </GridContainer>
                 <GridContainer>

@@ -15,7 +15,7 @@ router.use('/health', HealthRoutes);
 router.use('/family', FamilyRoutes);
 router.use('/education', EducationRoutes);
 router.use('/work', WorkRoutes);
-router.use('payment', PaymentRoutes);
+router.use('/payment', PaymentRoutes);
 router.use('/attendance', AttendanceRoutes);
 router.use('/salary', SalaryRoutes);
 

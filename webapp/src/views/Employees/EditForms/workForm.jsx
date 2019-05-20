@@ -68,6 +68,8 @@ NumberFormatCustom.propTypes = {
 class WorkForm extends React.Component {
   static propTypes = {
     classes: PropTypes.shape({}).isRequired,
+    updateEmployeeData: PropTypes.func.isRequired,
+    employee: PropTypes.shape({}).isRequired,
   }
   state = {
     workEntity: {
@@ -106,8 +108,13 @@ class WorkForm extends React.Component {
     employeeAPI.endpoints.work.create(workEntity)
       .then(response => response.json())
       .then(data => {
-        const { errors } = data;
-        if (errors) logError(errors);
+        const { errors, errmsg } = data;
+        if (errors || errmsg) {
+          const err = errors ? errors : errmsg;
+          logError(err);
+          return;
+        }
+        this.props.updateEmployeeData(data, 'work');
       })
       .catch(err => logError(err));
   }
