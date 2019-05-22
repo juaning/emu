@@ -208,12 +208,14 @@ class MonthlySalaryForm extends React.Component {
       nightlyWeekendExtraHoursAmount,
       holidaysAmount,
       unjustifiedAbsenceAmount,
+      otherIncomes,
     } = employee;
     const dailyWage = employee.wage / 30;
     const actualWage = dailyWage * employee.totalWorkedDays;
     const extraHours = nightHoursAmount + dailyExtraHoursAmount
       + nightlyExtraHoursAmount + weekendHoursAmount + nightlyWeekendExtraHoursAmount;
-    const subTotal = (actualWage + extraHours + holidaysAmount) - unjustifiedAbsenceAmount;
+    const subTotal = (actualWage + extraHours + holidaysAmount + otherIncomes)
+      - unjustifiedAbsenceAmount;
     return subTotal;
   }
   static calculateNetToDeposit(employee) {
@@ -529,6 +531,7 @@ class MonthlySalaryForm extends React.Component {
     let employee = employees.find(emp => emp.employeeId === employeeId);
     employee[name] = event.target.value * 1;
     employee = MonthlySalaryForm.makeTotalsCalculations(employee);
+    console.log(employee);
     this.setState({ salaryEntity });
   }
   singleCellChanged = this.singleCellChanged.bind(this)
@@ -637,7 +640,6 @@ class MonthlySalaryForm extends React.Component {
           // TODO wage should come from personal data
           const { wage } = employee;
           const dailyWage = wage / 30;
-          console.log(employee, work);
           employee = MonthlySalaryForm.calculateExtraHours(employee);
           employee.unjustifiedAbsenceAmount = employee.unjustifiedAbsenceDays * dailyWage;
           employee.suspensionAmount = employee.suspensionDays * dailyWage;
