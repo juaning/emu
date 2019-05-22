@@ -492,7 +492,8 @@ class MonthlySalaryForm extends React.Component {
         inputProps={{
           name,
           id: name,
-          onBlur: event =>
+          // inputComponent: NumberFormatCustom,
+          onChange: event =>
             this.singleCellChanged(event, employeeId, name),
         }}
       />

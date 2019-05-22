@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 // react component plugin for creating a beautiful datetime dropdown picker
 import Datetime from 'react-datetime';
-import NumberFormat from 'react-number-format';
 
 // @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -18,6 +17,7 @@ import Button from '../../../components/CustomButtons/Button';
 import CustomInput from '../../../components/CustomInput/CustomInput';
 import Card from '../../../components/Card/Card';
 import CardBody from '../../../components/Card/CardBody';
+import CustomNumberFormat from '../../../components/CustomNumberFormat/CustomNumberFormat';
 
 import regularFormsStyle from '../../../assets/jss/material-dashboard-pro-react/views/regularFormsStyle';
 
@@ -39,31 +39,6 @@ const { dateFormat, dateFormatDB, timeFormat } = datesConstant;
 
 const employeeAPI = new API({ url: '/employee' });
 employeeAPI.createEntity({ name: 'work' });
-
-function NumberFormatCustom(props) {
-  const { inputRef, onChange, ...other } = props;
-
-  return (
-    <NumberFormat
-      {...other}
-      getInputRef={inputRef}
-      onValueChange= {values => {
-        onChange({
-          target: {
-            value: values.value,
-          },
-        });
-      }}
-      thousandSeparator="."
-      decimalSeparator=","
-    />
-  );
-}
-
-NumberFormatCustom.propTypes = {
-  inputRef: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired,
-}
 
 class WorkForm extends React.Component {
   static propTypes = {
@@ -407,7 +382,7 @@ class WorkForm extends React.Component {
                           this.fieldChange(event, 'dailySalary'),
                         id: 'dailySalary',
                         name: 'dailySalary',
-                        inputComponent: NumberFormatCustom,
+                        inputComponent: CustomNumberFormat,
                       }}
                     />
                   </GridItem>
@@ -427,7 +402,7 @@ class WorkForm extends React.Component {
                           this.fieldChange(event, 'monthlySalary'),
                         id: 'monthlySalary',
                         name: 'monthlySalary',
-                        inputComponent: NumberFormatCustom,
+                        inputComponent: CustomNumberFormat,
                       }}
                     />
                   </GridItem>
