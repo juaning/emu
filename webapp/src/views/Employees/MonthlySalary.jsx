@@ -9,8 +9,7 @@ import 'moment/locale/es';
 // @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
 import FormLabel from '@material-ui/core/FormLabel';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import Switch from '@material-ui/core/Switch';
+import FormControl from '@material-ui/core/FormControl';
 
 // @material-ui/icons
 import AttachMoney from '@material-ui/icons/AttachMoney';
@@ -32,6 +31,7 @@ import {
   datesConstant,
   reactTableTextMsg,
   minimumWage,
+  contractTypeConstant,
 } from '../../resources/constants';
 import { logError } from '../../resources/helpers';
 
@@ -74,6 +74,12 @@ class MonthlySalaryForm extends React.Component {
     return ({
       Header: 'Salario',
       columns: [
+        {
+          Header: 'Tipo de Contrato',
+          accessor: 'contractType',
+          Cell: props => contractTypeConstant
+            .find(type => type.value === props.value).text,
+        },
         {
           Header: 'Salario Base',
           accessor: 'wage',
@@ -151,6 +157,7 @@ class MonthlySalaryForm extends React.Component {
       lastName: employee.lastName || '',
       employeeDocumentId: employee.documentId || '',
       wage: employee.wage || 0,
+      contractType: employee.contractType || '',
       attendanceId: employee.attendanceId || '',
       totalWorkedDays: employee.totalWorkedDays || 30,
       nightHoursHours: extraHours.nightlyHours || 0,
@@ -613,12 +620,15 @@ class MonthlySalaryForm extends React.Component {
             .find(personAttendance => personAttendance.employeeId === person._id);
           const newPerson = _.assignWith(person, attendance,
             (objValue, srcValue) => _.isUndefined(objValue) ? srcValue : objValue);
+          
           newPerson.attendanceId = attendance._id;
           newPerson.wage = work && work.monthlySalary;
+          newPerson.contractType = work && work.contractType;
           let employee = MonthlySalaryForm.generateEmployeeSalaryObj(newPerson);
           // TODO wage should come from personal data
           const { wage } = employee;
           const dailyWage = wage / 30;
+          console.log(employee, work);
           employee = MonthlySalaryForm.calculateExtraHours(employee);
           employee.unjustifiedAbsenceAmount = employee.unjustifiedAbsenceDays * dailyWage;
           employee.suspensionAmount = employee.suspensionDays * dailyWage;
@@ -656,19 +666,21 @@ class MonthlySalaryForm extends React.Component {
                   </FormLabel>
                 </GridItem>
                 <GridItem xs={12} sm={6}>
-                  <Datetime
-                    id="monthYear"
-                    timeFormat={false}
-                    dateFormat={monthYear}
-                    value={monthYearValue}
-                    inputProps={{
-                      name: 'monthYear',
-                      id: 'monthYear',
-                    }}
-                    onChange={momentObj =>
-                        this.salaryDateChange(momentObj)}
-                    closeOnSelect
-                  />
+                  <FormControl fullWidth className={classes.formControlCustomInput}>
+                    <Datetime
+                      id="monthYear"
+                      timeFormat={false}
+                      dateFormat={monthYear}
+                      value={monthYearValue}
+                      inputProps={{
+                        name: 'monthYear',
+                        id: 'monthYear',
+                      }}
+                      onChange={momentObj =>
+                          this.salaryDateChange(momentObj)}
+                      closeOnSelect
+                    />
+                  </FormControl>
                 </GridItem>
                 <GridItem xs={12} sm={4} style={{ textAlign: 'right' }}>
                   <Button
@@ -693,7 +705,11 @@ class MonthlySalaryForm extends React.Component {
                     Salario minimo vigente:
                   </FormLabel>
                 </GridItem>
-                <GridItem xs={12} sm={2}>{minimumWage.monthly.toLocaleString('es-PY')}</GridItem>
+                <GridItem xs={12} sm={2}>
+                  <FormLabel className={classes.labelHorizontal} style={{float: 'left'}}>
+                    <p>{minimumWage.monthly.toLocaleString('es-PY')}</p>
+                  </FormLabel>
+                </GridItem>
               </GridContainer>
               <ReactTable
                 data={employees}
