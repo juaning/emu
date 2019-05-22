@@ -50,9 +50,10 @@ employeeAPI.createEntity({ name: 'salary' });
 // TODO: add read only to fields if salaries has been saved
 
 class MonthlySalaryForm extends React.Component {
-  static createEmpleadoColumns() {
+  static createEmpleadoColumns(classes) {
     return ({
       Header: 'Empleado',
+      headerClassName: classes.headerSeparator,
       columns: [
         {
           Header: 'Codigo',
@@ -70,9 +71,10 @@ class MonthlySalaryForm extends React.Component {
       ],
     });
   }
-  static createSalaryColumns() {
+  static createSalaryColumns(classes) {
     return ({
       Header: 'Salario',
+      headerClassName: classes.headerSeparator,
       columns: [
         {
           Header: 'Tipo de Contrato',
@@ -92,9 +94,10 @@ class MonthlySalaryForm extends React.Component {
       ],
     });
   }
-  static createExtraHoursColumns(header, accessor) {
+  static createExtraHoursColumns(classes, header, accessor) {
     return ({
       Header: header,
+      headerClassName: classes.headerSeparator,
       columns: [
         {
           Header: 'Horas',
@@ -107,9 +110,10 @@ class MonthlySalaryForm extends React.Component {
       ],
     });
   }
-  static createUnjustifiedAbsenceColumns() {
+  static createUnjustifiedAbsenceColumns(classes) {
     return ({
       Header: 'Ausencias Injustificadas',
+      headerClassName: classes.headerSeparator,
       columns: [
         {
           Header: 'Días',
@@ -123,9 +127,10 @@ class MonthlySalaryForm extends React.Component {
       ],
     });
   }
-  static createSuspensionsColumns() {
+  static createSuspensionsColumns(classes) {
     return ({
       Header: 'Suspenciones',
+      headerClassName: classes.headerSeparator,
       columns: [
         {
           Header: 'Días',
@@ -289,30 +294,31 @@ class MonthlySalaryForm extends React.Component {
       .catch(err => logError(err));
   }
   createColumns() {
+    const { classes } = this.props
     return [
-      MonthlySalaryForm.createEmpleadoColumns(),
-      MonthlySalaryForm.createSalaryColumns(),
-      MonthlySalaryForm.createExtraHoursColumns('Hrs. Nocturnas', {
+      MonthlySalaryForm.createEmpleadoColumns(classes),
+      MonthlySalaryForm.createSalaryColumns(classes),
+      MonthlySalaryForm.createExtraHoursColumns(classes, 'Hrs. Nocturnas', {
         hours: 'nightHoursHours',
         amount: 'nightHoursAmount',
       }),
-      MonthlySalaryForm.createExtraHoursColumns('Hrs. Extra Diurnas (50%)', {
+      MonthlySalaryForm.createExtraHoursColumns(classes, 'Hrs. Extra Diurnas (50%)', {
         hours: 'dailyExtraHoursHours',
         amount: 'dailyExtraHoursAmount',
       }),
-      MonthlySalaryForm.createExtraHoursColumns('Hrs. Extra Nocturnas (100%)', {
+      MonthlySalaryForm.createExtraHoursColumns(classes, 'Hrs. Extra Nocturnas (100%)', {
         hours: 'nightlyExtraHoursHours',
         amount: 'nightlyExtraHoursAmount',
       }),
-      MonthlySalaryForm.createExtraHoursColumns('Hrs. Domingos y Feriados Diurnas', {
+      MonthlySalaryForm.createExtraHoursColumns(classes, 'Hrs. Domingos y Feriados Diurnas', {
         hours: 'weekendHoursHours',
         amount: 'weekendHoursAmount',
       }),
-      MonthlySalaryForm.createExtraHoursColumns('Hrs. Extra Nocturnas Domingos y Feriados', {
+      MonthlySalaryForm.createExtraHoursColumns(classes, 'Hrs. Extra Nocturnas Domingos y Feriados', {
         hours: 'nightlyWeekendExtraHoursHours',
         amount: 'nightlyWeekendExtraHoursAmount',
       }),
-      this.createHolidaysColumns(),
+      this.createHolidaysColumns(classes),
       {
         columns: [{
           Header: 'Otros Ingresos',
@@ -320,7 +326,7 @@ class MonthlySalaryForm extends React.Component {
           Cell: row => this.addEditableSingleCell(row, 'otherIncomes'),
         }],
       },
-      MonthlySalaryForm.createUnjustifiedAbsenceColumns(),
+      MonthlySalaryForm.createUnjustifiedAbsenceColumns(classes),
       {
         columns: [{
           Header: 'Sub Total',
@@ -356,8 +362,8 @@ class MonthlySalaryForm extends React.Component {
           Cell: row => this.addEditableSingleCell(row, 'discountJudicial'),
         }],
       },
-      MonthlySalaryForm.createSuspensionsColumns(),
-      this.createLateArrivalsColumns(),
+      MonthlySalaryForm.createSuspensionsColumns(classes),
+      this.createLateArrivalsColumns(classes),
       {
         columns: [{
           Header: 'Otros Descuentos',
@@ -379,7 +385,7 @@ class MonthlySalaryForm extends React.Component {
           Cell: props => Math.round(props.value).toLocaleString('es-PY'),
         }],
       },
-      this.createUndeclaredIPSColumns(),
+      this.createUndeclaredIPSColumns(classes),
       {
         Header: 'Total a Pagar',
         accessor: 'totalPayment',
@@ -388,9 +394,10 @@ class MonthlySalaryForm extends React.Component {
     ];
   }
   createColumns = this.createColumns.bind(this)
-  createHolidaysColumns() {
+  createHolidaysColumns(classes) {
     return ({
       Header: 'Vacaciones',
+      headerClassName: classes.headerSeparator,
       columns: [
         {
           Header: 'Días',
@@ -405,7 +412,7 @@ class MonthlySalaryForm extends React.Component {
                 inputProps={{
                   name: 'holidaysDays',
                   id: 'holidaysDays',
-                  onBlur: event =>
+                  onChange: event =>
                     this.dayAmountChanged(event, 'holidaysDays', 'holidaysAmount', employeeId),
                 }}
               />
@@ -421,9 +428,10 @@ class MonthlySalaryForm extends React.Component {
     });
   }
   createHolidaysColumns = this.createHolidaysColumns.bind(this)
-  createUndeclaredIPSColumns() {
+  createUndeclaredIPSColumns(classes) {
     return ({
       Header: 'Pagos a Realizarse sin Declarar en IPS',
+      headerClassName: classes.headerSeparator,
       columns: [
         {
           Header: 'Viatico',
@@ -444,9 +452,10 @@ class MonthlySalaryForm extends React.Component {
     });
   }
   createUndeclaredIPSColumns = this.createUndeclaredIPSColumns.bind(this)
-  createLateArrivalsColumns() {
+  createLateArrivalsColumns(classes) {
     return ({
       Header: 'Llegadas Tardías',
+      headerClassName: classes.headerSeparator,
       columns: [
         {
           Header: 'Horas',

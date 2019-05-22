@@ -4,6 +4,7 @@
 
 import { cardTitle } from '../../material-dashboard-pro-react';
 import customCheckboxRadioSwitch from '../../material-dashboard-pro-react/customCheckboxRadioSwitch';
+import { red } from '@material-ui/core/colors';
 
 const regularFormsStyle = {
   ...customCheckboxRadioSwitch,
@@ -39,6 +40,11 @@ const regularFormsStyle = {
     '& svg,& .fab,& .far,& .fal,& .fas': {
       color: '#495057',
     }
+  },
+  headerSeparator: {
+    borderRightColor: 'gray',
+    borderRightWidth: '2px',
+    borderRightStyle: 'solid',
   },
 };
 
