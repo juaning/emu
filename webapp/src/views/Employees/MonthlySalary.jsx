@@ -150,7 +150,7 @@ class MonthlySalaryForm extends React.Component {
       firstName: employee.firstName || '',
       lastName: employee.lastName || '',
       employeeDocumentId: employee.documentId || '',
-      wage: employee.wage || minimumWage.monthly,
+      wage: employee.wage || 0,
       attendanceId: employee.attendanceId || '',
       totalWorkedDays: employee.totalWorkedDays || 30,
       nightHoursHours: extraHours.nightlyHours || 0,
