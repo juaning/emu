@@ -91,6 +91,11 @@ class MonthlySalaryForm extends React.Component {
           Header: 'Días trabajados',
           accessor: 'totalWorkedDays',
         },
+        {
+          Header: 'Salario a pagar',
+          accessor: 'paidSalary',
+          Cell: props => props.value.toLocaleString('es-PY'),
+        },
       ],
     });
   }
@@ -165,6 +170,7 @@ class MonthlySalaryForm extends React.Component {
       contractType: employee.contractType || '',
       attendanceId: employee.attendanceId || '',
       totalWorkedDays: employee.totalWorkedDays || 30,
+      paidSalary: employee.paidSalary || 0,
       nightHoursHours: extraHours.nightlyHours || 0,
       nightHoursAmount: 0,
       dailyExtraHoursHours: extraHours.dailyExtraHours || 0,
@@ -531,7 +537,6 @@ class MonthlySalaryForm extends React.Component {
     let employee = employees.find(emp => emp.employeeId === employeeId);
     employee[name] = event.target.value * 1;
     employee = MonthlySalaryForm.makeTotalsCalculations(employee);
-    console.log(employee);
     this.setState({ salaryEntity });
   }
   singleCellChanged = this.singleCellChanged.bind(this)
@@ -639,11 +644,12 @@ class MonthlySalaryForm extends React.Component {
           let employee = MonthlySalaryForm.generateEmployeeSalaryObj(newPerson);
           // TODO wage should come from personal data
           const { wage } = employee;
-          const dailyWage = wage / 30;
+          const dailyWage = Math.round(wage / 30);
           employee = MonthlySalaryForm.calculateExtraHours(employee);
           employee.unjustifiedAbsenceAmount = employee.unjustifiedAbsenceDays * dailyWage;
           employee.suspensionAmount = employee.suspensionDays * dailyWage;
           employee = MonthlySalaryForm.makeTotalsCalculations(employee);
+          employee.paidSalary = dailyWage * employee.totalWorkedDays;
           return employee;
         });
         salaryEntity.employees = newEmployees;
