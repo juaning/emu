@@ -24,6 +24,7 @@ import CardHeader from '../../components/Card/CardHeader';
 import CardIcon from '../../components/Card/CardIcon';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import Button from '../../components/CustomButtons/Button';
+import CustomNumberFormat from '../../components/CustomNumberFormat/CustomNumberFormat';
 
 import regularFormsStyle from '../../assets/jss/material-dashboard-pro-react/views/regularFormsStyle';
 
@@ -111,6 +112,7 @@ class MonthlySalaryForm extends React.Component {
         {
           Header: 'Monto',
           accessor: 'unjustifiedAbsenceAmount',
+          Cell: props => Math.round(props.value).toLocaleString('es-PY'),
         },
       ],
     });
@@ -126,6 +128,7 @@ class MonthlySalaryForm extends React.Component {
         {
           Header: 'Monto',
           accessor: 'suspensionAmount',
+          Cell: props => Math.round(props.value).toLocaleString('es-PY'),
         },
       ],
     });
@@ -315,12 +318,14 @@ class MonthlySalaryForm extends React.Component {
         columns: [{
           Header: 'Sub Total',
           accessor: 'subTotal',
+          Cell: props => Math.round(props.value).toLocaleString('es-PY'),
         }],
       },
       {
         columns: [{
           Header: 'IPS',
           accessor: 'discountIps',
+          Cell: props => Math.round(props.value).toLocaleString('es-PY'),
         }],
       },
       {
@@ -364,12 +369,14 @@ class MonthlySalaryForm extends React.Component {
         columns: [{
           Header: 'Neto a Depositar',
           accessor: 'netToDeposit',
+          Cell: props => Math.round(props.value).toLocaleString('es-PY'),
         }],
       },
       this.createUndeclaredIPSColumns(),
       {
         Header: 'Total a Pagar',
         accessor: 'totalPayment',
+        Cell: props => Math.round(props.value).toLocaleString('es-PY'),
       },
     ];
   }
@@ -447,7 +454,7 @@ class MonthlySalaryForm extends React.Component {
                 inputProps={{
                   name: 'lateArrivalHours',
                   id: 'lateArrivalHours',
-                  onBlur: event =>
+                  onChange: event =>
                     this.lateArrivalsChanged(event, employeeId, 'lateArrivalHours'),
                 }}
               />
@@ -492,7 +499,7 @@ class MonthlySalaryForm extends React.Component {
         inputProps={{
           name,
           id: name,
-          // inputComponent: NumberFormatCustom,
+          inputComponent: CustomNumberFormat,
           onChange: event =>
             this.singleCellChanged(event, employeeId, name),
         }}
