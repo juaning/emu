@@ -110,7 +110,8 @@ class MonthlySalaryForm extends React.Component {
         },
         {
           Header: 'Monto',
-          accessor: accessor.amount.toLocaleString('es-PY'),
+          accessor: accessor.amount,
+          Cell: props => props.value.toLocaleString('es-PY'),
         },
       ],
     });
@@ -181,7 +182,7 @@ class MonthlySalaryForm extends React.Component {
       weekendHoursAmount: 0,
       nightlyWeekendExtraHoursHours: extraHours.sundayHolidaysExtraHours || 0,
       nightlyWeekendExtraHoursAmount: 0,
-      holidaysDays: 0,
+      holidayDays: employee.holidayDays || 0,
       holidaysAmount: 0,
       otherIncomes: 0,
       unjustifiedAbsenceDays,
@@ -216,12 +217,13 @@ class MonthlySalaryForm extends React.Component {
       unjustifiedAbsenceAmount,
       otherIncomes,
     } = employee;
-    const dailyWage = employee.wage / 30;
+    const dailyWage = Math.round(employee.wage / 30);
     const actualWage = dailyWage * employee.totalWorkedDays;
-    const extraHours = nightHoursAmount + dailyExtraHoursAmount
-      + nightlyExtraHoursAmount + weekendHoursAmount + nightlyWeekendExtraHoursAmount;
-    const subTotal = (actualWage + extraHours + holidaysAmount + otherIncomes)
-      - unjustifiedAbsenceAmount;
+    const extraHours = Math.round(nightHoursAmount + dailyExtraHoursAmount
+      + nightlyExtraHoursAmount + weekendHoursAmount + nightlyWeekendExtraHoursAmount);
+    const subTotal = Math.round((actualWage + extraHours + holidaysAmount + otherIncomes)
+      - unjustifiedAbsenceAmount);
+    console.log(`(${actualWage} + ${extraHours} + ${holidaysAmount} + ${otherIncomes}) - ${unjustifiedAbsenceAmount}`);
     return subTotal;
   }
   static calculateNetToDeposit(employee) {
@@ -409,23 +411,7 @@ class MonthlySalaryForm extends React.Component {
       columns: [
         {
           Header: 'Días',
-          accessor: 'holidaysDays',
-          Cell: (row) => {
-            const { employeeId } = row.original;
-            return (
-              <CustomInput
-                formControlProps={{
-                  fullWidth: true,
-                }}
-                inputProps={{
-                  name: 'holidaysDays',
-                  id: 'holidaysDays',
-                  onChange: event =>
-                    this.dayAmountChanged(event, 'holidaysDays', 'holidaysAmount', employeeId),
-                }}
-              />
-            );
-          },
+          accessor: 'holidayDays',
         },
         {
           Header: 'Monto',
@@ -561,18 +547,6 @@ class MonthlySalaryForm extends React.Component {
       .catch(err => logError(err));
   }
   salaryDateChange = this.salaryDateChange.bind(this)
-  dayAmountChanged(event, nameDay, nameAmount, employeeId) {
-    const { salaryEntity } = this.state;
-    const { employees } = salaryEntity;
-    let employee = employees.find(emp => emp.employeeId === employeeId);
-    const { wage } = employee;
-    employee[nameDay] = event.target.value;
-    // For monthly employee it's always 30 days
-    employee[nameAmount] = (wage / 30) * employee[nameDay];
-    employee = MonthlySalaryForm.makeTotalsCalculations(employee);
-    this.setState({ salaryEntity });
-  }
-  dayAmountChanged = this.dayAmountChanged.bind(this)
   lateArrivalsChanged(event, employeeId, name) {
     const { salaryEntity } = this.state;
     const { employees } = salaryEntity;
@@ -639,17 +613,19 @@ class MonthlySalaryForm extends React.Component {
             (objValue, srcValue) => _.isUndefined(objValue) ? srcValue : objValue);
           
           newPerson.attendanceId = attendance._id;
+          newPerson.holidayDays = attendance.holidayDays;
           newPerson.wage = work && work.monthlySalary;
           newPerson.contractType = work && work.contractType;
           let employee = MonthlySalaryForm.generateEmployeeSalaryObj(newPerson);
-          // TODO wage should come from personal data
           const { wage } = employee;
           const dailyWage = Math.round(wage / 30);
           employee = MonthlySalaryForm.calculateExtraHours(employee);
           employee.unjustifiedAbsenceAmount = employee.unjustifiedAbsenceDays * dailyWage;
           employee.suspensionAmount = employee.suspensionDays * dailyWage;
-          employee = MonthlySalaryForm.makeTotalsCalculations(employee);
           employee.paidSalary = dailyWage * employee.totalWorkedDays;
+          employee.holidaysAmount = dailyWage * employee.holidayDays;
+          // Calculate totals once values are set
+          employee = MonthlySalaryForm.makeTotalsCalculations(employee);
           return employee;
         });
         salaryEntity.employees = newEmployees;

@@ -12,6 +12,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import FormControl from '@material-ui/core/FormControl';
 
 // @material-ui/icons
 import Assignment from '@material-ui/icons/Assignment';
@@ -649,19 +650,21 @@ class MonthlyAttendanceForm extends React.Component {
                   </FormLabel>
                 </GridItem>
                 <GridItem xs={12} sm={6}>
-                  <Datetime
-                    id="monthYear"
-                    timeFormat={false}
-                    dateFormat={monthYear}
-                    value={monthYearValue}
-                    inputProps={{
-                      name: 'monthYear',
-                      id: 'monthYear',
-                    }}
-                    onChange={momentObj =>
-                        this.attendanceDateChange(momentObj)}
-                    closeOnSelect
-                  />
+                  <FormControl fullWidth className={classes.formControlCustomInput}>
+                    <Datetime
+                      id="monthYear"
+                      timeFormat={false}
+                      dateFormat={monthYear}
+                      value={monthYearValue}
+                      inputProps={{
+                        name: 'monthYear',
+                        id: 'monthYear',
+                      }}
+                      onChange={momentObj =>
+                          this.attendanceDateChange(momentObj)}
+                      closeOnSelect
+                    />
+                  </FormControl>
                 </GridItem>
                 <GridItem xs={12} sm={4} style={{ textAlign: 'right' }}>
                   <Button
