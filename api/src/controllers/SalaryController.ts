@@ -1,6 +1,8 @@
 import * as mongoose from 'mongoose';
-import SalarySchema from './../models/SalaryModel';
 import { Request, Response } from 'express';
+import * as Excel from 'exceljs';
+import { file } from 'tempy';
+import SalarySchema from './../models/SalaryModel';
 
 const Salary = mongoose.model('Salary', SalarySchema);
 
@@ -19,6 +21,68 @@ class SalaryController {
 
     Salary.find({ date })
       .then(salaryList => res.json(salaryList))
+      .catch(err => res.send(err));
+  }
+
+  public getSalaryMonthYearExcel(req: Request, res: Response) {
+    const { monthYear } = req.params;
+    const [ month, year ] = monthYear.split('-');
+    const date = new Date(Date.UTC(year, (month - 1)));
+
+    Salary.find({ date })
+      .then(salaryList => {
+        const reportName = `salarios-${year}${month}.xlsx`;
+        const workbook = new Excel.Workbook();
+        const sheet = workbook.addWorksheet(`Salarios_${year}${month}`)
+        const headers = [
+          { key: 'employeeId', header: 'Cod. Empleado' },
+          { key: 'firstName', header: 'Nombre' },
+          { key: 'lastName', header: 'Apellido' },
+          { key: 'employeeDocumentId', header: 'Documento' },
+          { key: 'wage', header: 'Salario' },
+          { key: 'totalWorkedDays', header: 'Días Trabajados' },
+          { key: 'nightHoursHours', header: 'Horas Extras Nocturnas' },
+          { key: 'nightHoursAmount', header: 'Monto Horas Extras Nocturnas' },
+          { key: 'dailyExtraHoursHours', header: 'Horas Extras Diurnas' },
+          { key: 'dailyExtraHoursAmount', header: 'Monto Horas Extras Diurnas' },
+          { key: 'nightlyExtraHoursHours', header: 'Horas Extras Nocturnas' },
+          { key: 'nightlyExtraHoursAmount', header: 'Monto Horas Extras Nocturnas' },
+          { key: 'weekendHoursHours', header: 'Horas Fin de Semana' },
+          { key: 'weekendHoursAmount', header: 'Monto Horas Fin de Semana' },
+          { key: 'nightlyWeekendExtraHoursHours', header: 'Horas Nocturnas Fin de Semana' },
+          { key: 'nightlyWeekendExtraHoursAmount', header: 'Monto Horas Nocturnas Fin de Semana' },
+          { key: 'holidayDays', header: 'Días de Vacaciones' },
+          { key: 'holidaysAmount', header: 'Monto Días de Vacaciones' },
+          { key: 'otherIncomes', header: 'Otros Ingresos' },
+          { key: 'unjustifiedAbsenceDays', header: 'Días de Ausencia Injustificada' },
+          { key: 'unjustifiedAbsenceAmount', header: 'Monto Días de Ausencia Injustificada' },
+          { key: 'subTotal', header: 'Sub-Total' },
+          { key: 'discountIps', header: 'Descuento IPS' },
+          { key: 'discountAdvancePayment', header: 'Descuento Avances' },
+          { key: 'discountLoans', header: 'Descuento Prestamos' },
+          { key: 'discountJudicial', header: 'Descuentos Judiciales' },
+          { key: 'suspensionDays', header: 'Días de Suspención' },
+          { key: 'suspensionAmount', header: 'Monto Días de Suspención' },
+          { key: 'lateArrivalHours', header: 'Llegadas Tardías (horas)' },
+          { key: 'lateArrivalMinutes', header: 'Llegadas Tardías (minutos)' },
+          { key: 'lateArrivalAmount', header: 'Llegadas Tardías (monto)' },
+          { key: 'otherDiscounts', header: 'Otros Descuentos' },
+          { key: 'familyBonus', header: 'Bono Familiar' },
+          { key: 'netToDeposit', header: 'Neto a Depositar' },
+          { key: 'viaticum', header: 'Viatico' },
+          { key: 'parking', header: 'Estacionamiento' },
+          { key: 'salaryBump', header: 'Aumento de Salario' },
+          { key: 'totalPayment', header: 'Total a Pagar' },
+        ];
+        sheet.columns = headers;
+        sheet.addRows(salaryList);
+        const tempfilePath = file({name: reportName});
+        return workbook.xlsx.writeFile(tempfilePath)
+        .then(() => {
+          res.attachment(reportName);
+          res.sendFile(tempfilePath);
+        });
+      })
       .catch(err => res.send(err));
   }
 
