@@ -126,6 +126,7 @@ class MonthlyAttendanceForm extends React.Component {
         unjustifiedAbsence,
       } = absence;
       const changeEmptyStrToZero = item => (item === '' ? 0 : item);
+      let { holidayDays } = employees[index[0]];
       excusedAbsence.days = changeEmptyStrToZero(excusedAbsence.days);
       permission.days = changeEmptyStrToZero(permission.days);
       suspension.days = changeEmptyStrToZero(suspension.days);
@@ -136,6 +137,7 @@ class MonthlyAttendanceForm extends React.Component {
       extraHours.sundayHolidaysExtraHours = changeEmptyStrToZero(extraHours
         .sundayHolidaysExtraHours);
       extraHours.sundayHolidaysHours = changeEmptyStrToZero(extraHours.sundayHolidaysHours);
+      holidayDays = changeEmptyStrToZero(holidayDays);
       this.setState({ attendanceEntity });
     }
   }
@@ -229,7 +231,7 @@ class MonthlyAttendanceForm extends React.Component {
       employeeId,
     } = params;
     const { classes } = this.props;
-    const containerKey = `absence-${employeeId}`;
+    const containerKey = `absence-${name}-${employeeId}`;
     return (
       <GridContainer key={containerKey}>
         <GridItem xs={12} sm={12} md={12}>
@@ -417,7 +419,7 @@ class MonthlyAttendanceForm extends React.Component {
     );
   }
   generateSubComponent(row) {
-    const { absence, extraHours, employeeId } = row.original;
+    const { absence, extraHours, holidayDays, employeeId } = row.original;
     const {
       excusedAbsence,
       unjustifiedAbsence,
@@ -425,6 +427,7 @@ class MonthlyAttendanceForm extends React.Component {
       permission,
     } = absence;
     const absenceComponents = [];
+    const { classes } = this.props;
     absenceComponents.push(this.generateSubComponentAbsence({
       obj: excusedAbsence,
       title: 'Días de ausencia justificada',
@@ -449,6 +452,33 @@ class MonthlyAttendanceForm extends React.Component {
       name: 'permission',
       employeeId,
     }));
+    absenceComponents.push(
+      <GridContainer>
+        <GridItem xs={12} sm={12} md={12}>
+          <GridContainer>
+            <GridItem xs={12} sm={3}>
+              <FormLabel className={classes.labelHorizontal}>
+                Días de Vacaciones
+              </FormLabel>
+            </GridItem>
+            <GridItem xs={12} sm={1}>
+              <CustomInput
+                formControlProps={{
+                  fullWidth: true,
+                }}
+                inputProps={{
+                  name: 'holidayDays',
+                  id: 'holidayDays',
+                  value: holidayDays,
+                  onChange: event =>
+                    this.storeHolidayDaysChangedField(event, employeeId),
+                }}
+              />
+            </GridItem>
+          </GridContainer>
+        </GridItem>
+      </GridContainer>
+    );
     return (
       <GridContainer>
         <GridItem xs={12} sm={4} md={3}>
@@ -464,19 +494,35 @@ class MonthlyAttendanceForm extends React.Component {
   handleChange = name => (event) => {
     this.setState({ [name]: event.target.checked });
   };
-  storeAbsenceChangedField(event, objName, employeeId, field) {
+  storeHolidayDaysChangedField = (event, employeeId) => {
     let { value } = event.target;
-    if (field === 'discount' || field === 'socialSecurityDiscount') value = event.target.checked;
     const { attendanceEntity } = this.state;
     const { employees } = attendanceEntity;
     const employee = employees.find(emp => emp.employeeId === employeeId);
-    const {
-      absence,
-      totalMonthDays,
-    } = employee;
+    const { absence, totalMonthDays } = employee;
+    employee.holidayDays = value * 1;
+    employee.totalWorkedDays = totalMonthDays - (calculateOffDays(
+      absence, 'discount') + (value * 1));
+    employee.totalWorkedSSDays = totalMonthDays - (calculateOffDays(
+      absence, 'socialSecurityDiscount') + (value * 1));
+    const employeeIndex = employees.findIndex(x => x.employeeId === employeeId);
+    employees[employeeIndex] = employee;
+    attendanceEntity.employees = employees;
+    this.setState({ attendanceEntity });
+  }
+  storeAbsenceChangedField(event, objName, employeeId, field) {
+    let { value } = event.target;
+    const isCheckbox = field === 'discount' || field === 'socialSecurityDiscount';
+    if (isCheckbox) value = event.target.checked;
+    const { attendanceEntity } = this.state;
+    const { employees } = attendanceEntity;
+    const employee = employees.find(emp => emp.employeeId === employeeId);
+    const { absence, totalMonthDays, holidayDays } = employee;
     absence[objName][field] = value;
-    employee.totalWorkedDays = totalMonthDays - calculateOffDays(absence, 'discount');
-    employee.totalWorkedSSDays = totalMonthDays - calculateOffDays(absence, 'socialSecurityDiscount');
+    employee.totalWorkedDays = totalMonthDays - calculateOffDays(
+      absence, 'discount') - holidayDays;
+    employee.totalWorkedSSDays = totalMonthDays - calculateOffDays(
+      absence, 'socialSecurityDiscount') - holidayDays;
     employee.absence = absence;
     const employeeIndex = employees.findIndex(x => x.employeeId === employeeId);
     employees[employeeIndex] = employee;
