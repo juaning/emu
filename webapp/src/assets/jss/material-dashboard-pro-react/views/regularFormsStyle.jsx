@@ -40,6 +40,11 @@ const regularFormsStyle = {
       color: '#495057',
     }
   },
+  headerSeparator: {
+    borderRightColor: 'gray',
+    borderRightWidth: '2px',
+    borderRightStyle: 'solid',
+  },
 };
 
 export default regularFormsStyle;

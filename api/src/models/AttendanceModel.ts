@@ -9,6 +9,7 @@ const AttendanceSchema = Schema({
   totalMonthDays: { type: Number, default: 30 },
   totalWorkedDays: { type: Number, default: 30 },
   totalWorkedSSDays: { type: Number, default: 30 },
+  holidayDays: { type: Number, default: 0 },
   discountDays: { type: Boolean, default: false },
   reportDiscountDays: { type: Boolean, default: false },
   date: { type: Date },

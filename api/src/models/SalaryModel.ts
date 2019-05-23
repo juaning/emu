@@ -23,7 +23,7 @@ const SalarySchema = Schema({
   weekendHoursAmount: { type: Number, default: 0 },
   nightlyWeekendExtraHoursHours: { type: Number, default: 0 },
   nightlyWeekendExtraHoursAmount: { type: Number, default: 0 },
-  holidaysDays: { type: Number, default: 0 },
+  holidayDays: { type: Number, default: 0 },
   holidaysAmount: { type: Number, default: 0 },
   otherIncomes: { type: Number, default: 0 },
   unjustifiedAbsenceDays: { type: Number, default: 0 },
