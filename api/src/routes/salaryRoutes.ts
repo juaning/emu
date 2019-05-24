@@ -13,6 +13,9 @@ router.route('/:monthYear')
 .put(salaryController.updateSalaryMonthYear)
 .delete(salaryController.deleteSalaryMonthYear);
 
+router.route('/:monthYear/excel')
+.get(salaryController.getSalaryMonthYearExcel);
+
 router.route('/id/:salaryId')
 .get(salaryController.getSalaryById)
 .put(salaryController.updateSalaryById)

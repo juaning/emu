@@ -19,11 +19,13 @@
     "cookie-parser": "^1.4.4",
     "debug": "^3.2.6",
     "dotenv": "^5.0.1",
+    "exceljs": "^1.11.0",
     "express": "^4.17.0",
-    "mongoose": "^5.5.10",
+    "mongoose": "^5.5.11",
     "mongoose-validator": "^2.1.0",
     "morgan": "^1.9.1",
-    "parse-error": "^0.2.0"
+    "parse-error": "^0.2.0",
+    "tempy": "^0.3.0"
   },
   "devDependencies": {
     "@types/node": "^10.14.7",
