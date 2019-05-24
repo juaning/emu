@@ -127,7 +127,7 @@ class MonthlyAttendanceForm extends React.Component {
         unjustifiedAbsence,
       } = absence;
       const changeEmptyStrToZero = item => (item === '' ? 0 : item);
-      let { holidayDays } = employees[index[0]];
+      const { holidayDays } = employees[index[0]];
       excusedAbsence.days = changeEmptyStrToZero(excusedAbsence.days);
       permission.days = changeEmptyStrToZero(permission.days);
       suspension.days = changeEmptyStrToZero(suspension.days);
@@ -138,7 +138,7 @@ class MonthlyAttendanceForm extends React.Component {
       extraHours.sundayHolidaysExtraHours = changeEmptyStrToZero(extraHours
         .sundayHolidaysExtraHours);
       extraHours.sundayHolidaysHours = changeEmptyStrToZero(extraHours.sundayHolidaysHours);
-      holidayDays = changeEmptyStrToZero(holidayDays);
+      employees[index[0]].holidayDays = changeEmptyStrToZero(holidayDays);
       this.setState({ attendanceEntity });
     }
   }

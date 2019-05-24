@@ -79,13 +79,21 @@ class MonthlySalaryForm extends React.Component {
         {
           Header: 'Tipo de Contrato',
           accessor: 'contractType',
-          Cell: props => contractTypeConstant
-            .find(type => type.value === props.value).text,
+          Cell: props => {
+            const { value } = props;
+            if (value) return contractTypeConstant
+              .find(type => type.value === value).text;
+            return null;
+          },
         },
         {
           Header: 'Salario Base',
           accessor: 'wage',
-          Cell: props => props.value.toLocaleString('es-PY'),
+          Cell: props => {
+            const { value } = props
+            if (value) return value.toLocaleString('es-PY');
+            return null;
+          },
         },
         {
           Header: 'Días trabajados',
@@ -94,7 +102,11 @@ class MonthlySalaryForm extends React.Component {
         {
           Header: 'Salario a pagar',
           accessor: 'paidSalary',
-          Cell: props => props.value.toLocaleString('es-PY'),
+          Cell: props => {
+            const { value } = props
+            if (value) return value.toLocaleString('es-PY');
+            return null;
+          },
         },
       ],
     });
@@ -111,7 +123,11 @@ class MonthlySalaryForm extends React.Component {
         {
           Header: 'Monto',
           accessor: accessor.amount,
-          Cell: props => props.value.toLocaleString('es-PY'),
+          Cell: props => {
+            const { value } = props
+            if (value) return value.toLocaleString('es-PY');
+            return null;
+          },
         },
       ],
     });
@@ -290,6 +306,7 @@ class MonthlySalaryForm extends React.Component {
       year: moment().format('YYYY'),
       employees: [],
     },
+    downloadExcelDisabled: true,
   }
   componentDidMount() {
     const month = moment().format('MM');
@@ -299,7 +316,10 @@ class MonthlySalaryForm extends React.Component {
       .then((data) => {
         const { salaryEntity } = this.state;
         salaryEntity.employees = data;
-        this.setState({ salaryEntity });
+        this.setState({
+          salaryEntity,
+          downloadExcelDisabled: data.length < 1,
+        });
       })
       .catch(err => logError(err));
   }
@@ -416,7 +436,11 @@ class MonthlySalaryForm extends React.Component {
         {
           Header: 'Monto',
           accessor: 'holidaysAmount',
-          Cell: props => props.value.toLocaleString('es-PY'),
+          Cell: props => {
+            const { value } = props
+            if (value) return value.toLocaleString('es-PY');
+            return null;
+          },
         },
       ],
     });
@@ -542,7 +566,10 @@ class MonthlySalaryForm extends React.Component {
       .then(results => results.json())
       .then((data) => {
         newSalaryEntity.employees = data;
-        this.setState({ salaryEntity: newSalaryEntity });
+        this.setState({
+          salaryEntity: newSalaryEntity,
+          downloadExcelDisabled: data.length < 1,
+        });
       })
       .catch(err => logError(err));
   }
@@ -581,7 +608,8 @@ class MonthlySalaryForm extends React.Component {
       promise.then(results => results.json())
         .then(data => {
           salaryEntity.employees = data;
-          this.setState({ salaryEntity });
+
+          this.setState({ salaryEntity, downloadExcelDisabled: false });
         })
         .catch(err => logError(err));
     } else {} // Popup can't save no employee
@@ -635,10 +663,15 @@ class MonthlySalaryForm extends React.Component {
       .catch(err => logError(err));
   }
   generateClick = this.generateClick.bind(this)
+  downloadExcelClick = e => {
+    // TODO fix proxy issue for link
+    const el = document.getElementById('downloadExcel');
+    el.click();
+  }
   render() {
     const { classes } = this.props;
-    const { salaryEntity } = this.state;
-    const { employees, monthName, year } = salaryEntity;
+    const { salaryEntity, downloadExcelDisabled } = this.state;
+    const { employees, monthName, month, year } = salaryEntity;
     const monthYearValue = `${monthName} ${year}`;
     const styles = { 'text-align': 'left' };
     return (
@@ -690,6 +723,20 @@ class MonthlySalaryForm extends React.Component {
                   >
                     Generar
                   </Button>
+                  <Button
+                    color="success"
+                    disabled={downloadExcelDisabled}
+                    className={classes.registerButton}
+                    onClick={this.downloadExcelClick}
+                  >
+                    Descargar excel
+                  </Button>
+                  <a
+                    href={`http://localhost:3000/employee/salary/${month}-${year}/excel`}
+                    download
+                    styles={{visibility: 'none'}}
+                    id="downloadExcel"
+                  />
                 </GridItem>
               </GridContainer>
               <GridContainer>
