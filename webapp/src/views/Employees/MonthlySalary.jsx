@@ -239,7 +239,6 @@ class MonthlySalaryForm extends React.Component {
       + nightlyExtraHoursAmount + weekendHoursAmount + nightlyWeekendExtraHoursAmount);
     const subTotal = Math.round((actualWage + extraHours + holidaysAmount + otherIncomes)
       - unjustifiedAbsenceAmount);
-    console.log(`(${actualWage} + ${extraHours} + ${holidaysAmount} + ${otherIncomes}) - ${unjustifiedAbsenceAmount}`);
     return subTotal;
   }
   static calculateNetToDeposit(employee) {
