@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTable from 'react-table';
 import Datetime from 'react-datetime';
+import SweetAlert from "react-bootstrap-sweetalert";
 import moment from 'moment';
 import * as _ from 'lodash';
 // import { DotLoader } from 'react-spinners';
@@ -44,6 +45,7 @@ moment.locale('es');
 const employeeAPI = new API({ url: '/employee' });
 employeeAPI.createEntity({ name: 'personal-data' });
 employeeAPI.createEntity({ name: 'attendance' });
+employeeAPI.createEntity({ name: 'salary'});
 const { monthYear } = datesConstant;
 
 class MonthlyAttendanceForm extends React.Component {
@@ -94,6 +96,8 @@ class MonthlyAttendanceForm extends React.Component {
   }
   state = {
     loading: true,
+    wasSalaryGenerated: false,
+    showAlert: true,
     attendanceEntity: {
       monthName: _.startCase(moment().format('MMMM')),
       month: moment().format('MM'),
@@ -104,12 +108,22 @@ class MonthlyAttendanceForm extends React.Component {
   componentDidMount() {
     const month = moment().format('MM');
     const year = moment().format('YYYY');
-    employeeAPI.endpoints.attendance.getOne({ id: `${month}-${year}` })
-      .then(results => results.json())
-      .then((data) => {
+    const promises = [];
+    promises.push(employeeAPI.endpoints.attendance.getOne({
+      id: `${month}-${year}`,
+    }));
+    promises.push(employeeAPI.endpoints.salary.getOne({
+      id: `${month}-${year}`
+    }));
+    Promise.all(promises)
+      .then(results => Promise.all(results.map(result => result.json())))
+      .then(([attendanceData, salaryData]) => {
         const { attendanceEntity } = this.state;
-        attendanceEntity.employees = data;
-        this.setState({ attendanceEntity });
+        attendanceEntity.employees = attendanceData;
+        this.setState({
+          attendanceEntity,
+          wasSalaryGenerated: salaryData.length > 0,
+        });
       })
       .catch(err => logError(err));
   }
@@ -569,16 +583,53 @@ class MonthlyAttendanceForm extends React.Component {
       year,
       employees: [],
     });
-    employeeAPI.endpoints.attendance.getOne({ id: `${month}-${year}` })
-      .then(results => results.json())
-      .then((data) => {
-        newAttendanceEntity.employees = data;
-        this.setState({ attendanceEntity: newAttendanceEntity });
+    const promises = [];
+    promises.push(employeeAPI.endpoints.attendance.getOne({
+      id: `${month}-${year}`,
+    }));
+    promises.push(employeeAPI.endpoints.salary.getOne({
+      id: `${month}-${year}`
+    }));
+    Promise.all(promises)
+      .then(results => Promise.all(results.map(result => result.json())))
+      .then(([attendanceData, salaryData]) => {
+        newAttendanceEntity.employees = attendanceData;
+        this.setState({
+          attendanceEntity: newAttendanceEntity,
+          wasSalaryGenerated: salaryData.length > 0,
+        });
       })
       .catch(err => logError(err));
   }
   saveClick() {
-    const { attendanceEntity } = this.state;
+    const { attendanceEntity, wasSalaryGenerated, showAlert } = this.state;
+    if (wasSalaryGenerated && showAlert) {
+      // Show Alert
+      this.setState({
+        alert: (
+          <SweetAlert
+            warning
+            showCancel
+            style={{ display: "block", marginTop: "-100px" }}
+            title="Atención"
+            onConfirm={this.saveAndHideAlert}
+            onCancel={this.hideAlert}
+            cancelBtnBsStyle="default"
+            confirmBtnBsStyle="danger"
+            confirmBtnCssClass={
+              `${this.props.classes.button} ${this.props.classes.warning}`
+            }
+            confirmBtnText="Guardar"
+            cancelBtnText="Cancelar"
+          >
+            <p>La planilla de salarios ya fue generada. Cualquier cambio creará
+              inconsistencias con la planilla de salarios. Si decide continuar
+              debe generar una nueva planilla de salarios.</p>
+          </SweetAlert>
+        ),
+      });
+      return;
+    }
     let { month, year, employees } = attendanceEntity;
     if (employees.length > 0) {
       const employee = employees[0];
@@ -606,8 +657,19 @@ class MonthlyAttendanceForm extends React.Component {
     console.log('import', attendanceEntity);
   }
   importClick = this.importClick.bind(this);
+  hideAlert = () => {
+    this.setState({
+      alert: null,
+      showAlert: false,
+    })
+  }
+  saveAndHideAlert = () => {
+    this.hideAlert();
+    this.saveClick();
+  }
   generateClick() {
     const { attendanceEntity } = this.state;
+    
     employeeAPI.endpoints['personal-data'].getAll()
       .then(results => results.json())
       .then((data) => {
@@ -635,6 +697,7 @@ class MonthlyAttendanceForm extends React.Component {
     return (
       <GridContainer>
         <GridItem xs={12}>
+          {this.state.alert}
           <Card>
             <CardHeader color="primary" icon>
               <CardIcon color="primary">
