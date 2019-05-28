@@ -11,6 +11,6 @@ steps:
 - name: api
   image: node:9
   commands:
-    cd api
+    - cd api
     - npm install
     - npm test
