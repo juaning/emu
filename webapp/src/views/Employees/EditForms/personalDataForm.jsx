@@ -35,8 +35,6 @@ import {
   verifyEmail,
   verifyPhoneNumber,
   generateMenuItemList,
-  isObjEmpty,
-  // addDashesToPhoneNumber,
 } from '../../../resources/helpers';
 
 const employeeAPI = new API({ url: '/employee' });
@@ -49,16 +47,11 @@ class PersonalDataForm extends React.Component {
     registerEmailState: '',
     registerPhoneState: '',
     documentIdState: '',
-    entity: {},
+    entity: {
+      ...this.props.employee
+    },
   }
   onPhoneChange(event, stateName, type) {
-    // const key = event.which || event.keyCode || event.charCode;
-    // if (key !== 8 && key !== 46) {
-    //   const trimmedVal = event.target.value.replace(/\D[^\.]/g, '');
-    //   const formatedNumber = addDashesToPhoneNumber(trimmedVal);
-    //   console.log(formatedNumber);
-    //   event.target.value = formatedNumber;
-    // }
     this.validateField(event, stateName, type);
   }
   onPhoneChange = this.onPhoneChange.bind(this)
@@ -130,13 +123,10 @@ class PersonalDataForm extends React.Component {
   saveClick = this.saveClick.bind(this);
   render() {
     const { classes } = this.props;
-    const entity = isObjEmpty(this.state.entity) ? this.props.employee : this.state.entity;
+    const { entity } = this.state;
     const maritalStatusOptions = generateMenuItemList(maritalStatusConstant, classes);
     const countryListOptions = generateMenuItemList(countryListConstant, classes);
     const genderListOptions = generateMenuItemList(genderListConstant, classes);
-    // console.log(entity, this.props.employee);
-    // entity.documentId = 23;
-    // entity.firstName = 'Local';
     return (
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
@@ -159,7 +149,7 @@ class PersonalDataForm extends React.Component {
                         id: "documentId",
                         name: "documentId",
                         required: true,
-                        // value: entity.documentId ? entity.documentId : '',
+                        value: entity.documentId,
                         onChange: event =>
                           this.validateField(event, 'documentId', 'documentId'),
                       }}
@@ -182,8 +172,8 @@ class PersonalDataForm extends React.Component {
                         name: 'firstName',
                         id: 'firstName',
                         required: true,
-                        // value: entity.firstName ? entity.firstName : '',
-                        onBlur: event =>
+                        value: entity.firstName,
+                        onChange: event =>
                           this.validateField(event, '', 'firstName'),
                       }}
                     />
@@ -201,12 +191,12 @@ class PersonalDataForm extends React.Component {
                       formControlProps={{
                         fullWidth: true,
                       }}
-                      // value={entity.lastName || ''}
                       inputProps={{
                         name: 'lastName',
                         id: 'lastName',
                         required: true,
-                        onBlur: event =>
+                        value: entity.lastName,
+                        onChange: event =>
                           this.validateField(event, '', 'lastName'),
                       }}
                     />
@@ -230,7 +220,7 @@ class PersonalDataForm extends React.Component {
                           id: 'DOB',
                           required: true,
                         }}
-                        value={entity.DOB || ''}
+                        value={entity.DOB}
                         onBlur={momentObj =>
                             this.onDOBChange(momentObj, '', 'DOB')}
                         closeOnSelect
@@ -289,11 +279,11 @@ class PersonalDataForm extends React.Component {
                       formControlProps={{
                         fullWidth: true,
                       }}
-                      value={entity.address || ''}
                       inputProps={{
                         name: 'address',
                         id: 'address',
-                        onBlur: event =>
+                        value: entity.address,
+                        onChange: event =>
                           this.validateField(event, '', 'address'),
                       }}
                     />
@@ -314,11 +304,12 @@ class PersonalDataForm extends React.Component {
                       formControlProps={{
                         fullWidth: true,
                       }}
-                      value={entity.phone || ''}
+                      value={entity.phone}
                       inputProps={{
                         type: 'tel',
                         name: 'phone',
-                        onBlur: event =>
+                        value: entity.phone,
+                        onChange: event =>
                           this.onPhoneChange(event, 'registerPhone', 'phone'),
                       }}
                     />
@@ -344,7 +335,6 @@ class PersonalDataForm extends React.Component {
                           name: 'nationality',
                           id: 'nationality',
                           onChange: (event) => {
-                            // this.handleSimple(event);
                             this.validateField(event, '', 'nationality');
                           },
                         }}
@@ -416,12 +406,12 @@ class PersonalDataForm extends React.Component {
                       formControlProps={{
                         fullWidth: true,
                       }}
-                      value={entity.email || ''}
                       inputProps={{
-                        onBlur: event =>
+                        onChange: event =>
                           this.validateField(event, 'registerEmail', 'email'),
                         type: 'email',
                         name: 'email',
+                        value: entity.email,
                       }}
                     />
                   </GridItem>
