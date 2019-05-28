@@ -1,9 +1,14 @@
 kind: pipeline
-name: default
+name: test
 
 steps:
-- name: test
-  image: node
+- name: webapp
+  image: node:9
   commands:
   - npm install
   - npm test
+- name: api
+  image: node:9
+  commands:
+    - npm install
+    - npm test
