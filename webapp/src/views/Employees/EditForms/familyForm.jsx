@@ -39,10 +39,16 @@ const { startingDOBDate, dateFormat, dateFormatDB } = datesConstant;
 class FamilyForm extends React.Component {
   state = {
     familyEntity: {
-      employeeId: this.props.employee._id,
+      employeeId: this.props.employee._id || '5ced9f1213a4f5003ce1b326',
+      childNumber: this.props.employee.childNumber || '',
+      childs: this.props.employee.childs || {},
+      firstNamePartner: this.props.employee.firstNamePartner || '',
+      lastNamePartner: this.props.employee.lastNamePartner || '',
+      workplacePartner: this.props.employee.workplacePartner || ''
     },
   }
   onDOBChange(date, name) {
+    if (typeof date === 'string') return;
     const { familyEntity } = this.state;
     const { childs = {} } = familyEntity;
     childs[name] = date.format(dateFormatDB);
@@ -65,8 +71,9 @@ class FamilyForm extends React.Component {
     if (childNumber > 0) {
       for (let i = 0; i < childNumber; i += 1) {
         const childID = `childDOB-${i}`;
-        dates.push(<GridContainer>
-          <GridItem xs={12} sm={2} key={childID}>
+        dates.push(
+        <GridContainer key={childID}>
+          <GridItem xs={12} sm={2}>
             <FormLabel className={classes.labelHorizontal}>
               Fecha de Nacimiento hijo #{i + 1}
             </FormLabel>
@@ -78,12 +85,12 @@ class FamilyForm extends React.Component {
                 timeFormat={false}
                 dateFormat={dateFormat}
                 viewDate={startingDOBDate}
-                value={childs[i]}
+                value={childs[childID]}
                 inputProps={{
                   name: childID,
                   id: childID,
                 }}
-                onBlur={momentObj => this.onDOBChange(momentObj, childID)}
+                onChange={momentObj => this.onDOBChange(momentObj, childID)}
                 closeOnSelect
               />
             </FormControl>
@@ -113,10 +120,11 @@ class FamilyForm extends React.Component {
   saveClick = this.saveClick.bind(this)
   render() {
     const { classes } = this.props;
+    const { familyEntity } = this.state;
     const numbersList = generateMenuWithNumbers(10);
     const childNumberOptions = generateMenuItemList(numbersList, classes);
     const childDOBList = this.generateChildsDOB();
-    const { childNumber } = this.state.familyEntity;
+    const { childNumber } = familyEntity;
     return (
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
@@ -177,6 +185,7 @@ class FamilyForm extends React.Component {
                         id: 'firstNamePartner',
                         onChange: event =>
                           this.storeChangedField(event, 'firstNamePartner'),
+                        value: familyEntity.firstNamePartner,
                       }}
                     />
                   </GridItem>
@@ -198,6 +207,7 @@ class FamilyForm extends React.Component {
                         id: 'lastNamePartner',
                         onChange: event =>
                           this.storeChangedField(event, 'lastNamePartner'),
+                        value: familyEntity.lastNamePartner,
                       }}
                     />
                   </GridItem>
@@ -217,6 +227,7 @@ class FamilyForm extends React.Component {
                       inputProps={{
                         name: 'workplacePartner',
                         id: 'workplacePartner',
+                        value: familyEntity.workplacePartner,
                         onChange: event =>
                           this.storeChangedField(event, 'workplacePartner'),
                       }}

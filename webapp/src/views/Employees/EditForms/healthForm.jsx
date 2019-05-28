@@ -74,8 +74,6 @@ class HealthForm extends React.Component {
     const { healthEntity } = this.state;
     const bloodTypeOptions = generateMenuItemList(bloodTypeConstant, classes);
     const healthInsuranceOptions = generateMenuItemList(healthInsuranceConstant, classes);
-    console.log(healthEntity);
-    console.log(this.props);
     return (
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
