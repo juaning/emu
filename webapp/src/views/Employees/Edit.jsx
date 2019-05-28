@@ -75,7 +75,7 @@ class EditEmployee extends React.Component {
             tabContent: <EducationForm
               styles={tabStyles}
               updateEmployeeData={this.updateEmployeeData}
-              employee={employee.personalData || {}}
+              employee={employee.education || {}}
             />,
           },
           {

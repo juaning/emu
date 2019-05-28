@@ -6,6 +6,7 @@ import Datetime from 'react-datetime';
 // @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
 import FormLabel from '@material-ui/core/FormLabel';
+import FormControl from '@material-ui/core/FormControl';
 
 // core components
 import GridContainer from '../../../components/Grid/GridContainer';
@@ -22,11 +23,33 @@ class CourseView extends React.Component {
     courseDateChanged: PropTypes.func.isRequired,
   }
 
+  state = {
+    courseInstitution: (this.props.courseData && this.props.courseData.courseInstitution) || '',
+    courseTitle: (this.props.courseData && this.props.courseData.courseTitle) || '',
+    year: (this.props.courseData && this.props.courseData.year) || '',
+  }
+
+  dataChanged = (event, field) => {
+    this.setState({
+      [field]: event.target.value,
+    });
+  }
+
+  dateChanged = (date) => {
+    if (typeof date === 'string') return;
+    const { courseDateChanged, courseIndex} = this.props;
+    let { year } = this.state;
+    year = date.format('YYYY');
+    this.setState({ year });
+    courseDateChanged(date, courseIndex);
+  }
+
   render() {
     const { classes, courseIndex } = this.props;
+    const { courseInstitution, courseTitle, year } = this.state;
     const title = `courseTitle-${courseIndex}`;
     const intitution = `courseInstitution-${courseIndex}`;
-    const year = `courseDate-${courseIndex}`;
+    const yearId = `courseDate-${courseIndex}`;
     return (
       <div>
         <GridContainer>
@@ -45,6 +68,8 @@ class CourseView extends React.Component {
                 name: title,
                 id: title,
                 required: true,
+                value: courseTitle,
+                onChange: event => this.dataChanged(event, 'courseTitle'),
                 onBlur: event =>
                   this.props.courseDataChanged(event, courseIndex, 'courseTitle'),
               }}
@@ -67,6 +92,8 @@ class CourseView extends React.Component {
                 name: intitution,
                 id: intitution,
                 required: true,
+                value: courseInstitution,
+                onChange: event => this.dataChanged(event, 'courseInstitution'),
                 onBlur: event =>
                   this.props.courseDataChanged(event, courseIndex, 'courseInstitution'),
               }}
@@ -80,19 +107,20 @@ class CourseView extends React.Component {
             </FormLabel>
           </GridItem>
           <GridItem xs={12} sm={10}>
-            {/* TODO: add classes to match padding */}
-            <Datetime
-              id={year}
-              timeFormat={false}
-              dateFormat="YYYY"
-              inputProps={{
-                name: year,
-                id: year,
-              }}
-              onChange={momentObj =>
-                  this.props.courseDateChanged(momentObj, courseIndex)}
-              closeOnSelect
-            />
+            <FormControl fullWidth className={classes.formControlCustomInput}>
+              <Datetime
+                id={yearId}
+                timeFormat={false}
+                dateFormat="YYYY"
+                inputProps={{
+                  name: yearId,
+                  id: yearId,
+                }}
+                value={year}
+                onChange={momentObj => this.dateChanged(momentObj)}
+                closeOnSelect
+              />
+            </FormControl>
           </GridItem>
         </GridContainer>
       </div>
