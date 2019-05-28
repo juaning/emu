@@ -5,12 +5,12 @@ steps:
 - name: webapp
   image: node:9
   commands:
-  - cd webapp
+  - cd ./webapp
   - npm install
   - npm test
 - name: api
   image: node:9
   commands:
-    - cd api
+    - cd ./api
     - npm install
     - npm test
