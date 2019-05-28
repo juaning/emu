@@ -25,7 +25,7 @@ class EditEmployee extends React.Component {
   }
   updateEmployeeData(data, key) {
     const { employee } = this.state;
-    if (isObjEmpty(employee)) {
+    if (isObjEmpty(employee) && key === 'personalData') {
       employee.id = data._id;
     }
     employee[key] = data;
@@ -57,7 +57,7 @@ class EditEmployee extends React.Component {
             tabContent: <HealthForm
               styles={tabStyles}
               updateEmployeeData={this.updateEmployeeData}
-              employee={employee.personalData || {}}
+              employee={employee.health || {}}
             />,
           },
           {
@@ -87,11 +87,6 @@ class EditEmployee extends React.Component {
               employee={employee.personalData || {}}
             />,
           },
-          // {
-          //   tabButton: 'Adjuntos',
-          //   disabled,
-          //   tabContent: (<div><span>Adjuntos</span></div>),
-          // },
           {
             tabButton: 'Datos pago',
             disabled,
