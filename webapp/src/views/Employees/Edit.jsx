@@ -17,11 +17,36 @@ import PaymentForm from './EditForms/paymentForm';
 import WorkForm from './EditForms/workForm';
 
 import { isObjEmpty } from './../../resources/helpers';
+// API resources
+import API from '../../resources/api';
+
+const employeeAPI = new API({ url: '/employee' });
+employeeAPI.createEntity({ name: 'personal-data' });
 
 class EditEmployee extends React.Component {
   state = {
     activeTab: 0,
-    employee: {},
+    employee: {
+      id: (() => {
+        const { location } = this.props;
+        const query = new URLSearchParams(location.search);
+        return query.get('empleado');
+      })(),
+    },
+  }
+  getEmployeeIdFromURL = () => {
+    const { location } = this.props;
+    const query = new URLSearchParams(location.search);
+    return query.get('empleado');
+  }
+  componentDidMount() {
+    const { employee } = this.state;
+    if (employee.id) {
+      employeeAPI.endpoints['personal-data'].getOne({ id: employee.id })
+        .then(results => results.json())
+        .then(data => this.updateEmployeeData(data, 'personalData'))
+        .catch(err => console.error(err));
+    }
   }
   updateEmployeeData(data, key) {
     const { employee } = this.state;
@@ -36,6 +61,7 @@ class EditEmployee extends React.Component {
     const { employee } = this.state;
     const tabStyles = { width: '100%' };
     const disabled = isObjEmpty(employee);
+    console.log(employee);
 
     return (
       <NavPills

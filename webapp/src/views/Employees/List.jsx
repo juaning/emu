@@ -64,7 +64,11 @@ class TableList extends React.Component {
   }
   btnEditClicked = this.btnEditClicked.bind(this);
   btnEditClicked({ id, name }) {
-    console.log('this', this, 'ID', id, 'NAME', name);
+    const { history } = this.props;
+    history.push({
+      pathname: '/empleados/editar',
+      search: `?empleado=${id}`,
+    });
   }
   btnRemoveClicked = this.btnRemoveClicked.bind(this);
   btnRemoveClicked({ id, name }) {
@@ -135,9 +139,9 @@ class TableList extends React.Component {
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color="primary">
-              <h4 className={classes.cardTitleWhite}>Simple Table</h4>
+              <h4 className={classes.cardTitleWhite}>Lista de empleados</h4>
               <p className={classes.cardCategoryWhite}>
-                Here is a subtitle for this table
+                Listado basico de empleados
               </p>
             </CardHeader>
             <CardBody>
