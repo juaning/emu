@@ -44,7 +44,7 @@ class EducationForm extends React.Component {
   state = {
     courseCount: 0,
     educationEntity: {
-      employeeId: this.props.employee._id,
+      employeeId: this.props.employeeId,
       educationalLevel: this.props.employee.educationalLevel || '',
       languages: this.props.employee.languages || languagesConstant,
       courses: this.props.employee.courses || [],

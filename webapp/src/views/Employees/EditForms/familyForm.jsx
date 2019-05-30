@@ -39,7 +39,7 @@ const { startingDOBDate, dateFormat, dateFormatDB } = datesConstant;
 class FamilyForm extends React.Component {
   state = {
     familyEntity: {
-      employeeId: this.props.employee._id || '',
+      employeeId: this.props.employeeId || '',
       childNumber: this.props.employee.childNumber || '',
       childs: this.props.employee.childs || {},
       firstNamePartner: this.props.employee.firstNamePartner || '',

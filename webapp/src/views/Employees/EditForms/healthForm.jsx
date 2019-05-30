@@ -35,7 +35,7 @@ employeeAPI.createEntity({ name: 'health' });
 class HealthForm extends React.Component {
   state = {
     healthEntity: {
-      employeeId: this.props.employee._id || '',
+      employeeId: this.props.employeeId || '',
       bloodType: this.props.employee.bloodType || '',
       alergies: this.props.employee.alergies || '',
       conditions: this.props.employee.conditions || '',
