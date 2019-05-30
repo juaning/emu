@@ -41,7 +41,10 @@ class PaymentForm extends React.Component {
   }
   state = {
     paymentEntity: {
-      employeeId: this.props.employee._id || '5ce2cc45ec6352003c305756',
+      employeeId: this.props.employeeId || '',
+      paymentOption: this.props.employee.paymentOption || '',
+      bankName: this.props.employee.bankName || '',
+      accountNo: this.props.employee.accountNo || '',
     },
   }
   validateField(event, type) {
@@ -53,7 +56,6 @@ class PaymentForm extends React.Component {
   validateField = this.validateField.bind(this)
   saveClick = () => {
     const { paymentEntity } = this.state;
-    console.log(paymentEntity);
     employeeAPI.endpoints.payment.create(paymentEntity)
       .then(response => response.json())
       .then(data => {
@@ -69,6 +71,7 @@ class PaymentForm extends React.Component {
   }
   render() {
     const { classes } = this.props;
+    const { paymentEntity } = this.state;
     const paymentOptions = generateMenuItemList(paymentConstant, classes);
     const bankOptions = generateMenuItemList(bankConstant, classes);
     return (
@@ -92,7 +95,7 @@ class PaymentForm extends React.Component {
                         classes={{
                           select: classes.select,
                         }}
-                        value={this.state.paymentEntity.paymentOption || ''}
+                        value={paymentEntity.paymentOption}
                         inputProps={{
                           name: 'paymentOption',
                           id: 'paymentOption',
@@ -128,7 +131,7 @@ class PaymentForm extends React.Component {
                         classes={{
                           select: classes.select,
                         }}
-                        value={this.state.paymentEntity.bankName || ''}
+                        value={paymentEntity.bankName}
                         inputProps={{
                           name: 'bankName',
                           id: 'bankName',
@@ -165,6 +168,7 @@ class PaymentForm extends React.Component {
                         name: 'accountNo',
                         id: 'accountNo',
                         required: true,
+                        value: paymentEntity.accountNo,
                         onChange: event =>
                           this.validateField(event, 'accountNo'),
                       }}

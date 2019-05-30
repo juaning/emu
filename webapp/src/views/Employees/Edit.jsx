@@ -49,6 +49,7 @@ class EditEmployee extends React.Component {
               styles={tabStyles}
               updateEmployeeData={this.updateEmployeeData}
               employee={employee.personalData || {}}
+              employeeId={employee.id || null}
             />,
           },
           {
@@ -58,6 +59,7 @@ class EditEmployee extends React.Component {
               styles={tabStyles}
               updateEmployeeData={this.updateEmployeeData}
               employee={employee.health || {}}
+              employeeId={employee.id || null}
             />,
           },
           {
@@ -67,6 +69,7 @@ class EditEmployee extends React.Component {
               styles={tabStyles}
               updateEmployeeData={this.updateEmployeeData}
               employee={employee.family || {}}
+              employeeId={employee.id || null}
             />,
           },
           {
@@ -76,6 +79,7 @@ class EditEmployee extends React.Component {
               styles={tabStyles}
               updateEmployeeData={this.updateEmployeeData}
               employee={employee.education || {}}
+              employeeId={employee.id || null}
             />,
           },
           {
@@ -84,7 +88,8 @@ class EditEmployee extends React.Component {
             tabContent: <WorkForm
               styles={tabStyles}
               updateEmployeeData={this.updateEmployeeData}
-              employee={employee.personalData || {}}
+              employee={employee.work || {}}
+              employeeId={employee.id || null}
             />,
           },
           {
@@ -93,7 +98,8 @@ class EditEmployee extends React.Component {
             tabContent: <PaymentForm
               styles={tabStyles}
               updateEmployeeData={this.updateEmployeeData}
-              employee={employee.personalData || {}}
+              employee={employee.payment || {}}
+              employeeId={employee.id || null}
             />,
           },
         ]}
