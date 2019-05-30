@@ -34,26 +34,28 @@ employeeAPI.createEntity({ name: 'health' });
 
 class HealthForm extends React.Component {
   state = {
-    entity: {
-      employeeId: this.props.employee._id,
+    healthEntity: {
+      employeeId: this.props.employeeId || '',
+      bloodType: this.props.employee.bloodType || '',
+      alergies: this.props.employee.alergies || '',
+      conditions: this.props.employee.conditions || '',
+      emergencyContactName: this.props.employee.emergencyContactName || '',
+      emergencyContactNumber: this.props.employee.emergencyContactNumber || '',
+      healthInsurance: this.props.employee.healthInsurance || '',
     },
   }
-  handleSimple(event) {
-    this.setState({ [event.target.name]: event.target.value });
-  }
-  handleSimple = this.handleSimple.bind(this);
   validateField(event, stateName, type) {
     const { value } = event.target;
-    const { entity } = this.state;
-    entity[type] = value;
-    this.setState({ entity });
+    const { healthEntity } = this.state;
+    healthEntity[type] = value;
+    this.setState({ healthEntity });
   }
   validateField = this.validateField.bind(this);
   saveClick() {
-    const { entity } = this.state;
+    const { healthEntity } = this.state;
     employeeAPI
       .endpoints.health
-      .create(entity)
+      .create(healthEntity)
       .then(response => response.json())
       .then((data) => {
         const { errors, errmsg } = data;
@@ -69,6 +71,7 @@ class HealthForm extends React.Component {
   saveClick = this.saveClick.bind(this);
   render() {
     const { classes } = this.props;
+    const { healthEntity } = this.state;
     const bloodTypeOptions = generateMenuItemList(bloodTypeConstant, classes);
     const healthInsuranceOptions = generateMenuItemList(healthInsuranceConstant, classes);
     return (
@@ -92,14 +95,12 @@ class HealthForm extends React.Component {
                         classes={{
                           select: classes.select,
                         }}
-                        value={this.state.bloodType || ''}
+                        value={healthEntity.bloodType}
                         inputProps={{
                           name: 'bloodType',
                           id: 'bloodType',
-                          onChange: (event) => {
-                            this.handleSimple(event);
-                            this.validateField(event, '', 'bloodType');
-                          },
+                          onChange: (event) => 
+                            this.validateField(event, '', 'bloodType'),
                         }}
                         autoWidth
                       >
@@ -133,6 +134,7 @@ class HealthForm extends React.Component {
                           this.validateField(event, 'registerAlergies', 'alergies'),
                         type: 'text',
                         name: 'alergies',
+                        value: healthEntity.alergies,
                       }}
                     />
                   </GridItem>
@@ -154,6 +156,7 @@ class HealthForm extends React.Component {
                           this.validateField(event, 'registerConditions', 'conditions'),
                         type: 'text',
                         name: 'conditions',
+                        value: healthEntity.conditions,
                       }}
                     />
                   </GridItem>
@@ -176,6 +179,7 @@ class HealthForm extends React.Component {
                           inputProps={{
                             onChange: event =>
                               this.validateField(event, '', 'emergencyContactName'),
+                            value: healthEntity.emergencyContactName
                           }}
                         />
                       </GridItem>
@@ -190,6 +194,7 @@ class HealthForm extends React.Component {
                             type: 'tel',
                             onChange: event =>
                               this.validateField(event, '', 'emergencyContactNumber'),
+                            value: healthEntity.emergencyContactNumber
                           }}
                         />
                       </GridItem>
@@ -211,14 +216,12 @@ class HealthForm extends React.Component {
                         classes={{
                           select: classes.select,
                         }}
-                        value={this.state.healthInsurance || ''}
+                        value={healthEntity.healthInsurance}
                         inputProps={{
                           name: 'healthInsurance',
                           id: 'healthInsurance',
-                          onChange: (event) => {
-                            this.handleSimple(event);
-                            this.validateField(event, '', 'healthInsurance');
-                          },
+                          onChange: (event) => 
+                            this.validateField(event, '', 'healthInsurance'),
                         }}
                         autoWidth
                       >

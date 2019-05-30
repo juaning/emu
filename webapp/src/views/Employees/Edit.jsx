@@ -25,7 +25,7 @@ class EditEmployee extends React.Component {
   }
   updateEmployeeData(data, key) {
     const { employee } = this.state;
-    if (isObjEmpty(employee)) {
+    if (isObjEmpty(employee) && key === 'personalData') {
       employee.id = data._id;
     }
     employee[key] = data;
@@ -49,6 +49,7 @@ class EditEmployee extends React.Component {
               styles={tabStyles}
               updateEmployeeData={this.updateEmployeeData}
               employee={employee.personalData || {}}
+              employeeId={employee.id || null}
             />,
           },
           {
@@ -57,7 +58,8 @@ class EditEmployee extends React.Component {
             tabContent: <HealthForm
               styles={tabStyles}
               updateEmployeeData={this.updateEmployeeData}
-              employee={employee.personalData || {}}
+              employee={employee.health || {}}
+              employeeId={employee.id || null}
             />,
           },
           {
@@ -66,7 +68,8 @@ class EditEmployee extends React.Component {
             tabContent: <FamilyForm
               styles={tabStyles}
               updateEmployeeData={this.updateEmployeeData}
-              employee={employee.personalData || {}}
+              employee={employee.family || {}}
+              employeeId={employee.id || null}
             />,
           },
           {
@@ -75,7 +78,8 @@ class EditEmployee extends React.Component {
             tabContent: <EducationForm
               styles={tabStyles}
               updateEmployeeData={this.updateEmployeeData}
-              employee={employee.personalData || {}}
+              employee={employee.education || {}}
+              employeeId={employee.id || null}
             />,
           },
           {
@@ -84,21 +88,18 @@ class EditEmployee extends React.Component {
             tabContent: <WorkForm
               styles={tabStyles}
               updateEmployeeData={this.updateEmployeeData}
-              employee={employee.personalData || {}}
+              employee={employee.work || {}}
+              employeeId={employee.id || null}
             />,
           },
-          // {
-          //   tabButton: 'Adjuntos',
-          //   disabled,
-          //   tabContent: (<div><span>Adjuntos</span></div>),
-          // },
           {
             tabButton: 'Datos pago',
             disabled,
             tabContent: <PaymentForm
               styles={tabStyles}
               updateEmployeeData={this.updateEmployeeData}
-              employee={employee.personalData || {}}
+              employee={employee.payment || {}}
+              employeeId={employee.id || null}
             />,
           },
         ]}

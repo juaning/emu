@@ -44,19 +44,23 @@ class EducationForm extends React.Component {
   state = {
     courseCount: 0,
     educationEntity: {
-      employeeId: this.props.employee._id,
-      languages: languagesConstant,
-      courses: [],
+      employeeId: this.props.employeeId,
+      educationalLevel: this.props.employee.educationalLevel || '',
+      languages: this.props.employee.languages || languagesConstant,
+      courses: this.props.employee.courses || [],
     },
   }
   generateCourses() {
-    const { courseCount } = this.state;
+    const { courseCount, educationEntity } = this.state;
+    const { courses } = educationEntity;
     const courseFields = [];
-    for (let i = 0; i < courseCount; i += 1) {
+    let cc = courseCount || courses.length;
+    for (let i = 0; i < cc; i += 1) {
       courseFields.push(<CourseView
         courseDataChanged={this.courseDataChanged}
-        courseIndex={i}
         courseDateChanged={this.courseDateChanged}
+        courseIndex={i}
+        courseData={courses[i]}
       />);
     }
     return courseFields;
@@ -117,6 +121,7 @@ class EducationForm extends React.Component {
   saveClick = this.saveClick.bind(this)
   render() {
     const { classes } = this.props;
+    const { educationEntity } = this.state;
     const educationalLevelOptions = generateMenuItemList(educationLevelConstant, classes);
     const coursesFields = this.generateCourses();
     const addCourseBtnStyles = {
@@ -144,7 +149,7 @@ class EducationForm extends React.Component {
                         classes={{
                           select: classes.select,
                         }}
-                        value={this.state.educationEntity.educationalLevel || ''}
+                        value={educationEntity.educationalLevel || ''}
                         inputProps={{
                           name: 'educationalLevel',
                           id: 'educationalLevel',
@@ -186,7 +191,7 @@ class EducationForm extends React.Component {
                   <GridItem xs={12} sm={10}>
                     <FormControl fullWidth className={classes.formControlCustomInput}>
                       <TagsInput
-                        value={this.state.educationEntity.languages}
+                        value={educationEntity.languages}
                         onChange={this.handleTags}
                         tagProps={{
                           className: 'react-tagsinput-tag info',

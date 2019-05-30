@@ -48,9 +48,18 @@ class WorkForm extends React.Component {
   }
   state = {
     workEntity: {
-      employeeId: this.props.employee._id,
-      contractType: '',
-      startDate: '',
+      employeeId: this.props.employeeId || '',
+      startDate: this.props.employee.startDate || '',
+      startDateContract: this.props.employee.startDateContract || '',
+      endDateContract: this.props.employee.endDateContract || '',
+      contractType: this.props.employee.contractType || '',
+      jobTitle: this.props.employee.jobTitle || '',
+      costCentre: this.props.employee.costCentre || '',
+      startTime: this.props.employee.startTime || '',
+      endTime: this.props.employee.endTime || '',
+      shift: this.props.employee.shift || '',
+      dailySalary: this.props.employee.dailySalary || '',
+      monthlySalary: this.props.employee.monthlySalary || '',
     },
   }
   onDateChange(momentObj, type) {
@@ -124,7 +133,7 @@ class WorkForm extends React.Component {
                           name: 'startDate',
                           id: 'startDate',
                         }}
-                        onBlur={momentObj =>
+                        onChange={momentObj =>
                             this.onDateChange(momentObj, 'startDate')}
                         closeOnSelect
                       />
@@ -148,7 +157,7 @@ class WorkForm extends React.Component {
                           name: 'startDateContract',
                           id: 'startDateContract',
                         }}
-                        onBlur={momentObj =>
+                        onChange={momentObj =>
                             this.onDateChange(momentObj, 'startDateContract')}
                         closeOnSelect
                       />
@@ -170,7 +179,7 @@ class WorkForm extends React.Component {
                           name: 'endDateContract',
                           id: 'endDateContract',
                         }}
-                        onBlur={momentObj =>
+                        onChange={momentObj =>
                             this.onDateChange(momentObj, 'endDateContract')}
                         closeOnSelect
                       />
@@ -295,13 +304,13 @@ class WorkForm extends React.Component {
                         id="startTime"
                         timeFormat
                         dateFormat={false}
-                        // value={workEntity.startTime}
+                        value={workEntity.startTime}
                         viewMode="time"
                         inputProps={{
                           name: 'startTime',
                           id: 'startTime',
                         }}
-                        onBlur={momentObj =>
+                        onChange={momentObj =>
                             this.onTimeChange(momentObj, 'startTime')}
                         closeOnSelect
                       />
@@ -318,13 +327,13 @@ class WorkForm extends React.Component {
                         id="endTime"
                         timeFormat
                         dateFormat={false}
-                        // value={workEntity.endTime}
+                        value={workEntity.endTime}
                         viewMode="time"
                         inputProps={{
                           name: 'endTime',
                           id: 'endTime',
                         }}
-                        onBlur={momentObj =>
+                        onChange={momentObj =>
                             this.onTimeChange(momentObj, 'endTime')}
                         closeOnSelect
                       />
@@ -378,6 +387,7 @@ class WorkForm extends React.Component {
                         fullWidth: true,
                       }}
                       inputProps={{
+                        value: workEntity.dailySalary,
                         onChange: event =>
                           this.fieldChange(event, 'dailySalary'),
                         id: 'dailySalary',
@@ -398,6 +408,7 @@ class WorkForm extends React.Component {
                         fullWidth: true,
                       }}
                       inputProps={{
+                        value: workEntity.monthlySalary,
                         onChange: event =>
                           this.fieldChange(event, 'monthlySalary'),
                         id: 'monthlySalary',
