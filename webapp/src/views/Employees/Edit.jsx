@@ -26,6 +26,7 @@ employeeAPI.createEntity({ name: 'health' });
 employeeAPI.createEntity({ name: 'family' });
 employeeAPI.createEntity({ name: 'education' });
 employeeAPI.createEntity({ name: 'work' });
+employeeAPI.createEntity({ name: 'payment' });
 
 class EditEmployee extends React.Component {
   state = {
@@ -58,14 +59,16 @@ class EditEmployee extends React.Component {
           promises.push(employeeAPI.endpoints.work.getOne({
             id: `employee/${employee.id}/current`,
           }));
+          promises.push(employeeAPI.endpoints.payment.getOne({ id }));
           return Promise.all(promises);
         })
         .then(results => Promise.all(results.map(result => result.json())))
-        .then(([healthData, familyData, educationData, workData]) => {
+        .then(([healthData, familyData, educationData, workData, paymentData]) => {
           this.updateEmployeeData(healthData, 'health');
           this.updateEmployeeData(familyData, 'family');
           this.updateEmployeeData(educationData, 'education');
           this.updateEmployeeData(workData, 'work');
+          this.updateEmployeeData(paymentData, 'payment');
         })
         .catch(err => console.error(err));
     }

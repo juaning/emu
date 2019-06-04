@@ -16,4 +16,8 @@ router.route('/:paymentId')
 router.route('/employee/:employeeId')
 .get(paymentController.getAllPaymentDataFromEmployee);
 
+router.route('/employee/:employeeId/latest')
+.get(paymentController.getLatestPaymentDataFromEmployee);
+
+
 export default router;

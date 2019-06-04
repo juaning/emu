@@ -44,6 +44,13 @@ class PaymentController {
       .then(paymentData => res.json(paymentData))
       .catch(err => res.send(err));
   }
+
+  public getLatestPaymentDataFromEmployee(req: Request, res: Response) {
+    const { employeeId } = req.params;
+    PaymentModel.findOne( { employeeId }).sort({ $natural: -1})
+      .then(paymentData => res.json(paymentData))
+      .catch(err => res.send(err));
+  }
 }
 
 export default PaymentController;
