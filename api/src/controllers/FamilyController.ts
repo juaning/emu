@@ -48,6 +48,13 @@ class FamilyController {
       res.json({ message: `Successfully deleted Family data: ${req.params.familyId}` })
     });
   }
+
+  getLatestFamilyDataFromEmployee(req: Request, res: Response) {
+    const { employeeId } = req.params;
+    Family.findOne({ employeeId, }).sort({ $natural: -1 })
+      .then(familyData => res.json(familyData))
+      .catch(err => res.send(err));
+  }
 }
 
 export default FamilyController;

@@ -13,4 +13,7 @@ router.route('/:healthId')
 .put(healthController.updateHealthData)
 .delete(healthController.deleteHealthData);
 
+router.route('/employee/:employeeId/latest')
+.get(healthController.getLatestHealthDataFromEmployee);
+
 export default router;

@@ -22,6 +22,8 @@ import API from '../../resources/api';
 
 const employeeAPI = new API({ url: '/employee' });
 employeeAPI.createEntity({ name: 'personal-data' });
+employeeAPI.createEntity({ name: 'health' });
+employeeAPI.createEntity({ name: 'family' });
 
 class EditEmployee extends React.Component {
   state = {
@@ -44,7 +46,19 @@ class EditEmployee extends React.Component {
     if (employee.id) {
       employeeAPI.endpoints['personal-data'].getOne({ id: employee.id })
         .then(results => results.json())
-        .then(data => this.updateEmployeeData(data, 'personalData'))
+        .then(data => {
+          this.updateEmployeeData(data, 'personalData');
+          const promises = [];
+          const id = `employee/${employee.id}/latest`;
+          promises.push(employeeAPI.endpoints.health.getOne({ id }));
+          promises.push(employeeAPI.endpoints.family.getOne({ id }));
+          return Promise.all(promises);
+        })
+        .then(results => Promise.all(results.map(result => result.json())))
+        .then(([healthData, familyData]) => {
+          this.updateEmployeeData(healthData, 'health');
+          this.updateEmployeeData(familyData, 'family');
+        })
         .catch(err => console.error(err));
     }
   }

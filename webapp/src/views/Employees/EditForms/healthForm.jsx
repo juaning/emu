@@ -42,6 +42,7 @@ class HealthForm extends React.Component {
       emergencyContactName: this.props.employee.emergencyContactName || '',
       emergencyContactNumber: this.props.employee.emergencyContactNumber || '',
       healthInsurance: this.props.employee.healthInsurance || '',
+      id: this.props.employee._id || null,
     },
   }
   validateField(event, stateName, type) {
@@ -53,9 +54,13 @@ class HealthForm extends React.Component {
   validateField = this.validateField.bind(this);
   saveClick() {
     const { healthEntity } = this.state;
-    employeeAPI
-      .endpoints.health
-      .create(healthEntity)
+    let promise;
+    if (healthEntity.id) {
+      promise = employeeAPI.endpoints.health.update(healthEntity);
+    } else {
+      promise = employeeAPI.endpoints.health.create(healthEntity)
+    }
+    promise
       .then(response => response.json())
       .then((data) => {
         const { errors, errmsg } = data;
