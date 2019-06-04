@@ -42,6 +42,7 @@ class PaymentForm extends React.Component {
   state = {
     paymentEntity: {
       employeeId: this.props.employeeId || '',
+      id: this.props.employee._id || null,
       paymentOption: this.props.employee.paymentOption || '',
       bankName: this.props.employee.bankName || '',
       accountNo: this.props.employee.accountNo || '',
@@ -56,7 +57,13 @@ class PaymentForm extends React.Component {
   validateField = this.validateField.bind(this)
   saveClick = () => {
     const { paymentEntity } = this.state;
-    employeeAPI.endpoints.payment.create(paymentEntity)
+    let promise;
+    if (paymentEntity.id) {
+      promise = employeeAPI.endpoints.payment.update(paymentEntity);
+    } else {
+      promise = employeeAPI.endpoints.payment.create(paymentEntity)
+    }
+    promise
       .then(response => response.json())
       .then(data => {
         const { errors, errmsg } = data;

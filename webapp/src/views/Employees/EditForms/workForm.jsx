@@ -49,6 +49,7 @@ class WorkForm extends React.Component {
   state = {
     workEntity: {
       employeeId: this.props.employeeId || '',
+      id: this.props.employee._id || null,
       startDate: this.props.employee.startDate || '',
       startDateContract: this.props.employee.startDateContract || '',
       endDateContract: this.props.employee.endDateContract || '',
@@ -89,7 +90,13 @@ class WorkForm extends React.Component {
   }
   saveClick() {
     const { workEntity } = this.state;
-    employeeAPI.endpoints.work.create(workEntity)
+    let promise;
+    if (workEntity.id) {
+      promise = employeeAPI.endpoints.work.update(workEntity);
+    } else {
+      promise = employeeAPI.endpoints.work.create(workEntity)
+    }
+    promise
       .then(response => response.json())
       .then(data => {
         const { errors, errmsg } = data;

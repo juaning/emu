@@ -13,4 +13,7 @@ router.route('/:familyId')
 .put(familyController.updateFamilyData)
 .delete(familyController.deleteFamilyData);
 
+router.route('/employee/:employeeId/latest')
+.get(familyController.getLatestFamilyDataFromEmployee);
+
 export default router;

@@ -13,4 +13,7 @@ router.route('/:educationId')
 .put(educationController.updateEducationData)
 .delete(educationController.deleteEducationData);
 
+router.route('/employee/:employeeId/latest')
+.get(educationController.getLatestEducationDataFromEmployee);
+
 export default router;

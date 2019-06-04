@@ -44,7 +44,8 @@ class FamilyForm extends React.Component {
       childs: this.props.employee.childs || {},
       firstNamePartner: this.props.employee.firstNamePartner || '',
       lastNamePartner: this.props.employee.lastNamePartner || '',
-      workplacePartner: this.props.employee.workplacePartner || ''
+      workplacePartner: this.props.employee.workplacePartner || '',
+      id: this.props.employee._id || null,
     },
   }
   onDOBChange(date, name) {
@@ -103,8 +104,13 @@ class FamilyForm extends React.Component {
   generateChildsDOB = this.generateChildsDOB.bind(this)
   saveClick() {
     const { familyEntity } = this.state;
-    employeeAPI.endpoints.family
-      .create(familyEntity)
+    let promise;
+    if (familyEntity.id) {
+      promise = employeeAPI.endpoints.family.update(familyEntity);
+    } else {
+      promise = employeeAPI.endpoints.family.create(familyEntity)
+    }
+    promise
       .then(response => response.json())
       .then((savedFamilyEntity) => {
         const { errors, errmsg } = savedFamilyEntity;

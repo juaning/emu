@@ -45,6 +45,13 @@ class HealthController {
       res.json({ message: `Successfully deleted Health data: ${req.params.healthId}` });
     });
   }
+
+  getLatestHealthDataFromEmployee(req: Request, res: Response) {
+    const { employeeId } = req.params;
+    Health.findOne({ employeeId, }).sort({ $natural: -1 })
+      .then(healthData => res.json(healthData))
+      .catch(err => res.send(err));
+  }
 }
 
 export default HealthController;

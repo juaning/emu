@@ -17,11 +17,61 @@ import PaymentForm from './EditForms/paymentForm';
 import WorkForm from './EditForms/workForm';
 
 import { isObjEmpty } from './../../resources/helpers';
+// API resources
+import API from '../../resources/api';
+
+const employeeAPI = new API({ url: '/employee' });
+employeeAPI.createEntity({ name: 'personal-data' });
+employeeAPI.createEntity({ name: 'health' });
+employeeAPI.createEntity({ name: 'family' });
+employeeAPI.createEntity({ name: 'education' });
+employeeAPI.createEntity({ name: 'work' });
+employeeAPI.createEntity({ name: 'payment' });
 
 class EditEmployee extends React.Component {
   state = {
     activeTab: 0,
-    employee: {},
+    employee: {
+      id: (() => {
+        const { location } = this.props;
+        const query = new URLSearchParams(location.search);
+        return query.get('empleado');
+      })(),
+    },
+  }
+  getEmployeeIdFromURL = () => {
+    const { location } = this.props;
+    const query = new URLSearchParams(location.search);
+    return query.get('empleado');
+  }
+  componentDidMount() {
+    const { employee } = this.state;
+    if (employee.id) {
+      employeeAPI.endpoints['personal-data'].getOne({ id: employee.id })
+        .then(results => results.json())
+        .then(data => {
+          this.updateEmployeeData(data, 'personalData');
+          const promises = [];
+          const id = `employee/${employee.id}/latest`;
+          promises.push(employeeAPI.endpoints.health.getOne({ id }));
+          promises.push(employeeAPI.endpoints.family.getOne({ id }));
+          promises.push(employeeAPI.endpoints.education.getOne({ id }));
+          promises.push(employeeAPI.endpoints.work.getOne({
+            id: `employee/${employee.id}/current`,
+          }));
+          promises.push(employeeAPI.endpoints.payment.getOne({ id }));
+          return Promise.all(promises);
+        })
+        .then(results => Promise.all(results.map(result => result.json())))
+        .then(([healthData, familyData, educationData, workData, paymentData]) => {
+          this.updateEmployeeData(healthData, 'health');
+          this.updateEmployeeData(familyData, 'family');
+          this.updateEmployeeData(educationData, 'education');
+          this.updateEmployeeData(workData, 'work');
+          this.updateEmployeeData(paymentData, 'payment');
+        })
+        .catch(err => console.error(err));
+    }
   }
   updateEmployeeData(data, key) {
     const { employee } = this.state;

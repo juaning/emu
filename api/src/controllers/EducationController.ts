@@ -36,6 +36,13 @@ class EducationController {
       .then(() => res.json({ message: `Successfully deleted Education data: ${educationId}`}))
       .catch(err => res.send(err));
   }
+
+  getLatestEducationDataFromEmployee(req: Request, res: Response) {
+    const { employeeId } = req.params;
+    EducationModel.findOne({ employeeId, }).sort({ $natural: -1 })
+      .then(educationData => res.json(educationData))
+      .catch(err => res.send(err));
+  }
 }
 
 export default EducationController;

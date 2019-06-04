@@ -31,6 +31,7 @@ class App {
     const options = {
       useNewUrlParser: true,
       useCreateIndex: true,
+      useFindAndModify: false,
       user: this.isLocal ? '' : this.mongoUser,
       pass: this.isLocal ? '' : this.mongoPwd,
     };

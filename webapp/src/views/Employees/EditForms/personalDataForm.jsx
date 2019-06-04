@@ -50,6 +50,7 @@ class PersonalDataForm extends React.Component {
     entity: {
       ...this.props.employee
     },
+    entityId: this.props.employeeId,
   }
   onPhoneChange(event, stateName, type) {
     this.validateField(event, stateName, type);
@@ -106,9 +107,15 @@ class PersonalDataForm extends React.Component {
   }
   handleSimple = this.handleSimple.bind(this)
   saveClick() {
-    const { entity } = this.state;
-    employeeAPI.endpoints['personal-data'].create(entity)
-      .then(response => response.json())
+    const { entity, entityId } = this.state;
+    let promise;
+    if (entityId) {
+      entity.id = entityId;
+      promise = employeeAPI.endpoints['personal-data'].update(entity);
+    } else {
+      promise = employeeAPI.endpoints['personal-data'].create(entity);
+    }
+    promise.then(response => response.json())
       .then((data) => {
         const { errors, errmsg } = data;
         if (errors || errmsg) {

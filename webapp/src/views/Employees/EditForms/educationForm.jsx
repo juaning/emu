@@ -48,6 +48,7 @@ class EducationForm extends React.Component {
       educationalLevel: this.props.employee.educationalLevel || '',
       languages: this.props.employee.languages || languagesConstant,
       courses: this.props.employee.courses || [],
+      id: this.props.employee._id || null,
     },
   }
   generateCourses() {
@@ -105,7 +106,13 @@ class EducationForm extends React.Component {
   addCourse = this.addCourse.bind(this)
   saveClick() {
     const { educationEntity } = this.state;
-    employeeAPI.endpoints.education.create(educationEntity)
+    let promise;
+    if (educationEntity.id) {
+      promise = employeeAPI.endpoints.education.update(educationEntity);
+    } else {
+      promise = employeeAPI.endpoints.education.create(educationEntity)
+    }
+    promise
       .then(response => response.json())
       .then(data => {
         const { errors, errmsg } = data;
