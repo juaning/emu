@@ -18,6 +18,7 @@ const WorkSchema = Schema({
   startDateContract: { type: Date },
   endDateContract: { type: Date },
   contractType: { type: String },
+  laborRegime: { type: String },
   jobTitle: { type: String },
   costCentre: { type: String },
   startTime: { type: String },

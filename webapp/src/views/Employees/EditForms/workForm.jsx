@@ -27,6 +27,7 @@ import API from '../../../resources/api';
 import {
   datesConstant,
   contractTypeConstant,
+  laborRegimeConstant,
   jobTitleConstant,
   costCentreConstant,
   shiftConstant,
@@ -61,6 +62,7 @@ class WorkForm extends React.Component {
       shift: this.props.employee.shift || '',
       dailySalary: this.props.employee.dailySalary || '',
       monthlySalary: this.props.employee.monthlySalary || '',
+      laborRegime: this.props.employee.laborRegime || '',
     },
   }
   onDateChange(momentObj, type) {
@@ -114,6 +116,7 @@ class WorkForm extends React.Component {
     const { classes } = this.props;
     const { workEntity } = this.state;
     const contractTypeOptions = generateMenuItemList(contractTypeConstant, classes);
+    const laborRegimeOptions = generateMenuItemList(laborRegimeConstant, classes);
     const jobTitleOptions = generateMenuItemList(jobTitleConstant, classes);
     const costCentreOptions = generateMenuItemList(costCentreConstant, classes);
     const shiftOptions = generateMenuItemList(shiftConstant, classes);
@@ -199,7 +202,7 @@ class WorkForm extends React.Component {
                       Tipo de Contrato
                     </FormLabel>
                   </GridItem>
-                  <GridItem xs={12} sm={10}>
+                  <GridItem xs={12} sm={4}>
                     <FormControl fullWidth className={classes.formControlCustomInput}>
                       <Select
                         MenuProps={{
@@ -225,6 +228,40 @@ class WorkForm extends React.Component {
                           Tipo de Contrato
                         </MenuItem>
                         {contractTypeOptions}
+                      </Select>
+                    </FormControl>
+                  </GridItem>
+                  <GridItem xs={12} sm={2}>
+                    <FormLabel className={classes.labelHorizontal}>
+                      Regimen Laboral
+                    </FormLabel>
+                  </GridItem>
+                  <GridItem xs={12} sm={4}>
+                    <FormControl fullWidth className={classes.formControlCustomInput}>
+                      <Select
+                        MenuProps={{
+                          className: classes.selectMenu,
+                        }}
+                        classes={{
+                          select: classes.select,
+                        }}
+                        value={workEntity.laborRegime}
+                        inputProps={{
+                          name: 'laborRegime',
+                          id: 'laborRegime',
+                          onChange: event => this.fieldChange(event, 'laborRegime'),
+                        }}
+                        autoWidth
+                      >
+                        <MenuItem
+                          disabled
+                          classes={{
+                            root: classes.selectMenuItem,
+                          }}
+                        >
+                          Regimen Laboral
+                        </MenuItem>
+                        {laborRegimeOptions}
                       </Select>
                     </FormControl>
                   </GridItem>
