@@ -419,33 +419,12 @@ class WorkForm extends React.Component {
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
-                  <GridItem xs={12} sm={2}>
-                    <FormLabel className={classes.labelHorizontal}>
-                      Salario Diario
-                    </FormLabel>
-                  </GridItem>
-                  <GridItem xs={12} sm={4}>
-                    <CustomInput
-                      id="dailySalary"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                      inputProps={{
-                        value: workEntity.dailySalary,
-                        onChange: event =>
-                          this.fieldChange(event, 'dailySalary'),
-                        id: 'dailySalary',
-                        name: 'dailySalary',
-                        inputComponent: CustomNumberFormat,
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={2}>
+                <GridItem xs={12} sm={2}>
                     <FormLabel className={classes.labelHorizontal}>
                       Salario Mensual
                     </FormLabel>
                   </GridItem>
-                  <GridItem xs={12} sm={4}>
+                  <GridItem xs={12} sm={2}>
                     <CustomInput
                       id="monthlySalary"
                       formControlProps={{
@@ -458,6 +437,40 @@ class WorkForm extends React.Component {
                         id: 'monthlySalary',
                         name: 'monthlySalary',
                         inputComponent: CustomNumberFormat,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={2}>
+                    <FormLabel className={classes.labelHorizontal}>
+                      Salario Diario
+                    </FormLabel>
+                  </GridItem>
+                  <GridItem xs={12} sm={2}>
+                    <CustomInput
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                      inputProps={{
+                        value: Math.round(workEntity.monthlySalary / 30),
+                        inputComponent: CustomNumberFormat,
+                        disabled: true,
+                      }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={2}>
+                    <FormLabel className={classes.labelHorizontal}>
+                      Salario por hora
+                    </FormLabel>
+                  </GridItem>
+                  <GridItem xs={12} sm={2}>
+                    <CustomInput
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                      inputProps={{
+                        value: Math.round(workEntity.monthlySalary / 30 / 8),
+                        inputComponent: CustomNumberFormat,
+                        disabled: true,
                       }}
                     />
                   </GridItem>
