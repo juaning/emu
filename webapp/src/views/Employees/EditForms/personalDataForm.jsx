@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 // react component plugin for creating a beautiful datetime dropdown picker
 import Datetime from 'react-datetime';
+import moment from 'moment';
 
 // @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -51,6 +52,7 @@ class PersonalDataForm extends React.Component {
       ...this.props.employee
     },
     entityId: this.props.employeeId,
+    employeeAge: 0,
   }
   onPhoneChange(event, stateName, type) {
     this.validateField(event, stateName, type);
@@ -58,6 +60,8 @@ class PersonalDataForm extends React.Component {
   onPhoneChange = this.onPhoneChange.bind(this)
   onDOBChange(momentObj, stateName, type) {
     if (typeof momentObj !== "object" || !momentObj._isAMomentObject) return;
+    const employeeAge = moment().diff(momentObj, 'years');
+    this.setState({ employeeAge });
     const event = {
       target: {
         value: momentObj.format(dateFormatDB),
@@ -131,10 +135,13 @@ class PersonalDataForm extends React.Component {
   saveClick = this.saveClick.bind(this);
   render() {
     const { classes } = this.props;
-    const { entity } = this.state;
+    const { entity, employeeAge } = this.state;
     const maritalStatusOptions = generateMenuItemList(maritalStatusConstant, classes);
     const countryListOptions = generateMenuItemList(countryListConstant, classes);
     const genderListOptions = generateMenuItemList(genderListConstant, classes);
+    const styleAge = {
+      color: employeeAge < 18 ? 'red': 'inherit',
+    }
     return (
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
@@ -216,7 +223,7 @@ class PersonalDataForm extends React.Component {
                       Fecha de Nacimiento *
                     </FormLabel>
                   </GridItem>
-                  <GridItem xs={12} sm={10}>
+                  <GridItem xs={12} sm={employeeAge > 0 ? 8 : 10}>
                     <FormControl fullWidth className={classes.formControlCustomInput}>
                       <Datetime
                         id="DOB"
@@ -235,6 +242,13 @@ class PersonalDataForm extends React.Component {
                       />
                     </FormControl>
                   </GridItem>
+                  {employeeAge > 0 && (
+                    <GridItem xs={12} sm={2}>
+                      <FormLabel className={classes.labelHorizontal}>
+                        <span style={styleAge}>{this.state.employeeAge} años</span>
+                      </FormLabel>
+                    </GridItem>
+                  )}
                 </GridContainer>
                 <GridContainer>
                   <GridItem xs={12} sm={2}>
