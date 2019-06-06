@@ -85,7 +85,7 @@ class EditEmployee extends React.Component {
   render() {
     const { employee } = this.state;
     const tabStyles = { width: '100%' };
-    const disabled = isObjEmpty(employee);
+    const disabled = employee.id === null;
 
     return (
       <NavPills
