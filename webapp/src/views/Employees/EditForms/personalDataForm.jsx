@@ -305,8 +305,8 @@ class PersonalDataForm extends React.Component {
                   <GridItem xs={12} sm={10}>
                     <CustomInput
                       id="phone"
-                      success={this.state.registerPhoneState === 'success'}
-                      error={this.state.registerPhoneState === 'error'}
+                      // success={this.state.registerPhoneState === 'success'}
+                      // error={this.state.registerPhoneState === 'error'}
                       labelText="981-123-456"
                       formControlProps={{
                         fullWidth: true,
