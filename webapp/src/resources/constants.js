@@ -325,6 +325,13 @@ const contractTypeConstant = [
   { value: 'casual', text: 'Casual' },
 ];
 
+const laborRegimeConstant = [
+  { value: '', text: ''},
+  { value: 'monthly', text: 'Mensualero' },
+  { value: 'daily', text: 'Jornalero' },
+  { value: 'hourly', text: 'Horista' },
+]
+
 const jobTitleConstant = [
   { value: 'manager', text: 'Gerente' },
   { value: 'assistant_manager', text: 'Subgerente' },
@@ -455,6 +462,7 @@ export {
   paymentConstant,
   bankConstant,
   contractTypeConstant,
+  laborRegimeConstant,
   jobTitleConstant,
   costCentreConstant,
   shiftConstant,

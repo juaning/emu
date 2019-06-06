@@ -134,7 +134,7 @@ class EditEmployee extends React.Component {
           },
           {
             tabButton: 'Datos laborales',
-            disabled,
+            // disabled,
             tabContent: <WorkForm
               styles={tabStyles}
               updateEmployeeData={this.updateEmployeeData}
