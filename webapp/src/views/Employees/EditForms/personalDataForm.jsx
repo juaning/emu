@@ -57,6 +57,7 @@ class PersonalDataForm extends React.Component {
   }
   onPhoneChange = this.onPhoneChange.bind(this)
   onDOBChange(momentObj, stateName, type) {
+    if (typeof momentObj !== "object" || !momentObj._isAMomentObject) return;
     const event = {
       target: {
         value: momentObj.format(dateFormatDB),
@@ -228,7 +229,7 @@ class PersonalDataForm extends React.Component {
                           required: true,
                         }}
                         value={entity.DOB}
-                        onBlur={momentObj =>
+                        onChange={momentObj =>
                             this.onDOBChange(momentObj, '', 'DOB')}
                         closeOnSelect
                       />
