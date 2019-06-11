@@ -16,7 +16,6 @@ import EducationForm from './EditForms/educationForm';
 import PaymentForm from './EditForms/paymentForm';
 import WorkForm from './EditForms/workForm';
 
-import { isObjEmpty } from './../../resources/helpers';
 // API resources
 import API from '../../resources/api';
 
@@ -75,7 +74,7 @@ class EditEmployee extends React.Component {
   }
   updateEmployeeData(data, key) {
     const { employee } = this.state;
-    if (isObjEmpty(employee) && key === 'personalData') {
+    if (employee.id === null && key === 'personalData') {
       employee.id = data._id;
     }
     employee[key] = data;
@@ -134,7 +133,7 @@ class EditEmployee extends React.Component {
           },
           {
             tabButton: 'Datos laborales',
-            // disabled,
+            disabled,
             tabContent: <WorkForm
               styles={tabStyles}
               updateEmployeeData={this.updateEmployeeData}
