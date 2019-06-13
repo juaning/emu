@@ -9,6 +9,8 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 
 // core components
 import GridContainer from '../../../components/Grid/GridContainer';
@@ -41,18 +43,23 @@ class FamilyForm extends React.Component {
     familyEntity: {
       employeeId: this.props.employeeId || '',
       childNumber: this.props.employee.childNumber || '',
-      childs: this.props.employee.childs || {},
+      childs: this.props.employee.childs || [],
       firstNamePartner: this.props.employee.firstNamePartner || '',
       lastNamePartner: this.props.employee.lastNamePartner || '',
       workplacePartner: this.props.employee.workplacePartner || '',
       id: this.props.employee._id || null,
     },
   }
-  onDOBChange(date, name) {
+  onDOBChange(date, name, childID) {
     if (typeof date === 'string') return;
     const { familyEntity } = this.state;
-    const { childs = {} } = familyEntity;
-    childs[name] = date.format(dateFormatDB);
+    const { childs = [] } = familyEntity;
+    if (!childs[childID]) childs[childID] = {
+      dob: '',
+      apply: false,
+      bonusStartDate: ''
+    };
+    childs[childID][name] = date.format(dateFormatDB);
     familyEntity.childs = childs;
     this.setState({ familyEntity });
   }
@@ -64,14 +71,29 @@ class FamilyForm extends React.Component {
     this.setState({ familyEntity });
   }
   storeChangedField = this.storeChangedField.bind(this)
+  applyBono = (event, name, childID) => {
+    const { familyEntity } = this.state;
+    const { childs = [] } = familyEntity;
+    if (!childs[childID]) childs[childID] = {
+      dob: '',
+      apply: false,
+      bonusStartDate: ''
+    };
+    childs[childID].apply = event.target.checked;
+    familyEntity.childs = childs;
+    this.setState({ familyEntity });
+  }
   generateChildsDOB() {
     const { classes } = this.props;
     const { familyEntity } = this.state;
-    const { childNumber = 0, childs = {} } = familyEntity;
+    const { childNumber = 0, childs = [] } = familyEntity;
     const dates = [];
     if (childNumber > 0) {
       for (let i = 0; i < childNumber; i += 1) {
         const childID = `childDOB-${i}`;
+        if (!childs[i]) {
+          childs[i] = { dob: '', apply: false, bonusStartDate: '' };
+        }
         dates.push(
         <GridContainer key={childID}>
           <GridItem xs={12} sm={2}>
@@ -79,19 +101,64 @@ class FamilyForm extends React.Component {
               Fecha de Nacimiento hijo #{i + 1}
             </FormLabel>
           </GridItem>
-          <GridItem xs={12} sm={10}>
+          <GridItem xs={12} sm={2}>
             <FormControl fullWidth className={classes.formControlCustomInput}>
               <Datetime
                 id={childID}
                 timeFormat={false}
                 dateFormat={dateFormat}
                 viewDate={startingDOBDate}
-                value={childs[childID]}
+                value={childs[i].dob}
                 inputProps={{
                   name: childID,
                   id: childID,
                 }}
-                onChange={momentObj => this.onDOBChange(momentObj, childID)}
+                onChange={momentObj => this.onDOBChange(momentObj, 'dob', i)}
+                closeOnSelect
+              />
+            </FormControl>
+          </GridItem>
+          <GridItem xs={12} sm={2}>
+            <FormControl fullWidth className={classes.formControlCustomInput}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={childs[i].apply}
+                    onChange={event =>
+                      this.applyBono(event, 'bono', i)}
+                    classes={{
+                      switchBase: classes.switchBase,
+                      checked: classes.switchChecked,
+                      icon: classes.switchIcon,
+                      iconChecked: classes.switchIconChecked,
+                      bar: classes.switchBar,
+                    }}
+                  />
+                }
+                classes={{
+                  label: classes.label,
+                }}
+                label="Aplica bonificación?"
+              />
+            </FormControl>
+          </GridItem>
+          <GridItem xs={12} sm={2}>
+            <FormLabel className={classes.labelHorizontal}>
+              Fecha de inicio bonificación
+            </FormLabel>
+          </GridItem>
+          <GridItem xs={12} sm={4}>
+            <FormControl fullWidth className={classes.formControlCustomInput}>
+              <Datetime
+                id={`${childID}-bonusStartDate`}
+                timeFormat={false}
+                dateFormat={dateFormat}
+                value={childs[i].bonusStartDate}
+                inputProps={{
+                  name: `${childID}-bonusStartDate`,
+                  id: `${childID}-bonusStartDate`,
+                }}
+                onChange={momentObj => this.onDOBChange(momentObj, 'bonusStartDate', i)}
                 closeOnSelect
               />
             </FormControl>

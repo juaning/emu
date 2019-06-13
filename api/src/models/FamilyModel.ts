@@ -6,7 +6,11 @@ const { Schema } = mongoose;
 const FamilySchema = Schema({
   employeeId: { type: String, required: true },
   childNumber: { type: Number },
-  childs: { type: Map, of: Date },
+  childs: [{
+    dob: { type: Date },
+    apply: { type: Boolean },
+    bonusStartDate: { type: Date },
+  }],
   firstNamePartner: { type: String },
   lastNamePartner: { type: String },
   workplacePartner: { type: String },

@@ -320,9 +320,8 @@ const bankConstant = [
 
 const contractTypeConstant = [
   { value: '', text: ''},
-  { value: 'permanent', text: 'Permanente' },
-  { value: 'contractor', text: 'Contratado' },
-  { value: 'casual', text: 'Casual' },
+  { value: 'dependent', text: 'Dependiente' },
+  { value: 'independent', text: 'Independiente' },
 ];
 
 const laborRegimeConstant = [
