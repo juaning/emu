@@ -43,7 +43,7 @@ class FamilyForm extends React.Component {
     familyEntity: {
       employeeId: this.props.employeeId || '',
       childNumber: this.props.employee.childNumber || '',
-      childs: this.props.employee.childs || {},
+      childs: this.props.employee.childs || [],
       firstNamePartner: this.props.employee.firstNamePartner || '',
       lastNamePartner: this.props.employee.lastNamePartner || '',
       workplacePartner: this.props.employee.workplacePartner || '',
@@ -53,7 +53,7 @@ class FamilyForm extends React.Component {
   onDOBChange(date, name, childID) {
     if (typeof date === 'string') return;
     const { familyEntity } = this.state;
-    const { childs = {} } = familyEntity;
+    const { childs = [] } = familyEntity;
     if (!childs[childID]) childs[childID] = {
       dob: '',
       apply: false,
@@ -73,7 +73,7 @@ class FamilyForm extends React.Component {
   storeChangedField = this.storeChangedField.bind(this)
   applyBono = (event, name, childID) => {
     const { familyEntity } = this.state;
-    const { childs = {} } = familyEntity;
+    const { childs = [] } = familyEntity;
     if (!childs[childID]) childs[childID] = {
       dob: '',
       apply: false,
@@ -86,13 +86,13 @@ class FamilyForm extends React.Component {
   generateChildsDOB() {
     const { classes } = this.props;
     const { familyEntity } = this.state;
-    const { childNumber = 0, childs = {} } = familyEntity;
+    const { childNumber = 0, childs = [] } = familyEntity;
     const dates = [];
     if (childNumber > 0) {
       for (let i = 0; i < childNumber; i += 1) {
         const childID = `childDOB-${i}`;
-        if (!childs[childID]) {
-          childs[childID] = { dob: '', apply: false, bonusStartDate: '' };
+        if (!childs[i]) {
+          childs[i] = { dob: '', apply: false, bonusStartDate: '' };
         }
         dates.push(
         <GridContainer key={childID}>
@@ -108,12 +108,12 @@ class FamilyForm extends React.Component {
                 timeFormat={false}
                 dateFormat={dateFormat}
                 viewDate={startingDOBDate}
-                value={childs[childID].dob}
+                value={childs[i].dob}
                 inputProps={{
                   name: childID,
                   id: childID,
                 }}
-                onChange={momentObj => this.onDOBChange(momentObj, 'dob', childID)}
+                onChange={momentObj => this.onDOBChange(momentObj, 'dob', i)}
                 closeOnSelect
               />
             </FormControl>
@@ -123,9 +123,9 @@ class FamilyForm extends React.Component {
               <FormControlLabel
                 control={
                   <Switch
-                    checked={childs[childID].apply}
+                    checked={childs[i].apply}
                     onChange={event =>
-                      this.applyBono(event, 'bono', childID)}
+                      this.applyBono(event, 'bono', i)}
                     classes={{
                       switchBase: classes.switchBase,
                       checked: classes.switchChecked,
@@ -153,12 +153,12 @@ class FamilyForm extends React.Component {
                 id={`${childID}-bonusStartDate`}
                 timeFormat={false}
                 dateFormat={dateFormat}
-                value={childs[childID].bonusStartDate}
+                value={childs[i].bonusStartDate}
                 inputProps={{
                   name: `${childID}-bonusStartDate`,
                   id: `${childID}-bonusStartDate`,
                 }}
-                onChange={momentObj => this.onDOBChange(momentObj, 'bonusStartDate', childID)}
+                onChange={momentObj => this.onDOBChange(momentObj, 'bonusStartDate', i)}
                 closeOnSelect
               />
             </FormControl>
