@@ -633,7 +633,8 @@ class MonthlySalaryForm extends React.Component {
           const work = workData
             .find(employeeWork => employeeWork.employeeId === person._id
               && (employeeWork.endDateContract > yesterday.toJSON()
-              || employeeWork.endDateContract === undefined));
+              || employeeWork.endDateContract === undefined
+              || employeeWork.endDateContract === null));
           const attendance = attendanceData
             .find(personAttendance => personAttendance.employeeId === person._id);
           const newPerson = _.assignWith(person, attendance,
@@ -641,6 +642,7 @@ class MonthlySalaryForm extends React.Component {
           
           newPerson.attendanceId = attendance._id;
           newPerson.holidayDays = attendance.holidayDays;
+          console.log('work', work);
           newPerson.wage = work && work.monthlySalary;
           newPerson.contractType = work && work.contractType;
           let employee = MonthlySalaryForm.generateEmployeeSalaryObj(newPerson);
