@@ -53,7 +53,8 @@ class WorkController {
     WorkModel.findOne({
       $or: [
         { endDateContract: { $exists: false } },
-        { endDateContract: { $gt: yesterday } }
+        { endDateContract: { $gt: yesterday } },
+        { endDateContract: null },
       ],
       employeeId,
     }).then(workList => res.json(workList))
