@@ -18,6 +18,8 @@ import AlertDialog from '../../components/Dialog/AlertDialog';
 // API resources
 import API from '../../resources/api';
 
+import { jobTitleConstant } from '../../resources/constants';
+
 const styles = {
   cardCategoryWhite: {
     '&,& a,& a:hover,& a:focus': {
@@ -50,6 +52,7 @@ const styles = {
 
 const employeeAPI = new API({ url: '/employee' });
 employeeAPI.createEntity({ name: 'personal-data' });
+employeeAPI.createEntity({ name: 'work' });
 
 class TableList extends React.Component {
   state = {
@@ -57,9 +60,24 @@ class TableList extends React.Component {
     showDialog: false,
   }
   componentDidMount() {
-    employeeAPI.endpoints['personal-data'].getAll()
-      .then(results => results.json())
-      .then(data => this.setState({ personalData: data }))
+    const promises = [];
+    promises.push(employeeAPI.endpoints['personal-data'].getAll());
+    promises.push(employeeAPI.endpoints.work.getAll())
+    Promise.all(promises)
+      .then(results => Promise.all(results.map(result => result.json())))
+      .then(([personalData, workData]) => {
+        const data = personalData.map(employee => {
+          console.log(workData)
+          const work = workData.find(item => item.employeeId === employee._id
+            && (item.endDateContract === null
+              || new Date(item.endDateContract) >= new Date()));
+          console.log('let my body do the',work);
+          employee.jobTitle = work ? work.jobTitle : '';
+          employee.monthlySalary = work ? work.monthlySalary : 0;
+          return employee;
+        });
+        this.setState({ personalData: data });
+      })
       .catch(err => console.error(err));
   }
   btnEditClicked = this.btnEditClicked.bind(this);
@@ -76,6 +94,7 @@ class TableList extends React.Component {
   }
   deleteEmployee = this.deleteEmployee.bind(this)
   deleteEmployee(employeeId) {
+    // TODO: delete every related field
     return employeeAPI.endpoints['personal-data'].delete({
       id: employeeId,
     })
@@ -90,16 +109,15 @@ class TableList extends React.Component {
   }
   render() {
     const { classes } = this.props;
-    const randomInt = max => Math.floor(Math.random() * Math.floor(max));
     const tableData = this.state.personalData.map((data) => {
       const name = `${data.firstName} ${data.lastName}`;
       // eslint-disable-next-line no-underscore-dangle
       const id = data._id;
       return Object.values({
         name,
-        country: data.nationality,
-        email: data.email,
-        salary: numeral(randomInt(10000000)).format('$0,0'),
+        documentId: data.documentId,
+        jobtTitle: jobTitleConstant.find(job => job.value === data.jobTitle).text,
+        salary: numeral(data.monthlySalary).format('$0,0'),
         actions: (
           <div className="actions-right">
             { /* use this button to add a edit kind of action */ }
@@ -147,7 +165,7 @@ class TableList extends React.Component {
             <CardBody>
               <Table
                 tableHeaderColor="primary"
-                tableHead={['Nombre', 'Pais', 'E-mail', 'Salario', 'Acciones']}
+                tableHead={['Nombre', 'Documento', 'Cargo', 'Salario', 'Acciones']}
                 tableData={tableData}
               />
             </CardBody>
