@@ -271,48 +271,52 @@ class MonthlyAttendanceForm extends React.Component {
               />
             </GridItem>
             <GridItem xs={12} sm={3}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={obj.discount}
-                    onChange={event =>
-                      this.storeAbsenceChangedField(event, name, employeeId, 'discount')}
-                    classes={{
-                      switchBase: classes.switchBase,
-                      checked: classes.switchChecked,
-                      icon: classes.switchIcon,
-                      iconChecked: classes.switchIconChecked,
-                      bar: classes.switchBar,
-                    }}
-                  />
-                }
-                classes={{
-                  label: classes.label,
-                }}
-                label="Descontar"
-              />
+              <FormControl fullWidth className={classes.formControlCustomInput}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={obj.discount}
+                      onChange={event =>
+                        this.storeAbsenceChangedField(event, name, employeeId, 'discount')}
+                      classes={{
+                        switchBase: classes.switchBase,
+                        checked: classes.switchChecked,
+                        icon: classes.switchIcon,
+                        iconChecked: classes.switchIconChecked,
+                        bar: classes.switchBar,
+                      }}
+                    />
+                  }
+                  classes={{
+                    label: classes.label,
+                  }}
+                  label="Descontar"
+                />
+              </FormControl>
             </GridItem>
             <GridItem xs={12} sm={3}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={obj.socialSecurityDiscount}
-                    onChange={event =>
-                      this.storeAbsenceChangedField(event, name, employeeId, 'socialSecurityDiscount')}
-                    classes={{
-                      switchBase: classes.switchBase,
-                      checked: classes.switchChecked,
-                      icon: classes.switchIcon,
-                      iconChecked: classes.switchIconChecked,
-                      bar: classes.switchBar,
-                    }}
-                  />
-                }
-                classes={{
-                  label: classes.label,
-                }}
-                label="Descontar para IPS"
-              />
+              <FormControl fullWidth className={classes.formControlCustomInput}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={obj.socialSecurityDiscount}
+                      onChange={event =>
+                        this.storeAbsenceChangedField(event, name, employeeId, 'socialSecurityDiscount')}
+                      classes={{
+                        switchBase: classes.switchBase,
+                        checked: classes.switchChecked,
+                        icon: classes.switchIcon,
+                        iconChecked: classes.switchIconChecked,
+                        bar: classes.switchBar,
+                      }}
+                    />
+                  }
+                  classes={{
+                    label: classes.label,
+                  }}
+                  label="Descontar para IPS"
+                />
+              </FormControl>
             </GridItem>
           </GridContainer>
         </GridItem>
@@ -756,6 +760,10 @@ class MonthlyAttendanceForm extends React.Component {
               <ReactTable
                 data={employees}
                 filterable
+                defaultFilterMethod={
+                  (filter, row) => String(row[filter.id]).toLowerCase()
+                    .includes(filter.value.toLowerCase())
+                }
                 columns={this.createColumns()}
                 defaultPageSize={10}
                 showPaginationTop={false}
