@@ -447,7 +447,7 @@ class MonthlySalaryForm extends React.Component {
   createHolidaysColumns = this.createHolidaysColumns.bind(this)
   createUndeclaredIPSColumns(classes) {
     return ({
-      Header: 'Pagos a Realizarse sin Declarar en IPS',
+      Header: 'Pagos luego de IPS',
       headerClassName: classes.headerSeparator,
       columns: [
         {
@@ -461,7 +461,7 @@ class MonthlySalaryForm extends React.Component {
           Cell: row => this.addEditableSingleCell(row, 'parking'),
         },
         {
-          Header: 'Aumento de Salario',
+          Header: 'Complemento',
           accessor: 'salaryBump',
           Cell: row => this.addEditableSingleCell(row, 'salaryBump'),
         },
