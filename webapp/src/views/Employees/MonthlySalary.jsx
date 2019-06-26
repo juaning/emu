@@ -91,7 +91,7 @@ class MonthlySalaryForm extends React.Component {
           accessor: 'wage',
           Cell: props => {
             const { value } = props
-            if (value) return value.toLocaleString('es-PY');
+            if (value) return Math.round(value).toLocaleString('es-PY');
             return null;
           },
         },
@@ -104,7 +104,7 @@ class MonthlySalaryForm extends React.Component {
           accessor: 'paidSalary',
           Cell: props => {
             const { value } = props
-            if (value) return value.toLocaleString('es-PY');
+            if (value) return Math.round(value).toLocaleString('es-PY');
             return null;
           },
         },
@@ -125,7 +125,7 @@ class MonthlySalaryForm extends React.Component {
           accessor: accessor.amount,
           Cell: props => {
             const { value } = props
-            if (value) return value.toLocaleString('es-PY');
+            if (value) return Math.round(value).toLocaleString('es-PY');
             return null;
           },
         },
@@ -233,12 +233,12 @@ class MonthlySalaryForm extends React.Component {
       unjustifiedAbsenceAmount,
       otherIncomes,
     } = employee;
-    const dailyWage = Math.round(employee.wage / 30);
+    const dailyWage = employee.wage / 30;
     const actualWage = dailyWage * employee.totalWorkedDays;
-    const extraHours = Math.round(nightHoursAmount + dailyExtraHoursAmount
-      + nightlyExtraHoursAmount + weekendHoursAmount + nightlyWeekendExtraHoursAmount);
-    const subTotal = Math.round((actualWage + extraHours + holidaysAmount + otherIncomes)
-      - unjustifiedAbsenceAmount);
+    const extraHours = nightHoursAmount + dailyExtraHoursAmount
+      + nightlyExtraHoursAmount + weekendHoursAmount + nightlyWeekendExtraHoursAmount;
+    const subTotal = (actualWage + extraHours + holidaysAmount + otherIncomes)
+      - unjustifiedAbsenceAmount;
     return subTotal;
   }
   static calculateNetToDeposit(employee) {
@@ -437,7 +437,7 @@ class MonthlySalaryForm extends React.Component {
           accessor: 'holidaysAmount',
           Cell: props => {
             const { value } = props
-            if (value) return value.toLocaleString('es-PY');
+            if (value) return Math.round(value).toLocaleString('es-PY');
             return null;
           },
         },
@@ -517,6 +517,11 @@ class MonthlySalaryForm extends React.Component {
         {
           Header: 'Monto',
           accessor: 'lateArrivalAmount',
+          Cell: props => {
+            const { value } = props
+            if (value) return Math.round(value).toLocaleString('es-PY');
+            return null;
+          },
         },
       ],
     });
@@ -627,8 +632,6 @@ class MonthlySalaryForm extends React.Component {
       .then(results => Promise.all(results.map(result => result.json())))
       .then(([personalData, workData, attendanceData]) => {
         const yesterday = ( d => new Date(d.setDate(d.getDate()-1)) )(new Date());
-        // const yesterdayUTC = new Date(Date.UTC(yesterday.getFullYear()
-        //   , yesterday.getMonth()));
         const newEmployees = personalData.map((person) => {
           const work = workData
             .find(employeeWork => employeeWork.employeeId === person._id
@@ -642,12 +645,11 @@ class MonthlySalaryForm extends React.Component {
           
           newPerson.attendanceId = attendance._id;
           newPerson.holidayDays = attendance.holidayDays;
-          console.log('work', work);
           newPerson.wage = work && work.monthlySalary;
           newPerson.contractType = work && work.contractType;
           let employee = MonthlySalaryForm.generateEmployeeSalaryObj(newPerson);
           const { wage } = employee;
-          const dailyWage = Math.round(wage / 30);
+          const dailyWage = wage / 30;
           employee = MonthlySalaryForm.calculateExtraHours(employee);
           employee.unjustifiedAbsenceAmount = employee.unjustifiedAbsenceDays * dailyWage;
           employee.suspensionAmount = employee.suspensionDays * dailyWage;
@@ -735,9 +737,9 @@ class MonthlySalaryForm extends React.Component {
                   <a
                     href={`http://localhost:3000/employee/salary/${month}-${year}/excel`}
                     download
-                    styles={{visibility: 'none'}}
+                    style={{ display: 'none' }}
                     id="downloadExcel"
-                  />
+                  >download</a>
                 </GridItem>
               </GridContainer>
               <GridContainer>
