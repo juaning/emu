@@ -529,29 +529,34 @@ class MonthlySalaryForm extends React.Component {
   createLateArrivalsColumns = this.createLateArrivalsColumns.bind(this)
   addEditableSingleCell(row, name) {
     const { employeeId } = row.original;
+    const { salaryEntity } = this.state;
+    const { employees } = salaryEntity;
+    const value = employees[row.index][name];
     return (
       <CustomInput
         formControlProps={{
           fullWidth: true,
         }}
         inputProps={{
-          name,
           id: name,
+          name,
           inputComponent: CustomNumberFormat,
+          value,
           onChange: event =>
-            this.singleCellChanged(event, employeeId, name),
+            this.singleCellChanged(event, row.index, name),
         }}
       />
     );
   }
   addEditableSingleCell = this.addEditableSingleCell.bind(this)
-  singleCellChanged(event, employeeId, name) {
+  singleCellChanged(event, index, name) {
     const { salaryEntity } = this.state;
-    const { employees } = salaryEntity;
-    let employee = employees.find(emp => emp.employeeId === employeeId);
+    const newSalaryEntity = Object.assign({}, salaryEntity);
+    const { employees } = newSalaryEntity;
+    let employee = employees[index];
     employee[name] = event.target.value * 1;
     employee = MonthlySalaryForm.makeTotalsCalculations(employee);
-    this.setState({ salaryEntity });
+    this.setState({ salaryEntity: newSalaryEntity });
   }
   singleCellChanged = this.singleCellChanged.bind(this)
   salaryDateChange(momentObj) {
