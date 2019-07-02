@@ -41,9 +41,15 @@ function generateMenuWithNumbers(top) {
   return Array(top + 1).fill().map((item, i) => ({ value: i, text: i }));
 }
 
-function calculateOffDays(obj, field) {
+function calculateOffDays(obj, field, discountSuspension) {
   return Object.entries(obj) // eslint-disable-next-line
-    .reduce((accu, [key, item]) => (item[field] ? accu + (item.days * 1) : accu), 0);
+    .reduce((accu, [key, item]) => {
+      if (item[field]) {
+        if (key === 'suspension' && discountSuspension) return accu;
+        return accu + (item.days * 1);
+      }
+      return accu;
+    }, 0);
 }
 
 function calculateExtraHours(obj) {
