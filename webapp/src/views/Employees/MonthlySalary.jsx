@@ -193,8 +193,6 @@ class MonthlySalaryForm extends React.Component {
       discountLoans: 0,
       discountJudicial: 0,
       suspensionDays,
-      lateArrivalHours: 0,
-      lateArrivalMinutes: 0,
       lateArrivalAmount: 0,
       otherDiscounts: 0,
       familyBonus: 0,
@@ -230,12 +228,11 @@ class MonthlySalaryForm extends React.Component {
       otherDiscounts,
       discountLoans,
       discountJudicial,
-      suspensionAmount,
       lateArrivalAmount,
       familyBonus,
     } = employee;
     const discounts = discountIps + discountAdvancePayment + otherDiscounts
-      + discountLoans + discountJudicial + suspensionAmount + lateArrivalAmount;
+      + discountLoans + discountJudicial + lateArrivalAmount;
     const netToDeposit = (subTotal + familyBonus) - discounts;
     return netToDeposit;
   }
@@ -456,46 +453,6 @@ class MonthlySalaryForm extends React.Component {
       headerClassName: classes.headerSeparator,
       columns: [
         {
-          Header: 'Horas',
-          accessor: 'lateArrivalHours',
-          Cell: (row) => {
-            const { employeeId } = row.original;
-            return (
-              <CustomInput
-                formControlProps={{
-                  fullWidth: true,
-                }}
-                inputProps={{
-                  name: 'lateArrivalHours',
-                  id: 'lateArrivalHours',
-                  onChange: event =>
-                    this.lateArrivalsChanged(event, employeeId, 'lateArrivalHours'),
-                }}
-              />
-            );
-          },
-        },
-        {
-          Header: 'Minutos',
-          accessor: 'lateArrivalMinutes',
-          Cell: (row) => {
-            const { employeeId } = row.original;
-            return (
-              <CustomInput
-                formControlProps={{
-                  fullWidth: true,
-                }}
-                inputProps={{
-                  name: 'lateArrivalMinutes',
-                  id: 'lateArrivalMinutes',
-                  onBlur: event =>
-                    this.lateArrivalsChanged(event, employeeId, 'lateArrivalMinutes'),
-                }}
-              />
-            );
-          },
-        },
-        {
           Header: 'Monto',
           accessor: 'lateArrivalAmount',
           Cell: props => {
@@ -563,21 +520,6 @@ class MonthlySalaryForm extends React.Component {
       .catch(err => logError(err));
   }
   salaryDateChange = this.salaryDateChange.bind(this)
-  lateArrivalsChanged(event, employeeId, name) {
-    const { salaryEntity } = this.state;
-    const { employees } = salaryEntity;
-    let employee = employees.find(emp => emp.employeeId === employeeId);
-    const { wage } = employee;
-    const dailyWage = wage / 30;
-    const hourlyWage = dailyWage / 8;
-    const minuteWage = hourlyWage / 60;
-    employee[name] = event.target.value * 1;
-    employee.lateArrivalAmount = (employee.lateArrivalHours * hourlyWage)
-      + (employee.lateArrivalMinutes * minuteWage);
-    employee = MonthlySalaryForm.makeTotalsCalculations(employee);
-    this.setState({ salaryEntity });
-  }
-  lateArrivalsChanged = this.lateArrivalsChanged.bind(this)
   saveClick() {
     const { salaryEntity } = this.state;
     let { month, year, employees } = salaryEntity;
@@ -634,12 +576,17 @@ class MonthlySalaryForm extends React.Component {
           newPerson.holidayDays = attendance.holidayDays;
           newPerson.wage = work && work.monthlySalary;
           newPerson.contractType = work && work.contractType;
+          const { lateArrivalHours, lateArrivalMinutes } = newPerson;
           let employee = MonthlySalaryForm.generateEmployeeSalaryObj(newPerson);
           const { wage } = employee;
           const dailyWage = wage / 30;
+          const hourlyWage = dailyWage / 8;
+          const minuteWage = hourlyWage / 60;
           employee = MonthlySalaryForm.calculateExtraHours(employee);
           employee.paidSalary = dailyWage * employee.totalWorkedDays;
           employee.holidaysAmount = dailyWage * employee.holidayDays;
+          employee.lateArrivalAmount = (lateArrivalHours * hourlyWage)
+            + (lateArrivalMinutes * minuteWage);
           // Calculate totals once values are set
           employee = MonthlySalaryForm.makeTotalsCalculations(employee);
           return employee;
