@@ -43,6 +43,7 @@ moment.locale('es');
 const { monthYear } = datesConstant;
 const employeeAPI = new API({ url: '/employee' });
 employeeAPI.createEntity({ name: 'personal-data' });
+employeeAPI.createEntity({ name: 'family' });
 employeeAPI.createEntity({ name: 'work' });
 employeeAPI.createEntity({ name: 'attendance' });
 employeeAPI.createEntity({ name: 'salary' });
@@ -382,7 +383,8 @@ class MonthlySalaryForm extends React.Component {
         columns: [{
           Header: 'Bonificación Familiar',
           accessor: 'familyBonus',
-          Cell: row => this.addEditableSingleCell(row, 'familyBonus'),
+          Cell: props => Math.round(props.value).toLocaleString('es-PY'),
+          // Cell: row => this.addEditableSingleCell(row, 'familyBonus'),
         }],
       },
       {
@@ -520,6 +522,27 @@ class MonthlySalaryForm extends React.Component {
       .catch(err => logError(err));
   }
   salaryDateChange = this.salaryDateChange.bind(this)
+  calculateFamilyBonus = childs => {
+    const { salaryEntity: { month, year }} = this.state;
+    const endOfMonth = moment(moment(`${year}-${month}`).endOf('month')
+      .format('YYYY-MM-DD'));
+    return childs.reduce((accu, child) => {
+      // 0. Check if bonus applies
+      if (!child.apply) return accu;
+      // 1. Check if childs is younger than 18 years old
+      const dob = moment(child.dob);
+      const age = endOfMonth.diff(dob, 'years', false); 
+      if (age > 17) return accu;
+      // 2. Check if bonus start date is less than current date
+      const bonusStartDate = moment(child.bonusStartDate);
+      if (bonusStartDate.isAfter(endOfMonth)) return accu;
+      // 3. Calculate child bonus
+      const bonus = minimumWage.monthly * 0.05;
+      // console.log(`bonus: ${bonus}, minimum wage: ${minimumWage}`);
+      // 4. Return sum with accu
+      return accu + bonus;
+    }, 0);
+  }
   saveClick() {
     const { salaryEntity } = this.state;
     let { month, year, employees } = salaryEntity;
@@ -551,15 +574,18 @@ class MonthlySalaryForm extends React.Component {
     const { month, year } = salaryEntity;
     const promises = [];
     promises.push(employeeAPI.endpoints['personal-data'].getAll());
+    promises.push(employeeAPI.endpoints.family.getAll());
     promises.push(employeeAPI.endpoints.work.getAll());
     promises.push(employeeAPI.endpoints['attendance'].getOne({
       id: `${month}-${year}`,
     }));
     Promise.all(promises)
       .then(results => Promise.all(results.map(result => result.json())))
-      .then(([personalData, workData, attendanceData]) => {
+      .then(([personalData, familyData, workData, attendanceData]) => {
         const yesterday = ( d => new Date(d.setDate(d.getDate()-1)) )(new Date());
         const newEmployees = personalData.map((person) => {
+          const family = familyData
+            .find(employeeFamily => employeeFamily.employeeId === person._id);
           const work = workData
             .find(employeeWork => employeeWork.employeeId === person._id
               && (employeeWork.endDateContract > yesterday.toJSON()
@@ -587,6 +613,9 @@ class MonthlySalaryForm extends React.Component {
           employee.holidaysAmount = dailyWage * employee.holidayDays;
           employee.lateArrivalAmount = (lateArrivalHours * hourlyWage)
             + (lateArrivalMinutes * minuteWage);
+          if (family && family.childNumber > 0) {
+            employee.familyBonus = this.calculateFamilyBonus(family.childs);
+          }
           // Calculate totals once values are set
           employee = MonthlySalaryForm.makeTotalsCalculations(employee);
           return employee;
