@@ -32,6 +32,7 @@ import {
   reactTableTextMsg,
   minimumWage,
   contractTypeConstant,
+  daysPerMonthByContractType,
 } from '../../resources/constants';
 import { calculateOffDays, logError } from '../../resources/helpers';
 
@@ -602,10 +603,11 @@ class MonthlySalaryForm extends React.Component {
           newPerson.holidayDays = attendance.holidayDays;
           newPerson.wage = work && work.monthlySalary;
           newPerson.contractType = work && work.contractType;
+          const daysPerMonth = daysPerMonthByContractType[work.contractType];
           const { lateArrivalHours, lateArrivalMinutes } = newPerson;
           let employee = MonthlySalaryForm.generateEmployeeSalaryObj(newPerson);
           const { wage } = employee;
-          const dailyWage = wage / 30;
+          const dailyWage = wage / daysPerMonth;
           const hourlyWage = dailyWage / 8;
           const minuteWage = hourlyWage / 60;
           employee = MonthlySalaryForm.calculateExtraHours(employee);
