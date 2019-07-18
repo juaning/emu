@@ -32,7 +32,7 @@ import {
   reactTableTextMsg,
   minimumWage,
   contractTypeConstant,
-  daysPerMonthByContractType,
+  daysPerMonthByLaborRegime,
 } from '../../resources/constants';
 import { calculateOffDays, logError } from '../../resources/helpers';
 
@@ -203,6 +203,7 @@ class MonthlySalaryForm extends React.Component {
       parking: 0,
       salaryBump: 0,
       totalPayment: 0,
+      laborRegime: employee.laborRegime || 'monthly',
     };
   }
   static calculateSubTotalPayment(employee) {
@@ -214,8 +215,9 @@ class MonthlySalaryForm extends React.Component {
       nightlyWeekendExtraHoursAmount,
       holidaysAmount,
       otherIncomes,
+      laborRegime,
     } = employee;
-    const dailyWage = employee.wage / 30;
+    const dailyWage = employee.wage / daysPerMonthByLaborRegime[laborRegime];
     const actualWage = dailyWage * employee.totalWorkedDays;
     const extraHours = nightHoursAmount + dailyExtraHoursAmount
       + nightlyExtraHoursAmount + weekendHoursAmount + nightlyWeekendExtraHoursAmount;
@@ -250,8 +252,8 @@ class MonthlySalaryForm extends React.Component {
   }
   static calculateExtraHours(employee) {
     const newEmployee = Object.assign(employee);
-    const { wage } = employee;
-    const dailyWage = wage / 30;
+    const { wage, laborRegime } = employee;
+    const dailyWage = wage / daysPerMonthByLaborRegime[laborRegime];
     const hourlyDailyWage = dailyWage / 8;
     const nightHourlyWage = hourlyDailyWage * 0.3;
     newEmployee.nightHoursAmount = employee.nightHoursHours * nightHourlyWage;
@@ -266,9 +268,10 @@ class MonthlySalaryForm extends React.Component {
   }
   static makeTotalsCalculations(employee) {
     const newEmployee = employee;
+    const { contractType } = newEmployee;
     const subTotal = MonthlySalaryForm.calculateSubTotalPayment(newEmployee);
     newEmployee.subTotal = subTotal;
-    newEmployee.discountIps = subTotal * 0.09;
+    newEmployee.discountIps = contractType === 'dependent' ? subTotal * 0.09 : 0;
     const netToDeposit = MonthlySalaryForm.calculateNetToDeposit(newEmployee);
     newEmployee.netToDeposit = netToDeposit;
     const totalPayment = MonthlySalaryForm.calculateTotalPayment(newEmployee);
@@ -603,7 +606,9 @@ class MonthlySalaryForm extends React.Component {
           newPerson.holidayDays = attendance.holidayDays;
           newPerson.wage = work && work.monthlySalary;
           newPerson.contractType = work && work.contractType;
-          const daysPerMonth = daysPerMonthByContractType[work.contractType];
+          newPerson.laborRegime = work && work.laborRegime;
+          const daysPerMonth = work
+            ? daysPerMonthByLaborRegime[work.laborRegime] : 30;
           const { lateArrivalHours, lateArrivalMinutes } = newPerson;
           let employee = MonthlySalaryForm.generateEmployeeSalaryObj(newPerson);
           const { wage } = employee;

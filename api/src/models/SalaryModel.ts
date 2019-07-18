@@ -45,6 +45,7 @@ const SalarySchema = Schema({
   parking: { type: Number, default: 0 },
   salaryBump: { type: Number, default: 0 },
   totalPayment: { type: Number, default: 0 },
+  laborRegime: { type: String, default: 'monthly' },
   createdAt: { type: Date, default: Date.now() },
   updatedAt: { type: Date, default: Date.now() },
 });
