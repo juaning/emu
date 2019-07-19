@@ -31,6 +31,7 @@ import {
   jobTitleConstant,
   costCentreConstant,
   shiftConstant,
+  daysPerMonthByLaborRegime,
 } from '../../../resources/constants';
 import {
   generateMenuItemList, logError
@@ -48,6 +49,8 @@ class WorkForm extends React.Component {
     employee: PropTypes.shape({}).isRequired,
   }
   state = {
+    editMonthly: this.props.employee.laborRegime === 'monthly' || true,
+    daysInMonth: 30,
     workEntity: {
       employeeId: this.props.employeeId || '',
       id: this.props.employee._id || null,
@@ -84,11 +87,29 @@ class WorkForm extends React.Component {
     };
     this.fieldChange(event, type);
   }
+  laborRegimeChange = (event, type) => {
+    console.log('labor regime change');
+    this.fieldChange(event, type);
+  }
   fieldChange(event, type) {
     const { value } = event.target;
-    const { workEntity } = this.state;
+    const { workEntity, daysInMonth } = this.state;
+    let newDaysInMonth = daysInMonth;
+    let editMonthly = true;
     workEntity[type] = value;
-    this.setState({ workEntity });
+    if (type === 'laborRegime') {
+      newDaysInMonth = daysPerMonthByLaborRegime[value];
+    }
+    if (type === 'monthlySalary') {
+      workEntity.dailySalary = value / daysInMonth;
+    }
+    if (type === 'dailySalary') {
+      workEntity.monthlySalary = daysInMonth * value;
+    }
+    if (newDaysInMonth !== 30) {
+      editMonthly = false;
+    }
+    this.setState({ workEntity, daysInMonth: newDaysInMonth, editMonthly });
   }
   saveClick() {
     const { workEntity } = this.state;
@@ -114,7 +135,7 @@ class WorkForm extends React.Component {
   saveClick = this.saveClick.bind(this)
   render() {
     const { classes } = this.props;
-    const { workEntity } = this.state;
+    const { workEntity, editMonthly } = this.state;
     const contractTypeOptions = generateMenuItemList(contractTypeConstant, classes);
     const laborRegimeOptions = generateMenuItemList(laborRegimeConstant, classes);
     const jobTitleOptions = generateMenuItemList(jobTitleConstant, classes);
@@ -437,6 +458,7 @@ class WorkForm extends React.Component {
                         id: 'monthlySalary',
                         name: 'monthlySalary',
                         inputComponent: CustomNumberFormat,
+                        disabled: !editMonthly,
                       }}
                     />
                   </GridItem>
@@ -451,9 +473,13 @@ class WorkForm extends React.Component {
                         fullWidth: true,
                       }}
                       inputProps={{
-                        value: Math.round(workEntity.monthlySalary / 30),
+                        value: Math.round(workEntity.dailySalary),
+                        onChange: event =>
+                          this.fieldChange(event, 'dailySalary'),
+                        id: 'dailySalary',
+                        name: 'dailySalary',
                         inputComponent: CustomNumberFormat,
-                        disabled: true,
+                        disabled: editMonthly,
                       }}
                     />
                   </GridItem>
@@ -468,7 +494,7 @@ class WorkForm extends React.Component {
                         fullWidth: true,
                       }}
                       inputProps={{
-                        value: Math.round(workEntity.monthlySalary / 30 / 8),
+                        value: Math.round(workEntity.dailySalary / 8),
                         inputComponent: CustomNumberFormat,
                         disabled: true,
                       }}

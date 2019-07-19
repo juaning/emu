@@ -29,7 +29,6 @@ const WorkSchema = Schema({
   },
   monthlySalary: { type: Number },
   dailySalary: { type: Number },
-  hourlySalary: { type: Number },
   createdAt: { type: Date, default: Date.now() },
   updatedAt: { type: Date, default: Date.now() },
 });
