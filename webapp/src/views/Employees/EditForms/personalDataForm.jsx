@@ -135,15 +135,17 @@ class PersonalDataForm extends React.Component {
   saveClick = this.saveClick.bind(this);
   render() {
     const { classes } = this.props;
-    const { entity, employeeAge } = this.state;
+    const { entity } = this.state;
     const maritalStatusOptions = generateMenuItemList(maritalStatusConstant, classes);
     const countryListOptions = generateMenuItemList(countryListConstant, classes);
     const genderListOptions = generateMenuItemList(genderListConstant, classes);
+    const DOB = entity.DOB &&
+      moment(entity.DOB).utc().format(dateFormat);
+    const DOBObj = moment(DOB, dateFormat);
+    const employeeAge = DOB ? moment().diff(DOBObj, 'years') : 0;
     const styleAge = {
       color: employeeAge < 18 ? 'red': 'inherit',
     }
-    const DOB = entity.DOB &&
-      moment(entity.DOB).utc().format(dateFormat);
     return (
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
@@ -247,7 +249,7 @@ class PersonalDataForm extends React.Component {
                   {employeeAge > 0 && (
                     <GridItem xs={12} sm={2}>
                       <FormLabel className={classes.labelHorizontal}>
-                        <span style={styleAge}>{this.state.employeeAge} años</span>
+                        <span style={styleAge}>{employeeAge} años</span>
                       </FormLabel>
                     </GridItem>
                   )}
