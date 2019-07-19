@@ -10,11 +10,11 @@ services:
       - ./api/node_modules:/usr/app/node_modules
     ports:
       - "3000:3000"
-    networks:
-      - emu
+    extra_hosts:
+      - hostService 127.0.0.1
     environment:
       NODE_ENV: development
-      MONGO_URL: mongodb://192.81.212.107:27017/${MONGO_INITDB_DATABASE}
+      MONGO_URL: mongodb://hostService:27017/${MONGO_INITDB_DATABASE}
       MONGO_USER: ${MONGO_USERNAME}
       MONGO_PWD: ${MONGO_PASSWORD}
       IS_LOCAL: ${IS_LOCAL}
@@ -28,13 +28,7 @@ services:
       - ./webapp/node_modules:/usr/app/node_modules
     ports:
       - "80:8080"
-    networks:
-      - emu
     depends_on:
       - api
-    links:
-      - "api"
     environment:
       NODE_ENV: development
-networks:
-  emu:
