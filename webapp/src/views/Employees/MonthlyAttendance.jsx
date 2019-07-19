@@ -89,6 +89,8 @@ class MonthlyAttendanceForm extends React.Component {
           socialSecurityDiscount: false,
         },
       },
+      lateArrivalHours: 0,
+      lateArrivalMinutes: 0,
     };
   }
   static propTypes = {
@@ -133,7 +135,14 @@ class MonthlyAttendanceForm extends React.Component {
     const close = newExpanded[index[0]];
     if (close === false) {
       // Set empty string for absence days and extra hours to 0
-      const { absence, extraHours } = employees[index[0]];
+      const employee = employees[index[0]];
+      const {
+        absence,
+        extraHours,
+        holidayDays,
+        lateArrivalHours,
+        lateArrivalMinutes,
+      } = employee;
       const {
         excusedAbsence,
         permission,
@@ -141,7 +150,6 @@ class MonthlyAttendanceForm extends React.Component {
         unjustifiedAbsence,
       } = absence;
       const changeEmptyStrToZero = item => (item === '' ? 0 : item);
-      const { holidayDays } = employees[index[0]];
       excusedAbsence.days = changeEmptyStrToZero(excusedAbsence.days);
       permission.days = changeEmptyStrToZero(permission.days);
       suspension.days = changeEmptyStrToZero(suspension.days);
@@ -152,7 +160,9 @@ class MonthlyAttendanceForm extends React.Component {
       extraHours.sundayHolidaysExtraHours = changeEmptyStrToZero(extraHours
         .sundayHolidaysExtraHours);
       extraHours.sundayHolidaysHours = changeEmptyStrToZero(extraHours.sundayHolidaysHours);
-      employees[index[0]].holidayDays = changeEmptyStrToZero(holidayDays);
+      employee.holidayDays = changeEmptyStrToZero(holidayDays);
+      employee.lateArrivalHours = changeEmptyStrToZero(lateArrivalHours);
+      employee.lateArrivalMinutes = changeEmptyStrToZero(lateArrivalMinutes);
       this.setState({ attendanceEntity });
     }
   }
@@ -246,9 +256,8 @@ class MonthlyAttendanceForm extends React.Component {
       employeeId,
     } = params;
     const { classes } = this.props;
-    const containerKey = `absence-${name}-${employeeId}`;
     return (
-      <GridContainer key={containerKey}>
+      <GridContainer key={name}>
         <GridItem xs={12} sm={12} md={12}>
           <GridContainer>
             <GridItem xs={12} sm={3}>
@@ -325,16 +334,19 @@ class MonthlyAttendanceForm extends React.Component {
   }
   generateSubComponentHours(extraHours, employeeId) {
     const { classes } = this.props;
+    const style = {
+      minHeight: '92px',
+    }
     return (
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
-          <GridContainer>
-            <GridItem xs={12} sm={10}>
+          <GridContainer style={style}>
+            <GridItem xs={12} sm={9}>
               <FormLabel className={classes.labelHorizontal}>
                 Horas nocturnas (50%)
               </FormLabel>
             </GridItem>
-            <GridItem xs={12} sm={2}>
+            <GridItem xs={12} sm={3}>
               <CustomInput
                 formControlProps={{
                   fullWidth: true,
@@ -349,13 +361,13 @@ class MonthlyAttendanceForm extends React.Component {
               />
             </GridItem>
           </GridContainer>
-          <GridContainer>
-            <GridItem xs={12} sm={10}>
+          <GridContainer style={style}>
+            <GridItem xs={12} sm={9}>
               <FormLabel className={classes.labelHorizontal}>
                 Horas extra diurna (50%)
               </FormLabel>
             </GridItem>
-            <GridItem xs={12} sm={2}>
+            <GridItem xs={12} sm={3}>
               <CustomInput
                 formControlProps={{
                   fullWidth: true,
@@ -370,13 +382,13 @@ class MonthlyAttendanceForm extends React.Component {
               />
             </GridItem>
           </GridContainer>
-          <GridContainer>
-            <GridItem xs={12} sm={10}>
+          <GridContainer style={style}>
+            <GridItem xs={12} sm={9}>
               <FormLabel className={classes.labelHorizontal}>
                 Horas extra nocturna (100%)
               </FormLabel>
             </GridItem>
-            <GridItem xs={12} sm={2}>
+            <GridItem xs={12} sm={3}>
               <CustomInput
                 formControlProps={{
                   fullWidth: true,
@@ -391,13 +403,13 @@ class MonthlyAttendanceForm extends React.Component {
               />
             </GridItem>
           </GridContainer>
-          <GridContainer>
-            <GridItem xs={12} sm={10}>
+          <GridContainer style={style}>
+            <GridItem xs={12} sm={9}>
               <FormLabel className={classes.labelHorizontal}>
                 Horas domingos y feriados (100%)
               </FormLabel>
             </GridItem>
-            <GridItem xs={12} sm={2}>
+            <GridItem xs={12} sm={3}>
               <CustomInput
                 formControlProps={{
                   fullWidth: true,
@@ -412,13 +424,13 @@ class MonthlyAttendanceForm extends React.Component {
               />
             </GridItem>
           </GridContainer>
-          <GridContainer>
-            <GridItem xs={12} sm={10}>
+          <GridContainer style={style}>
+            <GridItem xs={12} sm={9}>
               <FormLabel className={classes.labelHorizontal}>
                 Horas extra domingos y feriados (200%)
               </FormLabel>
             </GridItem>
-            <GridItem xs={12} sm={2}>
+            <GridItem xs={12} sm={3}>
               <CustomInput
                 formControlProps={{
                   fullWidth: true,
@@ -438,7 +450,14 @@ class MonthlyAttendanceForm extends React.Component {
     );
   }
   generateSubComponent(row) {
-    const { absence, extraHours, holidayDays, employeeId } = row.original;
+    const { attendanceEntity: { employees }} = this.state;
+    const employee = employees[row.index];
+    const {
+      absence,
+      extraHours,
+      holidayDays,
+      employeeId,
+    } = row.original;
     const {
       excusedAbsence,
       unjustifiedAbsence,
@@ -447,6 +466,7 @@ class MonthlyAttendanceForm extends React.Component {
     } = absence;
     const absenceComponents = [];
     const { classes } = this.props;
+    const { lateArrivalHours, lateArrivalMinutes } = employee;
     absenceComponents.push(this.generateSubComponentAbsence({
       obj: excusedAbsence,
       title: 'Días de ausencia justificada',
@@ -472,7 +492,7 @@ class MonthlyAttendanceForm extends React.Component {
       employeeId,
     }));
     absenceComponents.push(
-      <GridContainer>
+      <GridContainer key="variousFields">
         <GridItem xs={12} sm={12} md={12}>
           <GridContainer>
             <GridItem xs={12} sm={3}>
@@ -494,16 +514,54 @@ class MonthlyAttendanceForm extends React.Component {
                 }}
               />
             </GridItem>
+            <GridItem xs={12} sm={3}>
+              <FormLabel className={classes.labelHorizontal}>
+                Llegadas Tardias (horas):
+              </FormLabel>
+            </GridItem>
+            <GridItem xs={12} sm={1}>
+              <CustomInput
+                formControlProps={{
+                  fullWidth: true,
+                }}
+                inputProps={{
+                  name: 'lateArrivalHours',
+                  id: 'lateArrivalHours',
+                  value: lateArrivalHours,
+                  onChange: event =>
+                    this.lateArrivalsChanged(event, row, 'lateArrivalHours'),
+                }}
+              />
+            </GridItem>
+            <GridItem xs={12} sm={3}>
+              <FormLabel className={classes.labelHorizontal}>
+                Llegadas Tardias (minutos):
+              </FormLabel>
+            </GridItem>
+            <GridItem xs={12} sm={1}>
+              <CustomInput
+                formControlProps={{
+                  fullWidth: true,
+                }}
+                inputProps={{
+                  name: 'lateArrivalMinutes',
+                  id: 'lateArrivalMinutes',
+                  value: lateArrivalMinutes,
+                  onChange: event =>
+                    this.lateArrivalsChanged(event, row, 'lateArrivalMinutes'),
+                }}
+              />
+            </GridItem>
           </GridContainer>
         </GridItem>
       </GridContainer>
     );
     return (
-      <GridContainer>
-        <GridItem xs={12} sm={4} md={3}>
+      <GridContainer >
+        <GridItem xs={12} sm={5} md={3}>
           {this.generateSubComponentHours(extraHours, employeeId)}
         </GridItem>
-        <GridItem xs={12} sm={8} md={9}>
+        <GridItem xs={12} sm={7} md={9}>
           {absenceComponents}
         </GridItem>
       </GridContainer>
@@ -575,6 +633,17 @@ class MonthlyAttendanceForm extends React.Component {
     this.setState({ attendanceEntity });
   }
   handleSwitchChange = this.handleSwitchChange.bind(this);
+  lateArrivalsChanged = (event, row, name) => {
+    const { index } = row;
+    const { value } = event.target;
+    const { attendanceEntity } = this.state;
+    const { employees } = attendanceEntity;
+    const employee = employees[index];
+    employee[name] = value !== '' ? parseFloat(value) : 0;
+    employees[index] = employee;
+    attendanceEntity.employees = employees;
+    this.setState ({ attendanceEntity });
+  }
   attendanceDateChange(momentObj) {
     const { attendanceEntity } = this.state;
     let { monthName, month, year } = attendanceEntity;

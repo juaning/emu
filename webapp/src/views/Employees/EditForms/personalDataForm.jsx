@@ -158,7 +158,7 @@ class PersonalDataForm extends React.Component {
                     <CustomInput
                       error={this.state.documentIdState === 'error'}
                       formControlProps={{
-                        fullWidth: true,
+                        // fullWidth: true,
                       }}
                       inputProps={{
                         id: "documentId",
@@ -181,7 +181,7 @@ class PersonalDataForm extends React.Component {
                     <CustomInput
                       id="firstName"
                       formControlProps={{
-                        fullWidth: true,
+                        // fullWidth: true,
                       }}
                       inputProps={{
                         name: 'firstName',
@@ -204,7 +204,7 @@ class PersonalDataForm extends React.Component {
                     <CustomInput
                       id="lastName"
                       formControlProps={{
-                        fullWidth: true,
+                        // fullWidth: true,
                       }}
                       inputProps={{
                         name: 'lastName',
@@ -299,7 +299,7 @@ class PersonalDataForm extends React.Component {
                     <CustomInput
                       id="address"
                       formControlProps={{
-                        fullWidth: true,
+                        // fullWidth: true,
                       }}
                       inputProps={{
                         name: 'address',
@@ -324,7 +324,7 @@ class PersonalDataForm extends React.Component {
                       // error={this.state.registerPhoneState === 'error'}
                       labelText="981-123-456"
                       formControlProps={{
-                        fullWidth: true,
+                        // fullWidth: true,
                       }}
                       value={entity.phone}
                       inputProps={{
@@ -426,7 +426,7 @@ class PersonalDataForm extends React.Component {
                       labelText="usuario@email.com"
                       id="email"
                       formControlProps={{
-                        fullWidth: true,
+                        // fullWidth: true,
                       }}
                       inputProps={{
                         onChange: event =>

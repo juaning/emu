@@ -324,6 +324,12 @@ const contractTypeConstant = [
   { value: 'independent', text: 'Independiente' },
 ];
 
+const daysPerMonthByLaborRegime = {
+  monthly: 30,
+  daily: 26,
+  hourly: 26,
+};
+
 const laborRegimeConstant = [
   { value: '', text: ''},
   { value: 'monthly', text: 'Mensualero' },
@@ -447,7 +453,7 @@ const reactTableTextMsg = {
 };
 
 const minimumWage = {
-  monthly: 2112562,
+  monthly: 2192839,
 };
 
 export {
@@ -469,4 +475,5 @@ export {
   employeesAttendanceListConstant,
   reactTableTextMsg,
   minimumWage,
+  daysPerMonthByLaborRegime,
 };

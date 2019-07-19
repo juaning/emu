@@ -32,8 +32,9 @@ import {
   reactTableTextMsg,
   minimumWage,
   contractTypeConstant,
+  daysPerMonthByLaborRegime,
 } from '../../resources/constants';
-import { logError } from '../../resources/helpers';
+import { calculateOffDays, logError } from '../../resources/helpers';
 
 // API resources
 import API from '../../resources/api';
@@ -43,6 +44,7 @@ moment.locale('es');
 const { monthYear } = datesConstant;
 const employeeAPI = new API({ url: '/employee' });
 employeeAPI.createEntity({ name: 'personal-data' });
+employeeAPI.createEntity({ name: 'family' });
 employeeAPI.createEntity({ name: 'work' });
 employeeAPI.createEntity({ name: 'attendance' });
 employeeAPI.createEntity({ name: 'salary' });
@@ -91,7 +93,7 @@ class MonthlySalaryForm extends React.Component {
           accessor: 'wage',
           Cell: props => {
             const { value } = props
-            if (value) return value.toLocaleString('es-PY');
+            if (value) return Math.round(value).toLocaleString('es-PY');
             return null;
           },
         },
@@ -104,7 +106,7 @@ class MonthlySalaryForm extends React.Component {
           accessor: 'paidSalary',
           Cell: props => {
             const { value } = props
-            if (value) return value.toLocaleString('es-PY');
+            if (value) return Math.round(value).toLocaleString('es-PY');
             return null;
           },
         },
@@ -125,7 +127,7 @@ class MonthlySalaryForm extends React.Component {
           accessor: accessor.amount,
           Cell: props => {
             const { value } = props
-            if (value) return value.toLocaleString('es-PY');
+            if (value) return Math.round(value).toLocaleString('es-PY');
             return null;
           },
         },
@@ -134,17 +136,12 @@ class MonthlySalaryForm extends React.Component {
   }
   static createUnjustifiedAbsenceColumns(classes) {
     return ({
-      Header: 'Ausencias Injustificadas',
+      Header: 'Ausencias Descontadas',
       headerClassName: classes.headerSeparator,
       columns: [
         {
           Header: 'Días',
-          accessor: 'unjustifiedAbsenceDays',
-        },
-        {
-          Header: 'Monto',
-          accessor: 'unjustifiedAbsenceAmount',
-          Cell: props => Math.round(props.value).toLocaleString('es-PY'),
+          accessor: 'discountedAbsenceDays',
         },
       ],
     });
@@ -158,21 +155,11 @@ class MonthlySalaryForm extends React.Component {
           Header: 'Días',
           accessor: 'suspensionDays',
         },
-        {
-          Header: 'Monto',
-          accessor: 'suspensionAmount',
-          Cell: props => Math.round(props.value).toLocaleString('es-PY'),
-        },
       ],
     });
   }
   static generateEmployeeSalaryObj(employee) {
     const { absence, extraHours } = employee;
-    const unjustifiedAbsenceDays = (absence
-      && absence.unjustifiedAbsence
-      && absence.unjustifiedAbsence.discount
-      && absence.unjustifiedAbsence.days)
-      || 0;
     const suspensionDays = (absence
       && absence.suspension
       && absence.suspension.discount
@@ -201,17 +188,13 @@ class MonthlySalaryForm extends React.Component {
       holidayDays: employee.holidayDays || 0,
       holidaysAmount: 0,
       otherIncomes: 0,
-      unjustifiedAbsenceDays,
-      unjustifiedAbsenceAmount: 0,
+      discountedAbsenceDays: employee.discountedAbsenceDays || 0,
       subTotal: 0,
       discountIps: 0,
       discountAdvancePayment: 0,
       discountLoans: 0,
       discountJudicial: 0,
       suspensionDays,
-      suspensionAmount: 0,
-      lateArrivalHours: 0,
-      lateArrivalMinutes: 0,
       lateArrivalAmount: 0,
       otherDiscounts: 0,
       familyBonus: 0,
@@ -220,6 +203,7 @@ class MonthlySalaryForm extends React.Component {
       parking: 0,
       salaryBump: 0,
       totalPayment: 0,
+      laborRegime: employee.laborRegime || 'monthly',
     };
   }
   static calculateSubTotalPayment(employee) {
@@ -230,15 +214,14 @@ class MonthlySalaryForm extends React.Component {
       weekendHoursAmount,
       nightlyWeekendExtraHoursAmount,
       holidaysAmount,
-      unjustifiedAbsenceAmount,
       otherIncomes,
+      laborRegime,
     } = employee;
-    const dailyWage = Math.round(employee.wage / 30);
+    const dailyWage = employee.wage / daysPerMonthByLaborRegime[laborRegime];
     const actualWage = dailyWage * employee.totalWorkedDays;
-    const extraHours = Math.round(nightHoursAmount + dailyExtraHoursAmount
-      + nightlyExtraHoursAmount + weekendHoursAmount + nightlyWeekendExtraHoursAmount);
-    const subTotal = Math.round((actualWage + extraHours + holidaysAmount + otherIncomes)
-      - unjustifiedAbsenceAmount);
+    const extraHours = nightHoursAmount + dailyExtraHoursAmount
+      + nightlyExtraHoursAmount + weekendHoursAmount + nightlyWeekendExtraHoursAmount;
+    const subTotal = (actualWage + extraHours + holidaysAmount + otherIncomes);
     return subTotal;
   }
   static calculateNetToDeposit(employee) {
@@ -249,12 +232,11 @@ class MonthlySalaryForm extends React.Component {
       otherDiscounts,
       discountLoans,
       discountJudicial,
-      suspensionAmount,
       lateArrivalAmount,
       familyBonus,
     } = employee;
     const discounts = discountIps + discountAdvancePayment + otherDiscounts
-      + discountLoans + discountJudicial + suspensionAmount + lateArrivalAmount;
+      + discountLoans + discountJudicial + lateArrivalAmount;
     const netToDeposit = (subTotal + familyBonus) - discounts;
     return netToDeposit;
   }
@@ -270,8 +252,8 @@ class MonthlySalaryForm extends React.Component {
   }
   static calculateExtraHours(employee) {
     const newEmployee = Object.assign(employee);
-    const { wage } = employee;
-    const dailyWage = wage / 30;
+    const { wage, laborRegime } = employee;
+    const dailyWage = wage / daysPerMonthByLaborRegime[laborRegime];
     const hourlyDailyWage = dailyWage / 8;
     const nightHourlyWage = hourlyDailyWage * 0.3;
     newEmployee.nightHoursAmount = employee.nightHoursHours * nightHourlyWage;
@@ -286,9 +268,10 @@ class MonthlySalaryForm extends React.Component {
   }
   static makeTotalsCalculations(employee) {
     const newEmployee = employee;
+    const { contractType } = newEmployee;
     const subTotal = MonthlySalaryForm.calculateSubTotalPayment(newEmployee);
     newEmployee.subTotal = subTotal;
-    newEmployee.discountIps = subTotal * 0.09;
+    newEmployee.discountIps = contractType === 'dependent' ? subTotal * 0.09 : 0;
     const netToDeposit = MonthlySalaryForm.calculateNetToDeposit(newEmployee);
     newEmployee.netToDeposit = netToDeposit;
     const totalPayment = MonthlySalaryForm.calculateTotalPayment(newEmployee);
@@ -404,7 +387,8 @@ class MonthlySalaryForm extends React.Component {
         columns: [{
           Header: 'Bonificación Familiar',
           accessor: 'familyBonus',
-          Cell: row => this.addEditableSingleCell(row, 'familyBonus'),
+          Cell: props => Math.round(props.value).toLocaleString('es-PY'),
+          // Cell: row => this.addEditableSingleCell(row, 'familyBonus'),
         }],
       },
       {
@@ -437,7 +421,7 @@ class MonthlySalaryForm extends React.Component {
           accessor: 'holidaysAmount',
           Cell: props => {
             const { value } = props
-            if (value) return value.toLocaleString('es-PY');
+            if (value) return Math.round(value).toLocaleString('es-PY');
             return null;
           },
         },
@@ -447,7 +431,7 @@ class MonthlySalaryForm extends React.Component {
   createHolidaysColumns = this.createHolidaysColumns.bind(this)
   createUndeclaredIPSColumns(classes) {
     return ({
-      Header: 'Pagos a Realizarse sin Declarar en IPS',
+      Header: 'Pagos luego de IPS',
       headerClassName: classes.headerSeparator,
       columns: [
         {
@@ -461,7 +445,7 @@ class MonthlySalaryForm extends React.Component {
           Cell: row => this.addEditableSingleCell(row, 'parking'),
         },
         {
-          Header: 'Aumento de Salario',
+          Header: 'Complemento',
           accessor: 'salaryBump',
           Cell: row => this.addEditableSingleCell(row, 'salaryBump'),
         },
@@ -475,78 +459,47 @@ class MonthlySalaryForm extends React.Component {
       headerClassName: classes.headerSeparator,
       columns: [
         {
-          Header: 'Horas',
-          accessor: 'lateArrivalHours',
-          Cell: (row) => {
-            const { employeeId } = row.original;
-            return (
-              <CustomInput
-                formControlProps={{
-                  fullWidth: true,
-                }}
-                inputProps={{
-                  name: 'lateArrivalHours',
-                  id: 'lateArrivalHours',
-                  onChange: event =>
-                    this.lateArrivalsChanged(event, employeeId, 'lateArrivalHours'),
-                }}
-              />
-            );
-          },
-        },
-        {
-          Header: 'Minutos',
-          accessor: 'lateArrivalMinutes',
-          Cell: (row) => {
-            const { employeeId } = row.original;
-            return (
-              <CustomInput
-                formControlProps={{
-                  fullWidth: true,
-                }}
-                inputProps={{
-                  name: 'lateArrivalMinutes',
-                  id: 'lateArrivalMinutes',
-                  onBlur: event =>
-                    this.lateArrivalsChanged(event, employeeId, 'lateArrivalMinutes'),
-                }}
-              />
-            );
-          },
-        },
-        {
           Header: 'Monto',
           accessor: 'lateArrivalAmount',
+          Cell: props => {
+            const { value } = props
+            if (value) return Math.round(value).toLocaleString('es-PY');
+            return null;
+          },
         },
       ],
     });
   }
   createLateArrivalsColumns = this.createLateArrivalsColumns.bind(this)
   addEditableSingleCell(row, name) {
-    const { employeeId } = row.original;
+    const { salaryEntity } = this.state;
+    const { employees } = salaryEntity;
+    const value = employees[row.index][name];
     return (
       <CustomInput
         formControlProps={{
           fullWidth: true,
         }}
         inputProps={{
-          name,
           id: name,
+          name,
           inputComponent: CustomNumberFormat,
+          value,
           onChange: event =>
-            this.singleCellChanged(event, employeeId, name),
+            this.singleCellChanged(event, row.index, name),
         }}
       />
     );
   }
   addEditableSingleCell = this.addEditableSingleCell.bind(this)
-  singleCellChanged(event, employeeId, name) {
+  singleCellChanged(event, index, name) {
     const { salaryEntity } = this.state;
-    const { employees } = salaryEntity;
-    let employee = employees.find(emp => emp.employeeId === employeeId);
+    const newSalaryEntity = Object.assign({}, salaryEntity);
+    const { employees } = newSalaryEntity;
+    let employee = employees[index];
     employee[name] = event.target.value * 1;
     employee = MonthlySalaryForm.makeTotalsCalculations(employee);
-    this.setState({ salaryEntity });
+    this.setState({ salaryEntity: newSalaryEntity });
   }
   singleCellChanged = this.singleCellChanged.bind(this)
   salaryDateChange(momentObj) {
@@ -573,21 +526,27 @@ class MonthlySalaryForm extends React.Component {
       .catch(err => logError(err));
   }
   salaryDateChange = this.salaryDateChange.bind(this)
-  lateArrivalsChanged(event, employeeId, name) {
-    const { salaryEntity } = this.state;
-    const { employees } = salaryEntity;
-    let employee = employees.find(emp => emp.employeeId === employeeId);
-    const { wage } = employee;
-    const dailyWage = wage / 30;
-    const hourlyWage = dailyWage / 8;
-    const minuteWage = hourlyWage / 60;
-    employee[name] = event.target.value * 1;
-    employee.lateArrivalAmount = (employee.lateArrivalHours * hourlyWage)
-      + (employee.lateArrivalMinutes * minuteWage);
-    employee = MonthlySalaryForm.makeTotalsCalculations(employee);
-    this.setState({ salaryEntity });
+  calculateFamilyBonus = childs => {
+    const { salaryEntity: { month, year }} = this.state;
+    const endOfMonth = moment(moment(`${year}-${month}`).endOf('month')
+      .format('YYYY-MM-DD'));
+    return childs.reduce((accu, child) => {
+      // 0. Check if bonus applies
+      if (!child.apply) return accu;
+      // 1. Check if childs is younger than 18 years old
+      const dob = moment(child.dob);
+      const age = endOfMonth.diff(dob, 'years', false); 
+      if (age > 17) return accu;
+      // 2. Check if bonus start date is less than current date
+      const bonusStartDate = moment(child.bonusStartDate);
+      if (bonusStartDate.isAfter(endOfMonth)) return accu;
+      // 3. Calculate child bonus
+      const bonus = minimumWage.monthly * 0.05;
+      // console.log(`bonus: ${bonus}, minimum wage: ${minimumWage}`);
+      // 4. Return sum with accu
+      return accu + bonus;
+    }, 0);
   }
-  lateArrivalsChanged = this.lateArrivalsChanged.bind(this)
   saveClick() {
     const { salaryEntity } = this.state;
     let { month, year, employees } = salaryEntity;
@@ -619,17 +578,18 @@ class MonthlySalaryForm extends React.Component {
     const { month, year } = salaryEntity;
     const promises = [];
     promises.push(employeeAPI.endpoints['personal-data'].getAll());
+    promises.push(employeeAPI.endpoints.family.getAll());
     promises.push(employeeAPI.endpoints.work.getAll());
     promises.push(employeeAPI.endpoints['attendance'].getOne({
       id: `${month}-${year}`,
     }));
     Promise.all(promises)
       .then(results => Promise.all(results.map(result => result.json())))
-      .then(([personalData, workData, attendanceData]) => {
+      .then(([personalData, familyData, workData, attendanceData]) => {
         const yesterday = ( d => new Date(d.setDate(d.getDate()-1)) )(new Date());
-        // const yesterdayUTC = new Date(Date.UTC(yesterday.getFullYear()
-        //   , yesterday.getMonth()));
         const newEmployees = personalData.map((person) => {
+          const family = familyData
+            .find(employeeFamily => employeeFamily.employeeId === person._id);
           const work = workData
             .find(employeeWork => employeeWork.employeeId === person._id
               && (employeeWork.endDateContract > yesterday.toJSON()
@@ -639,20 +599,30 @@ class MonthlySalaryForm extends React.Component {
             .find(personAttendance => personAttendance.employeeId === person._id);
           const newPerson = _.assignWith(person, attendance,
             (objValue, srcValue) => _.isUndefined(objValue) ? srcValue : objValue);
-          
+          const { absence } = attendance;
+          newPerson.discountedAbsenceDays = calculateOffDays(absence, 'discount', true);
+          newPerson.suspensionDays = absence && absence.suspension.days;
           newPerson.attendanceId = attendance._id;
           newPerson.holidayDays = attendance.holidayDays;
-          console.log('work', work);
           newPerson.wage = work && work.monthlySalary;
           newPerson.contractType = work && work.contractType;
+          newPerson.laborRegime = work && work.laborRegime;
+          const daysPerMonth = work
+            ? daysPerMonthByLaborRegime[work.laborRegime] : 30;
+          const { lateArrivalHours, lateArrivalMinutes } = newPerson;
           let employee = MonthlySalaryForm.generateEmployeeSalaryObj(newPerson);
           const { wage } = employee;
-          const dailyWage = Math.round(wage / 30);
+          const dailyWage = wage / daysPerMonth;
+          const hourlyWage = dailyWage / 8;
+          const minuteWage = hourlyWage / 60;
           employee = MonthlySalaryForm.calculateExtraHours(employee);
-          employee.unjustifiedAbsenceAmount = employee.unjustifiedAbsenceDays * dailyWage;
-          employee.suspensionAmount = employee.suspensionDays * dailyWage;
           employee.paidSalary = dailyWage * employee.totalWorkedDays;
           employee.holidaysAmount = dailyWage * employee.holidayDays;
+          employee.lateArrivalAmount = (lateArrivalHours * hourlyWage)
+            + (lateArrivalMinutes * minuteWage);
+          if (family && family.childNumber > 0) {
+            employee.familyBonus = this.calculateFamilyBonus(family.childs);
+          }
           // Calculate totals once values are set
           employee = MonthlySalaryForm.makeTotalsCalculations(employee);
           return employee;
@@ -735,9 +705,9 @@ class MonthlySalaryForm extends React.Component {
                   <a
                     href={`http://localhost:3000/employee/salary/${month}-${year}/excel`}
                     download
-                    styles={{visibility: 'none'}}
+                    style={{ display: 'none' }}
                     id="downloadExcel"
-                  />
+                  >download</a>
                 </GridItem>
               </GridContainer>
               <GridContainer>
