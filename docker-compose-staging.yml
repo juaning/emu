@@ -21,7 +21,7 @@ services:
     build:
       context: ./webapp
       dockerfile: Dockerfile-staging
-    command: npm run deploy
+    command: npm run start
     volumes:
       - ./webapp:/usr/app/
       - ./webapp/node_modules:/usr/app/node_modules
