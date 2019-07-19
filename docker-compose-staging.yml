@@ -10,6 +10,8 @@ services:
       - ./api/node_modules:/usr/app/node_modules
     ports:
       - "3000:3000"
+    networks:
+      - emu
     network_mode: host
     environment:
       NODE_ENV: development
@@ -27,9 +29,14 @@ services:
       - ./webapp/node_modules:/usr/app/node_modules
     ports:
       - "80:8080"
+    networks:
+      - emu
     depends_on:
       - api
     links:
       - "api"
     environment:
       NODE_ENV: development
+networks:
+  emu:
+    driver: default
