@@ -29,5 +29,7 @@ services:
       - "80:8080"
     depends_on:
       - api
+    links:
+      - "api"
     environment:
       NODE_ENV: development
