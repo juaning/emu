@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 // react component plugin for creating a beautiful datetime dropdown picker
 import Datetime from 'react-datetime';
+import moment from 'moment';
 
 // @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -137,6 +138,12 @@ class WorkForm extends React.Component {
     const jobTitleOptions = generateMenuItemList(jobTitleConstant, classes);
     const costCentreOptions = generateMenuItemList(costCentreConstant, classes);
     const shiftOptions = generateMenuItemList(shiftConstant, classes);
+    const startDate = workEntity.startDate &&
+      moment(workEntity.startDate).utc().format(dateFormat);
+    const startDateContract = workEntity.startDateContract &&
+      moment(workEntity.startDateContract).utc().format(dateFormat);
+    const endDateContract = workEntity.endDateContract &&
+      moment(workEntity.endDateContract).utc().format(dateFormat);
     return (
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
@@ -155,7 +162,7 @@ class WorkForm extends React.Component {
                         id="startDate"
                         timeFormat={false}
                         dateFormat={dateFormat}
-                        value={workEntity.startDate}
+                        value={startDate}
                         inputProps={{
                           name: 'startDate',
                           id: 'startDate',
@@ -170,7 +177,7 @@ class WorkForm extends React.Component {
                 <GridContainer>
                   <GridItem xs={12} sm={2}>
                     <FormLabel className={classes.labelHorizontal}>
-                      Fecha de Inicio de Contrato
+                      Fecha de Inicio de Contrato/IPS
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={4}>
@@ -179,7 +186,7 @@ class WorkForm extends React.Component {
                         id="startDateContract"
                         timeFormat={false}
                         dateFormat={dateFormat}
-                        value={workEntity.startDateContract}
+                        value={startDateContract}
                         inputProps={{
                           name: 'startDateContract',
                           id: 'startDateContract',
@@ -192,7 +199,7 @@ class WorkForm extends React.Component {
                   </GridItem>
                   <GridItem xs={12} sm={2}>
                     <FormLabel className={classes.labelHorizontal}>
-                      Fecha de Fin de Contrato
+                      Fecha de Fin de Contrato/IPS
                     </FormLabel>
                   </GridItem>
                   <GridItem xs={12} sm={4}>
@@ -201,7 +208,7 @@ class WorkForm extends React.Component {
                         id="endDateContract"
                         timeFormat={false}
                         dateFormat={dateFormat}
-                        value={workEntity.endDateContract}
+                        value={endDateContract}
                         inputProps={{
                           name: 'endDateContract',
                           id: 'endDateContract',
