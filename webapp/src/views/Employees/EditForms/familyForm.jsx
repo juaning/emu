@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 // react component plugin for creating a beautiful datetime dropdown picker
 import Datetime from 'react-datetime';
+import moment from 'moment';
 
 // @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -94,6 +95,10 @@ class FamilyForm extends React.Component {
         if (!childs[i]) {
           childs[i] = { dob: '', apply: false, bonusStartDate: '' };
         }
+        const DOB = childs[i].dob &&
+          moment(childs[i].dob).utc().format(dateFormat);
+        const bonusDate = childs[i].bonusStartDate &&
+          moment(childs[i].bonusStartDate).utc().format(dateFormat);
         dates.push(
         <GridContainer key={childID}>
           <GridItem xs={12} sm={2}>
@@ -108,7 +113,7 @@ class FamilyForm extends React.Component {
                 timeFormat={false}
                 dateFormat={dateFormat}
                 viewDate={startingDOBDate}
-                value={childs[i].dob}
+                value={DOB}
                 inputProps={{
                   name: childID,
                   id: childID,
@@ -153,7 +158,7 @@ class FamilyForm extends React.Component {
                 id={`${childID}-bonusStartDate`}
                 timeFormat={false}
                 dateFormat={dateFormat}
-                value={childs[i].bonusStartDate}
+                value={bonusDate}
                 inputProps={{
                   name: `${childID}-bonusStartDate`,
                   id: `${childID}-bonusStartDate`,
