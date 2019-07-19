@@ -10,6 +10,7 @@ services:
       - ./api/node_modules:/usr/app/node_modules
     ports:
       - "3000:3000"
+    network_mode: host
     environment:
       NODE_ENV: development
       MONGO_URL: mongodb://localhost:27017/${MONGO_INITDB_DATABASE}
@@ -26,6 +27,7 @@ services:
       - ./webapp/node_modules:/usr/app/node_modules
     ports:
       - "80:8080"
+    network_mode: host
     depends_on:
       - api
     environment:
