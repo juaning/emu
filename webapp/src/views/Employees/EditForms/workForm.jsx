@@ -49,8 +49,8 @@ class WorkForm extends React.Component {
     employee: PropTypes.shape({}).isRequired,
   }
   state = {
-    editMonthly: this.props.employee.laborRegime === 'monthly' || true,
-    daysInMonth: 30,
+    editMonthly: this.props.employee.laborRegime === 'monthly' ? true : false,
+    daysInMonth: daysPerMonthByLaborRegime[this.props.employee.laborRegime],
     workEntity: {
       employeeId: this.props.employeeId || '',
       id: this.props.employee._id || null,
@@ -85,10 +85,6 @@ class WorkForm extends React.Component {
         value: momentObj.format(timeFormat),
       },
     };
-    this.fieldChange(event, type);
-  }
-  laborRegimeChange = (event, type) => {
-    console.log('labor regime change');
     this.fieldChange(event, type);
   }
   fieldChange(event, type) {
