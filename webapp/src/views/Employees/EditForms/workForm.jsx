@@ -98,10 +98,10 @@ class WorkForm extends React.Component {
       newDaysInMonth = daysPerMonthByLaborRegime[value];
     }
     if (type === 'monthlySalary') {
-      workEntity.dailySalary = value / daysInMonth;
+      workEntity.dailySalary = value / newDaysInMonth;
     }
     if (type === 'dailySalary') {
-      workEntity.monthlySalary = daysInMonth * value;
+      workEntity.monthlySalary = newDaysInMonth * value;
     }
     if (newDaysInMonth !== 30) {
       editMonthly = false;
@@ -456,8 +456,8 @@ class WorkForm extends React.Component {
                       }}
                       inputProps={{
                         value: workEntity.monthlySalary,
-                        onChange: event =>
-                          this.fieldChange(event, 'monthlySalary'),
+                        onChange: editMonthly && (event =>
+                          this.fieldChange(event, 'monthlySalary')),
                         id: 'monthlySalary',
                         name: 'monthlySalary',
                         inputComponent: CustomNumberFormat,
@@ -477,8 +477,8 @@ class WorkForm extends React.Component {
                       }}
                       inputProps={{
                         value: Math.round(workEntity.dailySalary),
-                        onChange: event =>
-                          this.fieldChange(event, 'dailySalary'),
+                        onChange: !editMonthly && (event =>
+                          this.fieldChange(event, 'dailySalary')),
                         id: 'dailySalary',
                         name: 'dailySalary',
                         inputComponent: CustomNumberFormat,
