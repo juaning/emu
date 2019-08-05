@@ -35,7 +35,11 @@ import {
   calculateExtraHours,
   logError,
 } from '../../resources/helpers';
-import { datesConstant, reactTableTextMsg } from '../../resources/constants';
+import {
+  datesConstant,
+  reactTableTextMsg,
+  hoursByDay,
+} from '../../resources/constants';
 
 // API resources
 import API from '../../resources/api';
@@ -44,6 +48,7 @@ moment.locale('es');
 
 const employeeAPI = new API({ url: '/employee' });
 employeeAPI.createEntity({ name: 'personal-data' });
+employeeAPI.createEntity({ name: 'work' });
 employeeAPI.createEntity({ name: 'attendance' });
 employeeAPI.createEntity({ name: 'salary'});
 const { monthYear } = datesConstant;
@@ -91,6 +96,9 @@ class MonthlyAttendanceForm extends React.Component {
       },
       lateArrivalHours: 0,
       lateArrivalMinutes: 0,
+      laborRegime: 'monthly',
+      totalWorkedHours: 0,
+      totalWorkedMinutes: 0,
     };
   }
   static propTypes = {
@@ -254,83 +262,162 @@ class MonthlyAttendanceForm extends React.Component {
       title,
       name,
       employeeId,
+      isNotMonthly,
     } = params;
     const { classes } = this.props;
-    return (
-      <GridContainer key={name}>
-        <GridItem xs={12} sm={12} md={12}>
-          <GridContainer>
-            <GridItem xs={12} sm={3}>
-              <FormLabel className={classes.labelHorizontal}>
-                {title}
-              </FormLabel>
-            </GridItem>
-            <GridItem xs={12} sm={1}>
-              <CustomInput
-                formControlProps={{
-                  fullWidth: true,
-                }}
-                inputProps={{
-                  name,
-                  id: name,
-                  value: obj.days,
-                  onChange: event =>
-                    this.storeAbsenceChangedField(event, name, employeeId, 'days'),
-                }}
-              />
-            </GridItem>
-            <GridItem xs={12} sm={3}>
-              <FormControl fullWidth className={classes.formControlCustomInput}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={obj.discount}
-                      onChange={event =>
-                        this.storeAbsenceChangedField(event, name, employeeId, 'discount')}
-                      classes={{
-                        switchBase: classes.switchBase,
-                        checked: classes.switchChecked,
-                        icon: classes.switchIcon,
-                        iconChecked: classes.switchIconChecked,
-                        bar: classes.switchBar,
-                      }}
-                    />
-                  }
-                  classes={{
-                    label: classes.label,
+    if (!isNotMonthly) {
+      return (
+        <GridContainer key={name}>
+          <GridItem xs={12} sm={12} md={12}>
+            <GridContainer>
+              <GridItem xs={12} sm={3}>
+                <FormLabel className={classes.labelHorizontal}>
+                  {title}
+                </FormLabel>
+              </GridItem>
+              <GridItem xs={12} sm={1}>
+                <CustomInput
+                  formControlProps={{
+                    fullWidth: true,
                   }}
-                  label="Descontar"
-                />
-              </FormControl>
-            </GridItem>
-            <GridItem xs={12} sm={3}>
-              <FormControl fullWidth className={classes.formControlCustomInput}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={obj.socialSecurityDiscount}
-                      onChange={event =>
-                        this.storeAbsenceChangedField(event, name, employeeId, 'socialSecurityDiscount')}
-                      classes={{
-                        switchBase: classes.switchBase,
-                        checked: classes.switchChecked,
-                        icon: classes.switchIcon,
-                        iconChecked: classes.switchIconChecked,
-                        bar: classes.switchBar,
-                      }}
-                    />
-                  }
-                  classes={{
-                    label: classes.label,
+                  inputProps={{
+                    name,
+                    id: name,
+                    value: obj.days,
+                    onChange: event =>
+                      this.storeAbsenceChangedField(event, name, employeeId, 'days'),
                   }}
-                  label="Descontar para IPS"
                 />
-              </FormControl>
+              </GridItem>
+              <GridItem xs={12} sm={3}>
+                <FormControl fullWidth className={classes.formControlCustomInput}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={obj.discount}
+                        onChange={event =>
+                          this.storeAbsenceChangedField(event, name, employeeId, 'discount')}
+                        classes={{
+                          switchBase: classes.switchBase,
+                          checked: classes.switchChecked,
+                          icon: classes.switchIcon,
+                          iconChecked: classes.switchIconChecked,
+                          bar: classes.switchBar,
+                        }}
+                      />
+                    }
+                    classes={{
+                      label: classes.label,
+                    }}
+                    label="Descontar"
+                  />
+                </FormControl>
+              </GridItem>
+              <GridItem xs={12} sm={3}>
+                <FormControl fullWidth className={classes.formControlCustomInput}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={obj.socialSecurityDiscount}
+                        onChange={event =>
+                          this.storeAbsenceChangedField(event, name, employeeId, 'socialSecurityDiscount')}
+                        classes={{
+                          switchBase: classes.switchBase,
+                          checked: classes.switchChecked,
+                          icon: classes.switchIcon,
+                          iconChecked: classes.switchIconChecked,
+                          bar: classes.switchBar,
+                        }}
+                      />
+                    }
+                    classes={{
+                      label: classes.label,
+                    }}
+                    label="Descontar para IPS"
+                  />
+                </FormControl>
+              </GridItem>
+            </GridContainer>
+          </GridItem>
+        </GridContainer>
+      );
+    } else {
+      const { laborRegime } = obj;
+      if (laborRegime === 'daily') {
+        return (
+          <GridContainer key={name}>
+            <GridItem xs={12} sm={12} md={12}>
+              <GridContainer>
+                <GridItem xs={12} sm={3}>
+                  <FormLabel className={classes.labelHorizontal}>
+                    {title}
+                  </FormLabel>
+                </GridItem>
+                <GridItem xs={12} sm={1}>
+                  <CustomInput
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                    inputProps={{
+                      name,
+                      id: name,
+                      value: obj.totalWorkedDays,
+                      onChange: event =>
+                        this.workedTimeChanged(event, name, employeeId),
+                    }}
+                  />
+                </GridItem>
+              </GridContainer>
             </GridItem>
           </GridContainer>
-        </GridItem>
-      </GridContainer>
-    );
+        );
+      } else {
+        return (
+          <GridContainer key="workedTime">
+            <GridItem xs={12} sm={12} md={12}>
+              <GridContainer>
+                <GridItem xs={12} sm={3}>
+                  <FormLabel className={classes.labelHorizontal}>
+                    Horas trabajadas
+                  </FormLabel>
+                </GridItem>
+                <GridItem xs={12} sm={2}>
+                  <CustomInput
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                    inputProps={{
+                      id: 'totalWorkedHours',
+                      value: obj.totalWorkedHours,
+                      onChange: event =>
+                        this.workedTimeChanged(event, 'totalWorkedHours', employeeId),
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={3}>
+                  <FormLabel className={classes.labelHorizontal}>
+                    Minutos trabajados
+                  </FormLabel>
+                </GridItem>
+                <GridItem xs={12} sm={2}>
+                  <CustomInput
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                    inputProps={{
+                      id: 'totalWorkedMinutes',
+                      value: obj.totalWorkedMinutes,
+                      onChange: event =>
+                        this.workedTimeChanged(event, 'totalWorkedMinutes', employeeId),
+                    }}
+                  />
+                </GridItem>
+              </GridContainer>
+            </GridItem>
+          </GridContainer>
+        );
+      }
+    }
   }
   generateSubComponentHours(extraHours, employeeId) {
     const { classes } = this.props;
@@ -466,19 +553,52 @@ class MonthlyAttendanceForm extends React.Component {
     } = absence;
     const absenceComponents = [];
     const { classes } = this.props;
-    const { lateArrivalHours, lateArrivalMinutes } = employee;
+    const {
+      lateArrivalHours,
+      lateArrivalMinutes,
+      laborRegime,
+      totalWorkedDays,
+      hours,
+      minutes,
+    } = employee;
+    if (laborRegime !== 'monthly') {
+      let argsObj = {
+          obj: {
+          hours,
+          minutes,
+          laborRegime,
+        },
+        employeeId,
+        isNotMonthly: true,
+      };
+      if (laborRegime === 'daily') {
+        argsObj = {
+          obj: {
+            totalWorkedDays,
+            laborRegime,
+          },
+          title: 'Días trabajados',
+          name: 'totalWorkedDays',
+          employeeId,
+          isNotMonthly: true,
+        };
+      }
+      absenceComponents.push(this.generateSubComponentAbsence(argsObj));
+    }
     absenceComponents.push(this.generateSubComponentAbsence({
       obj: excusedAbsence,
       title: 'Días de ausencia justificada',
       name: 'excusedAbsence',
       employeeId,
     }));
-    absenceComponents.push(this.generateSubComponentAbsence({
-      obj: unjustifiedAbsence,
-      title: 'Días de ausencia injustificada',
-      name: 'unjustifiedAbsence',
-      employeeId,
-    }));
+    if (laborRegime === 'monthly') {
+      absenceComponents.push(this.generateSubComponentAbsence({
+        obj: unjustifiedAbsence,
+        title: 'Días de ausencia injustificada',
+        name: 'unjustifiedAbsence',
+        employeeId,
+      }));
+    }
     absenceComponents.push(this.generateSubComponentAbsence({
       obj: suspension,
       title: 'Días de suspensión',
@@ -644,6 +764,22 @@ class MonthlyAttendanceForm extends React.Component {
     attendanceEntity.employees = employees;
     this.setState ({ attendanceEntity });
   }
+  workedTimeChanged = (event, field, employeeId) => {
+    const { value } = event.target;
+    const { attendanceEntity } = this.state;
+    const { employees } = attendanceEntity;
+    const employee = employees.find(emp => emp.employeeId === employeeId);
+    employee[field] = value;
+    employee.totalWorkedDays = this.calculateWorkedDaysByTime(
+      employee.totalWorkedHours, employee.totalWorkedMinutes);
+    this.setState({ attendanceEntity });
+  }
+  calculateWorkedDaysByTime = (hours, minutes) => {
+    // Minutes / 60 minutes in an hour / 8 hours in a day
+    // to get proper decimals
+    let days = (hours / hoursByDay) + ((minutes / 60) / 8);
+    return days;
+  }
   attendanceDateChange(momentObj) {
     const { attendanceEntity } = this.state;
     let { monthName, month, year } = attendanceEntity;
@@ -742,16 +878,28 @@ class MonthlyAttendanceForm extends React.Component {
   }
   generateClick() {
     const { attendanceEntity } = this.state;
+    const promises = [];
     
-    employeeAPI.endpoints['personal-data'].getAll()
-      .then(results => results.json())
-      .then((data) => {
-        const newEmployees = data.map((person) => {
+    promises.push(employeeAPI.endpoints['personal-data'].getAll());
+    promises.push(employeeAPI.endpoints.work.getAll());
+
+    Promise.all(promises)
+      .then(results => Promise.all(results.map(result => result.json())))
+      .then(([personalData, workData]) => {
+        const newEmployees = personalData.map((person) => {
+          const yesterday = ( d => new Date(d.setDate(d.getDate()-1)) )(new Date());
           const employee = MonthlyAttendanceForm.generateEmployeeAttendanceObj();
           employee.employeeId = person._id;
           employee.employeeDocumentId = person.documentId;
           employee.firstName = person.firstName;
           employee.lastName = person.lastName;
+          // Find current contract to get labor regime
+          const work = workData
+            .find(employeeWork => employeeWork.employeeId === person._id
+              && (employeeWork.endDateContract > yesterday.toJSON()
+              || employeeWork.endDateContract === undefined
+              || employeeWork.endDateContract === null));
+          employee.laborRegime = work.laborRegime;
           return employee;
         });
         attendanceEntity.employees = newEmployees;

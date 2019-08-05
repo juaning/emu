@@ -456,6 +456,8 @@ const minimumWage = {
   monthly: 2192839,
 };
 
+const hoursByDay = 8;
+
 export {
   datesConstant,
   maritalStatusConstant,
@@ -476,4 +478,5 @@ export {
   reactTableTextMsg,
   minimumWage,
   daysPerMonthByLaborRegime,
+  hoursByDay,
 };
