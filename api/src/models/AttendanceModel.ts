@@ -45,6 +45,9 @@ const AttendanceSchema = Schema({
   },
   lateArrivalHours: { type: Number, default: 0 },
   lateArrivalMinutes: { type: Number, default: 0 },
+  laborRegime: { type: String, default: 'monthly' },
+  totalWorkedHours: { type: Number, default: 0 },
+  totalWorkedMinutes: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now() },
   updatedAt: { type: Date, default: Date.now() },
 });

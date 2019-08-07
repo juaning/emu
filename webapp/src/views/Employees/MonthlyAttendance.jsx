@@ -770,8 +770,10 @@ class MonthlyAttendanceForm extends React.Component {
     const { employees } = attendanceEntity;
     const employee = employees.find(emp => emp.employeeId === employeeId);
     employee[field] = value;
-    employee.totalWorkedDays = this.calculateWorkedDaysByTime(
-      employee.totalWorkedHours, employee.totalWorkedMinutes);
+    if (field !== 'totalWorkedDays') {
+      employee.totalWorkedDays = this.calculateWorkedDaysByTime(
+        employee.totalWorkedHours, employee.totalWorkedMinutes);
+    }
     this.setState({ attendanceEntity });
   }
   calculateWorkedDaysByTime = (hours, minutes) => {
