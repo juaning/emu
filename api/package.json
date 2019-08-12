@@ -25,7 +25,9 @@
     "mongoose-validator": "^2.1.0",
     "morgan": "^1.9.1",
     "parse-error": "^0.2.0",
-    "tempy": "^0.3.0"
+    "tea-school": "^1.5.0",
+    "tempy": "^0.3.0",
+    "written-number": "^0.9.1"
   },
   "devDependencies": {
     "@types/node": "^10.14.7",

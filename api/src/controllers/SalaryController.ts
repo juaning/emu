@@ -2,6 +2,11 @@ import * as mongoose from 'mongoose';
 import { Request, Response } from 'express';
 import * as Excel from 'exceljs';
 import { file } from 'tempy';
+import TeaSchool from 'tea-school';
+import * as pug from 'pug';
+import * as path from 'path';
+import { PDFOptions } from 'puppeteer';
+import { Options as SassOptions } from 'node-sass';
 import SalarySchema from './../models/SalaryModel';
 
 const Salary = mongoose.model('Salary', SalarySchema);
@@ -146,6 +151,75 @@ class SalaryController {
         result,
       }))
       .catch(err => res.send(err));
+  }
+
+  public async getAllSalariesReceipt(req: Request, res: Response) {
+    const styleOptions: SassOptions = {
+      file: path.resolve(__dirname, '../assets/styles/salaryPdf.scss'),
+    };
+    const htmlTemplatePath = path.resolve(__dirname,
+      '../assets/templates/salaryReceipt-pdf.template.pug');
+    const htmlTemplateOptions: pug.LocalsObject = {
+      receipt: {
+        companyName: 'Emu',
+        employee: {
+          name: 'Juan Ignacio',
+          position: 'Panadero',
+          documentId: '1.435.154',
+          laborRegime: 'Mensualero',
+          wage: '2.000.000',
+        },
+        paymentDate: 'jul-2019',
+        items: [
+          {
+            income: {
+              concept: 'Salario',
+              cant: '30',
+              price: '2.000.000',
+            },
+            discounts: {
+              concept: 'Anticipo',
+              cant: '1',
+              price: '100.000',
+            }
+          },
+        ],
+        totalIncome: '2.000.000',
+        totalDiscount: '100.000',
+        totalPayment: '1.900.000',
+        totalWritten: 'un millon novecientos mil',
+      },
+    };
+    const pdfOptions: PDFOptions = {
+      path: path.resolve(__dirname, '../assets/output', 'receipt.pdf'),
+      format: 'A4',
+    };
+    const teaSchoolOptions: TeaSchool.GeneratePdfOptions = {
+      styleOptions,
+      htmlTemplatePath,
+      htmlTemplateOptions,
+      pdfOptions,
+    };
+    console.log(TeaSchool);
+    // res.json({
+    //   message: 'Test path after generating pdf',
+    //   obj: TeaSchool.generatePdf,
+    // });
+    const pdf = await TeaSchool.generatePdf(teaSchoolOptions);
+    console.log(pdf.toString());
+    return;
+    TeaSchool.generatePdf(teaSchoolOptions)
+    .then(pdf => {
+      res.json({
+        message: `PDF generated`,
+        pdf: pdf.toString('utf8'),
+      })
+      // res.sendFile(path.join(__dirname, '../assets/output', 'receipt.pdf'));
+    })
+    .catch(err => {
+      res.send(err);
+      console.log(err);
+    });
   }
 }
 
