@@ -4,7 +4,7 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile
-    command: npm run prod:test
+    command: npm run start-watch
     volumes: 
       - ./api:/usr/app/
       - /usr/app/node_modules
