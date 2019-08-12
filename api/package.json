@@ -9,6 +9,7 @@
     "start": "nodemon build/server.js",
     "start-watch": "nodemon",
     "prod": "npm run build && npm run start",
+    "prod:test": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "@juaning",
