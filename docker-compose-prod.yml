@@ -35,7 +35,7 @@ services:
     volumes:
       - ./webapp:/usr/app/
       # - ./webapp/node_modules:/usr/app/node_modules
-      /usr/app/node_modules
+      - /usr/app/node_modules
     ports:
       - "8080:8080"
     depends_on:
