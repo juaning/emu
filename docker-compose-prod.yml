@@ -7,7 +7,7 @@ services:
     command: npm run prod:test
     volumes: 
       - ./api:/usr/app/
-      - ./api/node_modules:/usr/app/node_modules
+      # - ./api/node_modules:/usr/app/node_modules
     ports:
       - "3000:3000"
       - "9229:9229"
@@ -33,7 +33,7 @@ services:
     command: npm run start
     volumes:
       - ./webapp:/usr/app/
-      - ./webapp/node_modules:/usr/app/node_modules
+      # - ./webapp/node_modules:/usr/app/node_modules
     ports:
       - "8080:8080"
     depends_on:
