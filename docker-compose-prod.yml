@@ -22,7 +22,11 @@ services:
       IS_LOCAL: ${IS_LOCAL}
   mongo:
     image: mongo
-    restart: always
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
     volumes:
       - ./data/mongo:/data/db
     ports:
