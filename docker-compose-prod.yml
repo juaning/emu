@@ -4,7 +4,7 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile
-    command: npm run start-watch
+    command: npm run prod
     volumes: 
       - ./api:/usr/app/
       - ./api/node_modules:/usr/app/node_modules
@@ -14,7 +14,7 @@ services:
     depends_on:
       - mongo
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       MONGO_URL: mongodb://mongo:27017/${MONGO_INITDB_DATABASE}
       MONGO_USER: ${MONGO_USERNAME}
       MONGO_PWD: ${MONGO_PASSWORD}
@@ -30,7 +30,7 @@ services:
     build:
       context: ./webapp
       dockerfile: Dockerfile
-    command: npm run start
+    command: npm run deploy
     volumes:
       - ./webapp:/usr/app/
       - ./webapp/node_modules:/usr/app/node_modules
@@ -39,4 +39,4 @@ services:
     depends_on:
       - api
     environment:
-      NODE_ENV: development
+      NODE_ENV: production

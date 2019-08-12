@@ -1,0 +1,23 @@
+image: docker:latest
+services:
+  - docker:dind
+
+stages:
+  - test
+  - deploy
+
+step-deploy-staging:
+  stage: deploy
+  before_script:
+    - export DYNAMIC_ENV_VAR=STAGING
+  only:
+    - staging
+  tags:
+    - staging
+  script:
+    - echo setting up env $DYNAMIC_ENV_VAR
+    - sudo apt-get install -y python-pip
+    - sudo pip install docker-compose
+    - sudo docker image prune -f
+    - sudo docker-compose -f docker-compose-staging.yml build --no-cache
+    - sudo docker-compose -f docker-compose-staging.yml up -d
