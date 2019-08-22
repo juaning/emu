@@ -46,6 +46,8 @@ services:
   letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
     restart: always
+    depends_on:
+      - nginx-proxy
     environment:
       - NGINX_PROXY_CONTAINER=nginx-proxy
     volumes:
