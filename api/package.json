@@ -21,10 +21,12 @@
     "dotenv": "^5.0.1",
     "exceljs": "^1.11.0",
     "express": "^4.17.0",
+    "handlebars": "^4.1.2",
     "mongoose": "^5.5.11",
     "mongoose-validator": "^2.1.0",
     "morgan": "^1.9.1",
     "parse-error": "^0.2.0",
+    "puppeteer": "^1.19.0",
     "tea-school": "^1.5.0",
     "tempy": "^0.3.0",
     "written-number": "^0.9.1"

@@ -1,11 +1,13 @@
 import * as mongoose from 'mongoose';
 import { Request, Response } from 'express';
 import * as Excel from 'exceljs';
+import * as fs from 'fs';
 import { file } from 'tempy';
-import TeaSchool from 'tea-school';
-import * as pug from 'pug';
+// import TeaSchool from 'tea-school';
+// import * as pug from 'pug';
 import * as path from 'path';
-import { PDFOptions } from 'puppeteer';
+import * as puppeteer from 'puppeteer';
+import * as handlebars from 'handlebars';
 import { Options as SassOptions } from 'node-sass';
 import SalarySchema from './../models/SalaryModel';
 
@@ -154,72 +156,114 @@ class SalaryController {
   }
 
   public async getAllSalariesReceipt(req: Request, res: Response) {
-    const styleOptions: SassOptions = {
-      file: path.resolve(__dirname, '../assets/styles/salaryPdf.scss'),
-    };
+    // const styleOptions: SassOptions = {
+    //   file: path.resolve(__dirname, '../assets/styles/salaryPdf.scss'),
+    // };
     const htmlTemplatePath = path.resolve(__dirname,
-      '../assets/templates/salaryReceipt-pdf.template.pug');
-    const htmlTemplateOptions: pug.LocalsObject = {
-      receipt: {
-        companyName: 'Emu',
-        employee: {
-          name: 'Juan Ignacio',
-          position: 'Panadero',
-          documentId: '1.435.154',
-          laborRegime: 'Mensualero',
-          wage: '2.000.000',
-        },
-        paymentDate: 'jul-2019',
-        items: [
-          {
-            income: {
-              concept: 'Salario',
-              cant: '30',
-              price: '2.000.000',
-            },
-            discounts: {
-              concept: 'Anticipo',
-              cant: '1',
-              price: '100.000',
-            }
-          },
-        ],
-        totalIncome: '2.000.000',
-        totalDiscount: '100.000',
-        totalPayment: '1.900.000',
-        totalWritten: 'un millon novecientos mil',
+      '../assets/templates/salaryReceiptPDF.template.html');
+    const templateHtml = fs.readFileSync(htmlTemplatePath, 'utf8');
+    const data = {
+      title: "A new Brazilian School",
+      date: "05/12/2018",
+      name: "Rodolfo Luis Marcos",
+      age: 28,
+      birthdate: "12/07/1990",
+      course: "Computer Science",
+      obs: "Graduated in 2014 by Federal University of Lavras, work with Full-Stack development and E-commerce."
+    };
+    const template = handlebars.compile(templateHtml);
+    const html = template(data);
+    const milis = (new Date()).getTime();
+    const pdfPath = path.resolve(__dirname, '../assets/output', `pdftest-${milis}.pdf`);
+    const options = {
+      width: '1230px',
+      headerTemplate: "<p></p>",
+      footerTemplate: "<p></p>",
+      displayHeaderFooter: false,
+      margin: {
+        top: "10px",
+        bottom: "30px"
       },
+      printBackground: true,
+      path: pdfPath
     };
-    const pdfOptions: PDFOptions = {
-      path: path.resolve(__dirname, '../assets/output', 'receipt.pdf'),
-      format: 'A4',
-    };
-    const teaSchoolOptions: TeaSchool.GeneratePdfOptions = {
-      styleOptions,
-      htmlTemplatePath,
-      htmlTemplateOptions,
-      pdfOptions,
-    };
-    console.log(TeaSchool);
+    try {
+      const browser = await puppeteer.launch({
+        headless: true,
+        args: ['--disable-dev-shm-usage', '--no-sandbox'],
+      });
+      const page = await browser.newPage();
+      await page.goto(`data:text/html;charset=UTF-8,${html}`, {
+        waitUntil: 'networkidle0'
+      });
+      const pedefe = await page.pdf(options);
+      await browser.close();
+      console.log(pedefe.toString());
+      res.sendFile(pdfPath);
+    } catch (error) {
+        res.json({ error });
+    }
+    return;
+    // const htmlTemplateOptions: pug.LocalsObject = {
+    //   receipt: {
+    //     companyName: 'Emu',
+    //     employee: {
+    //       name: 'Juan Ignacio',
+    //       position: 'Panadero',
+    //       documentId: '1.435.154',
+    //       laborRegime: 'Mensualero',
+    //       wage: '2.000.000',
+    //     },
+    //     paymentDate: 'jul-2019',
+    //     items: [
+    //       {
+    //         income: {
+    //           concept: 'Salario',
+    //           cant: '30',
+    //           price: '2.000.000',
+    //         },
+    //         discounts: {
+    //           concept: 'Anticipo',
+    //           cant: '1',
+    //           price: '100.000',
+    //         }
+    //       },
+    //     ],
+    //     totalIncome: '2.000.000',
+    //     totalDiscount: '100.000',
+    //     totalPayment: '1.900.000',
+    //     totalWritten: 'un millon novecientos mil',
+    //   },
+    // };
+    // const pdfOptions: PDFOptions = {
+    //   path: path.resolve(__dirname, '../assets/output', 'receipt.pdf'),
+    //   format: 'A4',
+    // };
+    // const teaSchoolOptions: TeaSchool.GeneratePdfOptions = {
+    //   styleOptions,
+    //   htmlTemplatePath,
+    //   htmlTemplateOptions,
+    //   pdfOptions,
+    // };
+    // console.log(TeaSchool);
     // res.json({
     //   message: 'Test path after generating pdf',
     //   obj: TeaSchool.generatePdf,
     // });
-    const pdf = await TeaSchool.generatePdf(teaSchoolOptions);
-    console.log(pdf.toString());
-    return;
-    TeaSchool.generatePdf(teaSchoolOptions)
-    .then(pdf => {
-      res.json({
-        message: `PDF generated`,
-        pdf: pdf.toString('utf8'),
-      })
-      // res.sendFile(path.join(__dirname, '../assets/output', 'receipt.pdf'));
-    })
-    .catch(err => {
-      res.send(err);
-      console.log(err);
-    });
+    // const pdf = await TeaSchool.generatePdf(teaSchoolOptions);
+    // console.log(pdf.toString());
+    // TeaSchool.generatePdf(teaSchoolOptions)
+    // .then(pdf => {
+    //   res.json({
+    //     message: `PDF generated`,
+    //     pdf: pdf.toString('utf8'),
+    //   })
+    //   // res.sendFile(path.join(__dirname, '../assets/output', 'receipt.pdf'));
+    // })
+    // .catch(err => {
+    //   res.send(err);
+    //   console.log(err);
+    // });
   }
 }
 
