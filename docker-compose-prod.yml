@@ -8,7 +8,6 @@ services:
     volumes: 
       - ./api:/usr/app/
       - /usr/app/node_modules
-      # - ./api/node_modules:/usr/app/node_modules
     ports:
       - "3000:3000"
       - "9229:9229"
@@ -31,6 +30,27 @@ services:
       - ./data/mongo:/data/db
     ports:
       - "27017:27017"
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /home/juaning/certs:/etc/nginx/certs:ro
+      - /etc/nginx/vhost.d
+      - /usr/share/nginx/html
+    labels:
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    restart: always
+    volumes:
+      - /home/juaning/certs:/etc/nginx/certs:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    volumes_from:
+      - nginx-proxy:rw
   webapp:
     build:
       context: ./webapp
@@ -38,11 +58,15 @@ services:
     command: npm run start
     volumes:
       - ./webapp:/usr/app/
-      # - ./webapp/node_modules:/usr/app/node_modules
       - /usr/app/node_modules
-    ports:
-      - "80:8080"
+    expose:
+      - "80"
+    # ports:
+    #   - "80:8080"
     depends_on:
       - api
     environment:
-      NODE_ENV: production
+      - NODE_ENV=development
+      - VIRTUAL_HOST=juaning.dev,pro.juaning.dev
+      - LETSENCRYPT_HOST=juaning.dev,pro.juaning.dev
+      - LETSENCRYPT_EMAIL=goleadornato@yahoo.com
