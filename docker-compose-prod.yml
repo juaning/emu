@@ -8,9 +8,11 @@ services:
     volumes: 
       - ./api:/usr/app/
       - /usr/app/node_modules
-    ports:
-      - "3000:3000"
-      - "9229:9229"
+    expose:
+      - "3000"
+    # ports:
+    #   - "3000:3000"
+    #   - "9229:9229"
     depends_on:
       - mongo
     environment:
