@@ -15,7 +15,7 @@ services:
     environment:
       NODE_ENV: production
       MONGO_URL: mongodb://mongo:27017/${MONGO_INITDB_DATABASE}
-      MONGO_USER: ${MONGO_USERNAME}
+      MONGO_USER: ${MONGO_USER}
       MONGO_PWD: ${MONGO_PASSWORD}
       IS_LOCAL: ${IS_LOCAL}
   mongo:
