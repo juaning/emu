@@ -10,9 +10,6 @@ services:
       - /usr/app/node_modules
     expose:
       - "3000"
-    # ports:
-    #   - "3000:3000"
-    #   - "9229:9229"
     depends_on:
       - mongo
     environment:
@@ -32,8 +29,6 @@ services:
       - ./data/mongo:/data/db
     expose:
       - "27017"
-    # ports:
-    #   - "27017:27017"
   nginx-proxy:
     image: jwilder/nginx-proxy
     restart: always
