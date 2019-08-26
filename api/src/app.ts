@@ -7,7 +7,7 @@ class App {
   public app: express.Application;
   public routePrv: Routes = new Routes();
   public mongoUrl: string = process.env.MONGO_URL;
-  public mongoUser: string = process.env.MONGO_USR;
+  public mongoUser: string = process.env.MONGO_USER;
   public mongoPwd: string = process.env.MONGO_PWD;
   public isLocal: boolean = process.env.IS_LOCAL === 'true';
 
