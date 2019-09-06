@@ -22,16 +22,11 @@ class SalaryController {
     const milis = (new Date()).getTime();
     const pdfPath = path.resolve(__dirname, '../assets/output', `${name}-${milis}.pdf`);
     const options = {
-      width: '1230px',
-      headerTemplate: "<p></p>",
-      footerTemplate: "<p></p>",
-      displayHeaderFooter: false,
-      margin: {
-        top: "10px",
-        bottom: "30px"
-      },
+      displayHeaderFooter: true,
       printBackground: true,
-      path: pdfPath
+      preferCSSPageSize: true,
+      path: pdfPath,
+      format: 'A4',
     };
     try {
       const browser = await puppeteer.launch({
@@ -40,14 +35,14 @@ class SalaryController {
       });
       const page = await browser.newPage();
       await page.goto(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`, {
-        waitUntil: 'networkidle0'
+        waitUntil: 'networkidle0',
       });
-      console.log(html);
+      await page.emulateMedia('screen');
       await page.pdf(options);
       await browser.close();
       return Promise.resolve(pdfPath);
     } catch (error) {
-      return error;
+      return Promise.reject(error);
     }
   }
 
@@ -61,7 +56,7 @@ class SalaryController {
   public getSalaryMonthYear(req: Request, res: Response) {
     const { monthYear } = req.params;
     const [ month, year ] = monthYear.split('-');
-    const date = new Date(Date.UTC(year, (month - 1)));
+    const date = new Date(Date.UTC(parseInt(year), (parseInt(month) - 1)));
 
     Salary.find({ date })
       .then(salaryList => res.json(salaryList))
@@ -71,7 +66,7 @@ class SalaryController {
   public getSalaryMonthYearExcel(req: Request, res: Response) {
     const { monthYear } = req.params;
     const [ month, year ] = monthYear.split('-');
-    const date = new Date(Date.UTC(year, (month - 1)));
+    const date = new Date(Date.UTC(+year, (+month - 1)));
 
     Salary.find({ date })
       .then(salaryList => {
@@ -142,7 +137,7 @@ class SalaryController {
     const { monthYear } = req.params;
     const { employees } = req.body;
     const [ month, year ] = monthYear.split('-');
-    const date = new Date(Date.UTC(year, (month - 1)));
+    const date = new Date(Date.UTC(+year, (+month - 1)));
 
     employees.forEach(employee => employee.date = date);
     Salary.insertMany(employees)
@@ -181,7 +176,7 @@ class SalaryController {
   public deleteSalaryMonthYear(req: Request, res: Response) {
     const { monthYear } = req.params;
     const [month, year] = monthYear.split('-');
-    const date = new Date(Date.UTC(year, (month - 1)));
+    const date = new Date(Date.UTC(+year, (+month - 1)));
 
     Salary.deleteMany({ date })
       .then(result => res.json({
@@ -194,15 +189,92 @@ class SalaryController {
 
   public async getAllSalariesReceipt(req: Request, res: Response) {
     const { monthYear } = req.params;
-    const htmlTemplatePath = '../assets/templates/salaryReceiptPDF.template.html';
+    const htmlTemplatePath = '../assets/templates/salaryReceipt.template.html';
+    const base64_encode = file => {
+      const bitmap = fs.readFileSync(file);
+      return new Buffer(bitmap).toString('base64');
+    };
+    const imgPath = path.resolve(__dirname, '../assets/templates/assets/img/folklogo.png');
+    const companyLogo = 'data:image/png;base64,' + base64_encode(imgPath);
     const data = {
-      title: "A new Brazilian School",
-      date: "05/12/2018",
-      name: "Rodolfo Luis Marcos",
-      age: 28,
-      birthdate: "12/07/1990",
-      course: "Computer Science",
-      obs: "Graduated in 2014 by Federal University of Lavras, work with Full-Stack development and E-commerce."
+      receipt: {
+        companyName: 'Emprendimientos Globales SRL',
+        companyLogo,
+        employee: {
+          name: 'Sofia Sol Sosa Aranda',
+          position: 'Encargada de cocina',
+          documentId: '7.639.600',
+          laborRegime: 'Jornalera',
+          wage: '1.462.536',
+        },
+        paymentDate: 'abr-19',
+        items: [
+          {
+            income: {
+              concept: 'Salario',
+              cant: '18',
+              price: '1.462.536',
+            },
+            discounts: {
+              concept: 'IPS (9%)',
+              cant: '-',
+              price: '0',
+            },
+          },
+          {
+            income: {
+              concept: 'Hrs. Nocturnas',
+              cant: '-',
+              price: '0',
+            },
+            discounts: {
+              concept: 'Anticipo',
+              cant: '-',
+              price: '200.000',
+            },
+          },
+          {
+            income: {
+              concept: 'Hrs. Extra Diurnas',
+              cant: '-',
+              price: '0',
+            },
+            discounts: {
+              concept: 'Ausencias',
+              cant: '-',
+              price: '-',
+            },
+          },
+          {
+            income: {
+              concept: 'Bonif. Familiar',
+              cant: '-',
+              price: '0',
+            },
+            discounts: {
+              concept: 'Otros Descuentos',
+              cant: '-',
+              price: '0',
+            },
+          },
+          {
+            income: {
+              concept: 'Otros Ingresos',
+              cant: '-',
+              price: '0',
+            },
+            discounts: {
+              concept: '',
+              cant: '',
+              price: '',
+            },
+          }
+        ],
+        totalIncome: '1.462.536',
+        totalPayment: '1.262.536',
+        totalWritten: 'un millon doscientos sesenta y dos mil quinientos treinta y seis',
+        date: '31/07/2019',
+      }
     };
     try {
       const pedefe = await this.generatePDF(htmlTemplatePath, monthYear, data);
