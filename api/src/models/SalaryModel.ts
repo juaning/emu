@@ -13,6 +13,7 @@ const SalarySchema = Schema({
   date: { type: Date, required: true },
   attendanceId: { type: String, required: true },
   totalWorkedDays: { type: Number, default: 30 },
+  paidSalary: { type: Number, default: 0 },
   nightHoursHours: { type: Number, default: 0 },
   nightHoursAmount: { type: Number, default: 0 },
   dailyExtraHoursHours: { type: Number, default: 0 },
@@ -51,3 +52,48 @@ const SalarySchema = Schema({
 });
 
 export default SalarySchema;
+
+export interface SalaryInterface {
+  employeeId: string;
+  firstName: string;
+  lastName: string;
+  employeeDocumentId: string;
+  wage: number;
+  date: Date;
+  attendanceId: string;
+  totalWorkedDays: number;
+  paidSalary: number;
+  nightHoursHours: number;
+  nightHoursAmount: number;
+  dailyExtraHoursHours: number;
+  dailyExtraHoursAmount: number;
+  nightlyExtraHoursHours: number;
+  nightlyExtraHoursAmount: number;
+  weekendHoursHours: number;
+  weekendHoursAmount: number;
+  nightlyWeekendExtraHoursHours: number;
+  nightlyWeekendExtraHoursAmount: number;
+  holidayDays: number;
+  holidaysAmount: number;
+  otherIncomes: number;
+  unjustifiedAbsenceDays: number;
+  unjustifiedAbsenceAmount: number;
+  subTotal: number;
+  discountIps: number;
+  discountAdvancePayment: number;
+  discountLoans: number;
+  discountJudicial: number;
+  suspensionDays: number;
+  suspensionAmount: number;
+  lateArrivalHours: number;
+  lateArrivalMinutes: number;
+  lateArrivalAmount: number;
+  otherDiscounts: number;
+  familyBonus: number;
+  netToDeposit: number;
+  viaticum: number;
+  parking: number;
+  salaryBump: number;
+  totalPayment: number;
+  laborRegime: string;
+};

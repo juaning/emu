@@ -3,15 +3,15 @@ import { Request, Response } from 'express';
 import * as Excel from 'exceljs';
 import * as fs from 'fs';
 import { file } from 'tempy';
-// import TeaSchool from 'tea-school';
-// import * as pug from 'pug';
 import * as path from 'path';
 import * as puppeteer from 'puppeteer';
 import * as handlebars from 'handlebars';
-import { Options as SassOptions } from 'node-sass';
-import SalarySchema from './../models/SalaryModel';
+import * as writtenNumber from 'written-number';
+import SalarySchema, { SalaryInterface } from './../models/SalaryModel';
+import { laborRegimeConstant } from '../resources/constants';
 
 const Salary = mongoose.model('Salary', SalarySchema);
+writtenNumber.defaults.lang = 'es';
 
 class SalaryController {
   private async generatePDF(templatePath: string, name: string, content: object) : Promise<string> {
@@ -19,13 +19,10 @@ class SalaryController {
     const templateHtml = fs.readFileSync(htmlTemplatePath, 'utf8');
     const template = handlebars.compile(templateHtml);
     const html = template(content);
-    const milis = (new Date()).getTime();
-    const pdfPath = path.resolve(__dirname, '../assets/output', `${name}-${milis}.pdf`);
     const options = {
       displayHeaderFooter: true,
       printBackground: true,
       preferCSSPageSize: true,
-      path: pdfPath,
       format: 'A4',
     };
     try {
@@ -37,13 +34,128 @@ class SalaryController {
       await page.goto(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`, {
         waitUntil: 'networkidle0',
       });
-      await page.emulateMedia('screen');
-      await page.pdf(options);
+      await page.emulateMedia('print');
+      const pdfBuffer = await page.pdf(options);
       await browser.close();
-      return Promise.resolve(pdfPath);
+      return Promise.resolve(pdfBuffer);
     } catch (error) {
       return Promise.reject(error);
     }
+  }
+
+  private mapSalaries(salaryList: Array<SalaryInterface>, extras: { companyLogo: string, companyName: string }) : object {
+    const { companyLogo, companyName } = extras;
+    const receipts = salaryList.map(item => {
+      const date = new Date(item.date);
+      const laborRegime = laborRegimeConstant.find(lr => lr.value === item.laborRegime);
+      const totalDiscount = item.discountIps + item.discountAdvancePayment +
+      item.discountLoans + item.discountJudicial + item.unjustifiedAbsenceAmount +
+      item.suspensionAmount + item.otherDiscounts;
+      return { receipt: {
+        companyName,
+        companyLogo,
+        employee: {
+          name: `${item.firstName} ${item.lastName}`,
+          position: 'Encargada de PC',
+          documentId: parseInt(item.employeeDocumentId).toLocaleString('es-PY'),
+          laborRegime: laborRegime.text,
+          wage: Math.round(item.wage).toLocaleString('es-PY'),
+        },
+        paymentDate: date.toLocaleDateString('es-ES', { year: 'numeric', month: 'short' }),
+        items: [
+          {
+            income: {
+              concept: 'Salario',
+              cant: item.totalWorkedDays,
+              price: Math.round(item.paidSalary).toLocaleString('es-PY'),
+            },
+            discounts: {
+              concept: 'IPS (9%)',
+              cant: '-',
+              price: Math.round(item.discountIps).toLocaleString('es-PY'),
+            },
+          },
+          {
+            income: {
+              concept: 'Hrs. Nocturnas',
+              cant: item.nightHoursHours,
+              price: Math.round(item.nightHoursAmount).toLocaleString('es-PY'),
+            },
+            discounts: {
+              concept: 'Anticipo',
+              cant: '-',
+              price: Math.round(item.discountAdvancePayment).toLocaleString('es-PY'),
+            },
+          },
+          {
+            income: {
+              concept: 'Hrs. Extra Diurnas',
+              cant: item.dailyExtraHoursHours,
+              price: Math.round(item.dailyExtraHoursAmount).toLocaleString('es-PY'),
+            },
+            discounts: {
+              concept: 'Prestamos',
+              cant: '-',
+              price: Math.round(item.discountLoans).toLocaleString('es-PY'),
+            },
+          },
+          {
+            income: {
+              concept: 'Hrs. Domingos y Feriados',
+              cant: item.weekendHoursHours,
+              price: Math.round(item.weekendHoursAmount).toLocaleString('es-PY'),
+            },
+            discounts: {
+              concept: 'Judicial',
+              cant: '-',
+              price: Math.round(item.discountJudicial).toLocaleString('es-PY'),
+            },
+          },
+          {
+            income: {
+              concept: 'Hrs. Extras Nocturnas Domingos y Feriados',
+              cant: item.nightlyWeekendExtraHoursHours,
+              price: Math.round(item.nightlyWeekendExtraHoursAmount).toLocaleString('es-PY'),
+            },
+            discounts: {
+              concept: 'Ausencias',
+              cant: item.unjustifiedAbsenceDays,
+              price: Math.round(item.unjustifiedAbsenceAmount).toLocaleString('es-PY'),
+            },
+          },
+          {
+            income: {
+              concept: 'Bonif. Familiar',
+              cant: '-',
+              price: Math.round(item.familyBonus).toLocaleString('es-PY'),
+            },
+            discounts: {
+              concept: 'Suspenciones',
+              cant: item.suspensionDays,
+              price: Math.round(item.suspensionAmount).toLocaleString('es-PY'),
+            },
+          },
+          {
+            income: {
+              concept: 'Otros Ingresos',
+              cant: '-',
+              price: Math.round(item.otherIncomes).toLocaleString('es-PY'),
+            },
+            discounts: {
+              concept: 'Otros Descuentos',
+              cant: '-',
+              price: Math.round(item.otherDiscounts).toLocaleString('es-PY'),
+            },
+          }
+        ],
+        totalIncome: Math.round(item.subTotal).toLocaleString('es-PY'),
+        totalDiscount: Math.round(totalDiscount).toLocaleString('es-PY'),
+        totalPayment: Math.round(item.totalPayment).toLocaleString('es-PY'),
+        totalWritten: writtenNumber(item.totalPayment),
+        date: date.toLocaleDateString('es-ES'),
+      }
+    }});
+    return { receipts };
   }
 
   public getSalaryById(req: Request, res: Response) {
@@ -189,6 +301,9 @@ class SalaryController {
 
   public async getAllSalariesReceipt(req: Request, res: Response) {
     const { monthYear } = req.params;
+    const [ month, year ] = monthYear.split('-');
+    const date = new Date(Date.UTC(parseInt(year), (parseInt(month) - 1)));
+
     const htmlTemplatePath = '../assets/templates/salaryReceipt.template.html';
     const base64_encode = file => {
       const bitmap = fs.readFileSync(file);
@@ -196,89 +311,17 @@ class SalaryController {
     };
     const imgPath = path.resolve(__dirname, '../assets/templates/assets/img/folklogo.png');
     const companyLogo = 'data:image/png;base64,' + base64_encode(imgPath);
-    const data = {
-      receipt: {
+    
+    try {
+      const salaryList = await Salary.find({ date });
+      const extras = {
         companyName: 'Emprendimientos Globales SRL',
         companyLogo,
-        employee: {
-          name: 'Sofia Sol Sosa Aranda',
-          position: 'Encargada de cocina',
-          documentId: '7.639.600',
-          laborRegime: 'Jornalera',
-          wage: '1.462.536',
-        },
-        paymentDate: 'abr-19',
-        items: [
-          {
-            income: {
-              concept: 'Salario',
-              cant: '18',
-              price: '1.462.536',
-            },
-            discounts: {
-              concept: 'IPS (9%)',
-              cant: '-',
-              price: '0',
-            },
-          },
-          {
-            income: {
-              concept: 'Hrs. Nocturnas',
-              cant: '-',
-              price: '0',
-            },
-            discounts: {
-              concept: 'Anticipo',
-              cant: '-',
-              price: '200.000',
-            },
-          },
-          {
-            income: {
-              concept: 'Hrs. Extra Diurnas',
-              cant: '-',
-              price: '0',
-            },
-            discounts: {
-              concept: 'Ausencias',
-              cant: '-',
-              price: '-',
-            },
-          },
-          {
-            income: {
-              concept: 'Bonif. Familiar',
-              cant: '-',
-              price: '0',
-            },
-            discounts: {
-              concept: 'Otros Descuentos',
-              cant: '-',
-              price: '0',
-            },
-          },
-          {
-            income: {
-              concept: 'Otros Ingresos',
-              cant: '-',
-              price: '0',
-            },
-            discounts: {
-              concept: '',
-              cant: '',
-              price: '',
-            },
-          }
-        ],
-        totalIncome: '1.462.536',
-        totalPayment: '1.262.536',
-        totalWritten: 'un millon doscientos sesenta y dos mil quinientos treinta y seis',
-        date: '31/07/2019',
       }
-    };
-    try {
-      const pedefe = await this.generatePDF(htmlTemplatePath, monthYear, data);
-      res.sendFile(pedefe);
+      const mappedList = this.mapSalaries(salaryList, extras);
+      const pedefe = await this.generatePDF(htmlTemplatePath, monthYear, mappedList);
+      res.type('application/pdf');
+      res.send(pedefe);
     } catch (error) {
         res.json({ error });
     }
