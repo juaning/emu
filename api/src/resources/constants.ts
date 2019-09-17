@@ -5,4 +5,13 @@ const laborRegimeConstant = [
   { value: 'hourly', text: 'Horista' },
 ];
 
-export { laborRegimeConstant };
+const jobTitleConstant = [
+  { value: '', text: ''},
+  { value: 'manager', text: 'Gerente' },
+  { value: 'assistant_manager', text: 'Subgerente' },
+  { value: 'supervisor', text: 'Supervisor' },
+  { value: 'administrative', text: 'Empleado administrativo' },
+  { value: 'intern', text: 'Pasante' },
+];
+
+export { laborRegimeConstant, jobTitleConstant };

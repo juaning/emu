@@ -639,6 +639,11 @@ class MonthlySalaryForm extends React.Component {
     const el = document.getElementById('downloadExcel');
     el.click();
   }
+  downloadReceiptsClick = e => {
+    // TODO fix proxy issue for link
+    const el = document.getElementById('downloadReceipts');
+    window.open(el.href, '_blank');
+  }
   render() {
     const { classes } = this.props;
     const { salaryEntity, downloadExcelDisabled } = this.state;
@@ -707,6 +712,20 @@ class MonthlySalaryForm extends React.Component {
                     download
                     style={{ display: 'none' }}
                     id="downloadExcel"
+                  >download</a>
+                  <Button
+                    color="secondary"
+                    disabled={downloadExcelDisabled}
+                    className={classes.registerButton}
+                    onClick={this.downloadReceiptsClick}
+                  >
+                    Descargar Recibos
+                  </Button>
+                  <a
+                    href={`http://localhost:3000/employee/salary/${month}-${year}/allReceipts`}
+                    download
+                    style={{ display: 'none' }}
+                    id="downloadReceipts"
                   >download</a>
                 </GridItem>
               </GridContainer>

@@ -59,6 +59,7 @@ export interface SalaryInterface {
   lastName: string;
   employeeDocumentId: string;
   wage: number;
+  jobTitle: string;
   date: Date;
   attendanceId: string;
   totalWorkedDays: number;

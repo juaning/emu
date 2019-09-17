@@ -7,11 +7,14 @@ import * as path from 'path';
 import * as puppeteer from 'puppeteer';
 import * as handlebars from 'handlebars';
 import * as writtenNumber from 'written-number';
+import * as moment from 'moment';
 import SalarySchema, { SalaryInterface } from './../models/SalaryModel';
-import { laborRegimeConstant } from '../resources/constants';
+import WorkModel from './../models/WorkModel';
+import { laborRegimeConstant, jobTitleConstant } from '../resources/constants';
 
 const Salary = mongoose.model('Salary', SalarySchema);
 writtenNumber.defaults.lang = 'es';
+moment.locale('es-PY');
 
 class SalaryController {
   private async generatePDF(templatePath: string, name: string, content: object) : Promise<string> {
@@ -46,8 +49,9 @@ class SalaryController {
   private mapSalaries(salaryList: Array<SalaryInterface>, extras: { companyLogo: string, companyName: string }) : object {
     const { companyLogo, companyName } = extras;
     const receipts = salaryList.map(item => {
-      const date = new Date(item.date);
+      const mDate = moment(item.date);
       const laborRegime = laborRegimeConstant.find(lr => lr.value === item.laborRegime);
+      const jobTitle = jobTitleConstant.find(jt => jt.value === item.jobTitle);
       const totalDiscount = item.discountIps + item.discountAdvancePayment +
       item.discountLoans + item.discountJudicial + item.unjustifiedAbsenceAmount +
       item.suspensionAmount + item.otherDiscounts;
@@ -56,12 +60,12 @@ class SalaryController {
         companyLogo,
         employee: {
           name: `${item.firstName} ${item.lastName}`,
-          position: 'Encargada de PC',
+          jobTitle: jobTitle.text,
           documentId: parseInt(item.employeeDocumentId).toLocaleString('es-PY'),
           laborRegime: laborRegime.text,
           wage: Math.round(item.wage).toLocaleString('es-PY'),
         },
-        paymentDate: date.toLocaleDateString('es-ES', { year: 'numeric', month: 'short' }),
+        paymentDate: mDate.format('MMMM-YYYY'),
         items: [
           {
             income: {
@@ -152,10 +156,29 @@ class SalaryController {
         totalDiscount: Math.round(totalDiscount).toLocaleString('es-PY'),
         totalPayment: Math.round(item.totalPayment).toLocaleString('es-PY'),
         totalWritten: writtenNumber(item.totalPayment),
-        date: date.toLocaleDateString('es-ES'),
+        date: mDate.format('D/MM/YYYY'),
       }
     }});
     return { receipts };
+  }
+
+  private async getJobTitle(salaryList: Array<SalaryInterface>) : Promise<Array<SalaryInterface>> {
+    const yesterday = ( d => new Date(d.setDate(d.getDate()-1)) )(new Date());
+    const addJobTitle = async () => await Promise.all(salaryList.map(async salary => {
+      // Get work data for employee
+      const workData = await WorkModel.findOne({
+        $or: [
+          { endDateContract: { $exists: false } },
+          { endDateContract: { $gt: yesterday } },
+          { endDateContract: null },
+        ],
+        employeeId: salary.employeeId,
+      });
+      salary['jobTitle'] = workData.jobTitle;
+      return salary;
+    }));
+    const sl = await addJobTitle();
+    return sl;
   }
 
   public getSalaryById(req: Request, res: Response) {
@@ -313,7 +336,10 @@ class SalaryController {
     const companyLogo = 'data:image/png;base64,' + base64_encode(imgPath);
     
     try {
-      const salaryList = await Salary.find({ date });
+      let salaryList = await Salary.find({ date });
+      if (salaryList.length > 0) {
+        salaryList = await this.getJobTitle(salaryList);
+      }
       const extras = {
         companyName: 'Emprendimientos Globales SRL',
         companyLogo,
