@@ -1,0 +1,81 @@
+// Use !{var} to use unescaped conent
+style(type="text/css") !{compiledStyle}
+
+var companyLogo = receipt.companyLogo ? img(src=#{receipt.companyLogo}) : ''
+div.titleContainer
+  h1.title Recibo de salario 
+  companyLogo
+
+div.header
+  div.row
+    span.label RAZON SOCIAL: 
+    span.value #{receipt.companyName}
+div.header
+  div.row
+    span.label EMPLEADO: 
+    span.value #{receipt.employee.name}
+    span.label CARGO: 
+    span.value #{receipt.employee.position}
+div.header
+  div.row
+    span.label C.I.: 
+    span.value #{receipt.employee.documentId}
+    span.label TIPO DE TRABAJADOR: 
+    span.value #{receipt.employee.laborRegime}
+div.header
+  div.row
+    span.label SALARIO BASE: 
+    span.value #{receipt.employee.wage}
+    span.label PERIODO DE PAGO: 
+    span.value #{receipt.paymentDate}
+
+table
+  thead
+    tr
+      th(colspan='3') HABERES
+      th(colspan='3') DESCUENTOS
+    tr
+      th CONCEPTO
+      th CANT.
+      th MONTO
+      th CONCEPTO
+      th CANT.
+      th MONTO
+  tbody
+    each item in receipt.items
+      tr
+        td #{item.income.concept}
+        td #{item.income.cant}
+        td #{item.income.price}
+        td #{item.discounts.concept}
+        td #{item.discounts.cant}
+        td #{item.discounts.price}
+    tr
+      td(colspan='2') TOTAL HABERES
+      td #{receipt.totalIncome}
+      td(colspan='2') TOTAL DESCUENTOS
+      td #{receipt.totalDiscount}
+    tr
+      td(colspan='2') LIQUIDO A PAGAR
+      td #{receipt.totalPayment}
+        
+div.table-footer
+  p Recibi de la Empresa #{receipt.companyName} la suma de GUARANIES #{receipt.totalWritten}
+  p (Gs. #{receipt.totalPayment}) En concepto mas arriba mencionados
+
+div.header
+  div.row
+    span.label RECIBI CONFORME: 
+    span.value 
+    span.label EMPLEADOR: 
+    span.value 
+
+div.header
+  div.row
+    span.label ACLARACION: 
+    span.value 
+
+div.header
+  div.row
+    span.label FECHA: 
+    span.value 

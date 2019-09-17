@@ -1,12 +1,186 @@
 import * as mongoose from 'mongoose';
 import { Request, Response } from 'express';
 import * as Excel from 'exceljs';
+import * as fs from 'fs';
 import { file } from 'tempy';
-import SalarySchema from './../models/SalaryModel';
+import * as path from 'path';
+import * as puppeteer from 'puppeteer';
+import * as handlebars from 'handlebars';
+import * as writtenNumber from 'written-number';
+import * as moment from 'moment';
+import SalarySchema, { SalaryInterface } from './../models/SalaryModel';
+import WorkModel from './../models/WorkModel';
+import { laborRegimeConstant, jobTitleConstant } from '../resources/constants';
 
 const Salary = mongoose.model('Salary', SalarySchema);
+writtenNumber.defaults.lang = 'es';
+moment.locale('es-PY');
 
 class SalaryController {
+  private async generatePDF(templatePath: string, name: string, content: object) : Promise<string> {
+    const htmlTemplatePath = path.resolve(__dirname, templatePath);
+    const templateHtml = fs.readFileSync(htmlTemplatePath, 'utf8');
+    const template = handlebars.compile(templateHtml);
+    const html = template(content);
+    const options = {
+      displayHeaderFooter: true,
+      printBackground: true,
+      preferCSSPageSize: true,
+      format: 'A4',
+    };
+    try {
+      const browser = await puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox'],
+      });
+      const page = await browser.newPage();
+      await page.goto(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`, {
+        waitUntil: 'networkidle0',
+      });
+      await page.emulateMedia('print');
+      const pdfBuffer = await page.pdf(options);
+      await browser.close();
+      return Promise.resolve(pdfBuffer);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  private mapSalaries(salaryList: Array<SalaryInterface>, extras: { companyLogo: string, companyName: string }) : object {
+    const { companyLogo, companyName } = extras;
+    const receipts = salaryList.map(item => {
+      const mDate = moment(item.date);
+      const laborRegime = laborRegimeConstant.find(lr => lr.value === item.laborRegime);
+      const jobTitle = jobTitleConstant.find(jt => jt.value === item.jobTitle);
+      const totalDiscount = item.discountIps + item.discountAdvancePayment +
+      item.discountLoans + item.discountJudicial + item.unjustifiedAbsenceAmount +
+      item.suspensionAmount + item.otherDiscounts;
+      return { receipt: {
+        companyName,
+        companyLogo,
+        employee: {
+          name: `${item.firstName} ${item.lastName}`,
+          jobTitle: jobTitle.text,
+          documentId: parseInt(item.employeeDocumentId).toLocaleString('es-PY'),
+          laborRegime: laborRegime.text,
+          wage: Math.round(item.wage).toLocaleString('es-PY'),
+        },
+        paymentDate: mDate.format('MMMM-YYYY'),
+        items: [
+          {
+            income: {
+              concept: 'Salario',
+              cant: item.totalWorkedDays,
+              price: Math.round(item.paidSalary).toLocaleString('es-PY'),
+            },
+            discounts: {
+              concept: 'IPS (9%)',
+              cant: '-',
+              price: Math.round(item.discountIps).toLocaleString('es-PY'),
+            },
+          },
+          {
+            income: {
+              concept: 'Hrs. Nocturnas',
+              cant: item.nightHoursHours,
+              price: Math.round(item.nightHoursAmount).toLocaleString('es-PY'),
+            },
+            discounts: {
+              concept: 'Anticipo',
+              cant: '-',
+              price: Math.round(item.discountAdvancePayment).toLocaleString('es-PY'),
+            },
+          },
+          {
+            income: {
+              concept: 'Hrs. Extra Diurnas',
+              cant: item.dailyExtraHoursHours,
+              price: Math.round(item.dailyExtraHoursAmount).toLocaleString('es-PY'),
+            },
+            discounts: {
+              concept: 'Prestamos',
+              cant: '-',
+              price: Math.round(item.discountLoans).toLocaleString('es-PY'),
+            },
+          },
+          {
+            income: {
+              concept: 'Hrs. Domingos y Feriados',
+              cant: item.weekendHoursHours,
+              price: Math.round(item.weekendHoursAmount).toLocaleString('es-PY'),
+            },
+            discounts: {
+              concept: 'Judicial',
+              cant: '-',
+              price: Math.round(item.discountJudicial).toLocaleString('es-PY'),
+            },
+          },
+          {
+            income: {
+              concept: 'Hrs. Extras Nocturnas Domingos y Feriados',
+              cant: item.nightlyWeekendExtraHoursHours,
+              price: Math.round(item.nightlyWeekendExtraHoursAmount).toLocaleString('es-PY'),
+            },
+            discounts: {
+              concept: 'Ausencias',
+              cant: item.unjustifiedAbsenceDays,
+              price: Math.round(item.unjustifiedAbsenceAmount).toLocaleString('es-PY'),
+            },
+          },
+          {
+            income: {
+              concept: 'Bonif. Familiar',
+              cant: '-',
+              price: Math.round(item.familyBonus).toLocaleString('es-PY'),
+            },
+            discounts: {
+              concept: 'Suspenciones',
+              cant: item.suspensionDays,
+              price: Math.round(item.suspensionAmount).toLocaleString('es-PY'),
+            },
+          },
+          {
+            income: {
+              concept: 'Otros Ingresos',
+              cant: '-',
+              price: Math.round(item.otherIncomes).toLocaleString('es-PY'),
+            },
+            discounts: {
+              concept: 'Otros Descuentos',
+              cant: '-',
+              price: Math.round(item.otherDiscounts).toLocaleString('es-PY'),
+            },
+          }
+        ],
+        totalIncome: Math.round(item.subTotal).toLocaleString('es-PY'),
+        totalDiscount: Math.round(totalDiscount).toLocaleString('es-PY'),
+        totalPayment: Math.round(item.totalPayment).toLocaleString('es-PY'),
+        totalWritten: writtenNumber(item.totalPayment),
+        date: mDate.format('D/MM/YYYY'),
+      }
+    }});
+    return { receipts };
+  }
+
+  private async getJobTitle(salaryList: Array<SalaryInterface>) : Promise<Array<SalaryInterface>> {
+    const yesterday = ( d => new Date(d.setDate(d.getDate()-1)) )(new Date());
+    const addJobTitle = async () => await Promise.all(salaryList.map(async salary => {
+      // Get work data for employee
+      const workData = await WorkModel.findOne({
+        $or: [
+          { endDateContract: { $exists: false } },
+          { endDateContract: { $gt: yesterday } },
+          { endDateContract: null },
+        ],
+        employeeId: salary.employeeId,
+      });
+      salary['jobTitle'] = workData.jobTitle;
+      return salary;
+    }));
+    const sl = await addJobTitle();
+    return sl;
+  }
+
   public getSalaryById(req: Request, res: Response) {
     const { salaryId } = req.params;
     Salary.findById(salaryId)
@@ -17,7 +191,7 @@ class SalaryController {
   public getSalaryMonthYear(req: Request, res: Response) {
     const { monthYear } = req.params;
     const [ month, year ] = monthYear.split('-');
-    const date = new Date(Date.UTC(year, (month - 1)));
+    const date = new Date(Date.UTC(parseInt(year), (parseInt(month) - 1)));
 
     Salary.find({ date })
       .then(salaryList => res.json(salaryList))
@@ -27,7 +201,7 @@ class SalaryController {
   public getSalaryMonthYearExcel(req: Request, res: Response) {
     const { monthYear } = req.params;
     const [ month, year ] = monthYear.split('-');
-    const date = new Date(Date.UTC(year, (month - 1)));
+    const date = new Date(Date.UTC(+year, (+month - 1)));
 
     Salary.find({ date })
       .then(salaryList => {
@@ -98,7 +272,7 @@ class SalaryController {
     const { monthYear } = req.params;
     const { employees } = req.body;
     const [ month, year ] = monthYear.split('-');
-    const date = new Date(Date.UTC(year, (month - 1)));
+    const date = new Date(Date.UTC(+year, (+month - 1)));
 
     employees.forEach(employee => employee.date = date);
     Salary.insertMany(employees)
@@ -137,7 +311,7 @@ class SalaryController {
   public deleteSalaryMonthYear(req: Request, res: Response) {
     const { monthYear } = req.params;
     const [month, year] = monthYear.split('-');
-    const date = new Date(Date.UTC(year, (month - 1)));
+    const date = new Date(Date.UTC(+year, (+month - 1)));
 
     Salary.deleteMany({ date })
       .then(result => res.json({
@@ -146,6 +320,38 @@ class SalaryController {
         result,
       }))
       .catch(err => res.send(err));
+  }
+
+  public async getAllSalariesReceipt(req: Request, res: Response) {
+    const { monthYear } = req.params;
+    const [ month, year ] = monthYear.split('-');
+    const date = new Date(Date.UTC(parseInt(year), (parseInt(month) - 1)));
+
+    const htmlTemplatePath = '../assets/templates/salaryReceipt.template.html';
+    const base64_encode = file => {
+      const bitmap = fs.readFileSync(file);
+      return new Buffer(bitmap).toString('base64');
+    };
+    const imgPath = path.resolve(__dirname, '../assets/templates/assets/img/folklogo.png');
+    const companyLogo = 'data:image/png;base64,' + base64_encode(imgPath);
+    
+    try {
+      let salaryList = await Salary.find({ date });
+      if (salaryList.length > 0) {
+        salaryList = await this.getJobTitle(salaryList);
+      }
+      const extras = {
+        companyName: 'Emprendimientos Globales SRL',
+        companyLogo,
+      }
+      const mappedList = this.mapSalaries(salaryList, extras);
+      const pedefe = await this.generatePDF(htmlTemplatePath, monthYear, mappedList);
+      res.type('application/pdf');
+      res.send(pedefe);
+    } catch (error) {
+        res.json({ error });
+    }
+    return;
   }
 }
 

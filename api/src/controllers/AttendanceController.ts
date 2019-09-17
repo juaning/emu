@@ -19,7 +19,7 @@ class AttendanceController {
   public getAttendanceMonthYear(req: Request, res: Response) {
     const { monthYear } = req.params;
     const [ month, year ] = monthYear.split('-');
-    const date = new Date(Date.UTC(year, (month - 1)));
+    const date = new Date(Date.UTC(parseInt(year), (parseInt(month) - 1)));
 
     Attendance.find({ date })
       .then(attendanceList => res.json(attendanceList))
@@ -38,7 +38,7 @@ class AttendanceController {
     const { monthYear } = req.params;
     const { employees} = req.body;
     const [month, year] = monthYear.split('-');
-    const date = new Date(Date.UTC(year, (month - 1)));
+    const date = new Date(Date.UTC(parseInt(year), (parseInt(month) - 1)));
     employees.forEach(employee => {
       employee.date = date;
     });
@@ -59,7 +59,7 @@ class AttendanceController {
     const { monthYear } = req.params;
     const { employees} = req.body;
     const [month, year] = monthYear.split('-');
-    const date = new Date(Date.UTC(year, (month - 1)));
+    const date = new Date(Date.UTC(parseInt(year), (parseInt(month) - 1)));
     const updates = employees.map(attendance =>
       Attendance.findOneAndUpdate({
         '_id': attendance._id
@@ -82,7 +82,7 @@ class AttendanceController {
   public deleteAttendanceMonthYear(req: Request, res: Response) {
     const { monthYear } = req.params;
     const [month, year] = monthYear.split('-');
-    const date = new Date(Date.UTC(year, (month - 1)));
+    const date = new Date(Date.UTC(parseInt(year), (parseInt(month) - 1)));
 
     Attendance.deleteMany({ date })
       .then(result => res.json({

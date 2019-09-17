@@ -15,25 +15,30 @@
   "author": "@juaning",
   "license": "ISC",
   "dependencies": {
-    "@types/express": "^4.16.1",
+    "@types/express": "^4.17.1",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.4",
     "debug": "^3.2.6",
     "dotenv": "^5.0.1",
-    "exceljs": "^1.11.0",
-    "express": "^4.17.0",
-    "mongoose": "^5.5.11",
+    "exceljs": "^1.15.0",
+    "express": "^4.17.1",
+    "handlebars": "^4.2.0",
+    "moment": "^2.24.0",
+    "mongoose": "^5.6.12",
     "mongoose-validator": "^2.1.0",
     "morgan": "^1.9.1",
     "parse-error": "^0.2.0",
-    "tempy": "^0.3.0"
+    "puppeteer": "^1.19.0",
+    "tea-school": "^1.5.0",
+    "tempy": "^0.3.0",
+    "written-number": "^0.9.1"
   },
   "devDependencies": {
-    "@types/node": "^10.14.7",
+    "@types/node": "^10.14.17",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-import": "^2.17.2",
-    "nodemon": "^1.19.0"
+    "eslint-plugin-import": "^2.18.2",
+    "nodemon": "^1.19.2"
   },
   "nodemonConfig": {
     "ignore": [
