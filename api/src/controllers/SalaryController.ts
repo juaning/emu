@@ -164,7 +164,7 @@ class SalaryController {
         totalDiscount: Math.round(totalDiscount).toLocaleString('es-PY'),
         totalPayment: Math.round(item.totalPayment).toLocaleString('es-PY'),
         totalWritten: writtenNumber(item.totalPayment),
-        date: mDate.format('D/MM/YYYY'),
+        date: mDate.add(1, 'M').format('D/MM/YYYY'),
       }
     }});
     return { receipts };
