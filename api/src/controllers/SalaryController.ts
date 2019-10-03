@@ -361,6 +361,29 @@ class SalaryController {
     }
     return;
   }
+
+  public async getSSFile(req: Request, res: Response) {
+    const { monthYear } = req.params;
+    const [ month, year ] = monthYear.split('-');
+    const date = new Date(Date.UTC(parseInt(year), (parseInt(month) - 1)));
+
+    /**
+     * Fields length
+     * A; 4, fill with: 0
+     * B: 2, fill with: 0
+     * C: 4, fill with: 0
+     * D: 10, fill with: ' '
+     * E: 10, fill with: ' '
+     * F: 30, fill with: ' '
+     * G: 30, fill with: ' '
+     * H: 1, fill with: ' '
+     * I: 2, fill with: ' '
+     * J: 10, fill with: ' '
+     * K: 6, fill with: ' '
+     * L: 2, fill with: ' '
+     * M: 10, fill with: ' '
+     */
+  }
 }
 
 export default SalaryController;

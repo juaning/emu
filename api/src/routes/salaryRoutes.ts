@@ -19,6 +19,9 @@ router.route('/:monthYear/excel')
 router.route('/:monthYear/allReceipts')
 .get(salaryController.getAllSalariesReceipt.bind(salaryController));
 
+router.route('/:monthYear/SSFile')
+.get(salaryController.getSSFile.bind(salaryController));
+
 router.route('/id/:salaryId')
 .get(salaryController.getSalaryById)
 .put(salaryController.updateSalaryById)
