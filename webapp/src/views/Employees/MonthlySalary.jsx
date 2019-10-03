@@ -650,6 +650,7 @@ class MonthlySalaryForm extends React.Component {
     const { employees, monthName, month, year } = salaryEntity;
     const monthYearValue = `${monthName} ${year}`;
     const styles = { 'text-align': 'left' };
+    const apiPort = process.env.REACT_APP_API_PORT;
     return (
       <GridContainer>
         <GridItem xs={12}>
@@ -708,7 +709,7 @@ class MonthlySalaryForm extends React.Component {
                     Descargar excel
                   </Button>
                   <a
-                    href={`http://localhost:3000/employee/salary/${month}-${year}/excel`}
+                    href={`${window.location.protocol}//${window.location.hostname}:${apiPort}/employee/salary/${month}-${year}/excel`}
                     download
                     style={{ display: 'none' }}
                     id="downloadExcel"
@@ -722,7 +723,7 @@ class MonthlySalaryForm extends React.Component {
                     Descargar Recibos
                   </Button>
                   <a
-                    href={`http://localhost:3000/employee/salary/${month}-${year}/allReceipts`}
+                    href={`${window.location.protocol}//${window.location.hostname}:${apiPort}/employee/salary/${month}-${year}/allReceipts`}
                     download
                     style={{ display: 'none' }}
                     id="downloadReceipts"
