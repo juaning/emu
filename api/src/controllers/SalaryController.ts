@@ -42,12 +42,18 @@ class SalaryController {
       await browser.close();
       return Promise.resolve(pdfBuffer);
     } catch (error) {
+      console.log(error);
       return Promise.reject(error);
     }
   }
 
   private mapSalaries(salaryList: Array<SalaryInterface>, extras: { companyLogo: string, companyName: string }) : object {
     const { companyLogo, companyName } = extras;
+    const daysPerMonthByLaborRegime = {
+      monthly: 30,
+      daily: 26,
+      hourly: 26,
+    };
     const receipts = salaryList.map(item => {
       const mDate = moment(item.date);
       const laborRegime = laborRegimeConstant.find(lr => lr.value === item.laborRegime);
@@ -55,6 +61,8 @@ class SalaryController {
       const totalDiscount = item.discountIps + item.discountAdvancePayment +
       item.discountLoans + item.discountJudicial + item.unjustifiedAbsenceAmount +
       item.suspensionAmount + item.otherDiscounts;
+      const daysInMonth = daysPerMonthByLaborRegime[item.laborRegime];
+      const paidSalary = item.paidSalary || ((item.wage / daysInMonth) * item.totalWorkedDays);
       return { receipt: {
         companyName,
         companyLogo,
@@ -71,7 +79,7 @@ class SalaryController {
             income: {
               concept: 'Salario',
               cant: item.totalWorkedDays,
-              price: Math.round(item.paidSalary).toLocaleString('es-PY'),
+              price: Math.round(paidSalary).toLocaleString('es-PY'),
             },
             discounts: {
               concept: 'IPS (9%)',
