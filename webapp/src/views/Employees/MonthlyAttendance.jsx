@@ -880,7 +880,11 @@ class MonthlyAttendanceForm extends React.Component {
   }
   generateClick() {
     const { attendanceEntity } = this.state;
+    const { month, year } = attendanceEntity;
     const promises = [];
+    const lastDayDate = new Date(Date.UTC(parseInt(year), (parseInt(month-1))))
+    const firstDayObj = moment.utc(lastDayDate).startOf('month');
+    const lastDayObj = moment.utc(lastDayDate).endOf('month');
     
     promises.push(employeeAPI.endpoints['personal-data'].getAll());
     promises.push(employeeAPI.endpoints.work.getAll());
@@ -889,7 +893,6 @@ class MonthlyAttendanceForm extends React.Component {
       .then(results => Promise.all(results.map(result => result.json())))
       .then(([personalData, workData]) => {
         const newEmployees = personalData.map((person) => {
-          const yesterday = ( d => new Date(d.setDate(d.getDate()-1)) )(new Date());
           const employee = MonthlyAttendanceForm.generateEmployeeAttendanceObj();
           employee.employeeId = person._id;
           employee.employeeDocumentId = person.documentId;
@@ -897,13 +900,23 @@ class MonthlyAttendanceForm extends React.Component {
           employee.lastName = person.lastName;
           // Find current contract to get labor regime
           const work = workData
-            .find(employeeWork => employeeWork.employeeId === person._id
-              && (employeeWork.endDateContract > yesterday.toJSON()
-              || employeeWork.endDateContract === undefined
-              || employeeWork.endDateContract === null));
-          employee.laborRegime = work.laborRegime;
+            .find(employeeWork => {
+              if (employeeWork.employeeId === person._id) {
+                if (employeeWork.endDateContract === undefined
+                  || employeeWork.endDateContract === null) {
+                  return true;
+                }
+                if (employeeWork.endDateContract > lastDayObj.toJSON()) {
+                  return true;
+                } else if (employeeWork.endDateContract > firstDayObj.toJSON()) {
+                  return true;
+                }
+              }
+              return false;
+            });
+          employee.laborRegime = work && work.laborRegime;
           return employee;
-        });
+        }).filter(employee => employee.laborRegime !== undefined);
         attendanceEntity.employees = newEmployees;
         this.setState({ attendanceEntity });
         return newEmployees;
