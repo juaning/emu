@@ -175,15 +175,15 @@ class MonthlySalaryForm extends React.Component {
       attendanceId: employee.attendanceId || '',
       totalWorkedDays: employee.totalWorkedDays || 30,
       paidSalary: employee.paidSalary || 0,
-      nightHoursHours: extraHours.nightlyHours || 0,
+      nightHoursHours: (extraHours && extraHours.nightlyHours) || 0,
       nightHoursAmount: 0,
-      dailyExtraHoursHours: extraHours.dailyExtraHours || 0,
+      dailyExtraHoursHours: (extraHours && extraHours.dailyExtraHours) || 0,
       dailyExtraHoursAmount: 0,
-      nightlyExtraHoursHours: extraHours.nightlyExtraHours || 0,
+      nightlyExtraHoursHours: (extraHours && extraHours.nightlyExtraHours) || 0,
       nightlyExtraHoursAmount: 0,
-      weekendHoursHours: extraHours.sundayHolidaysHours || 0,
+      weekendHoursHours: (extraHours && extraHours.sundayHolidaysHours) || 0,
       weekendHoursAmount: 0,
-      nightlyWeekendExtraHoursHours: extraHours.sundayHolidaysExtraHours || 0,
+      nightlyWeekendExtraHoursHours: (extraHours && extraHours.sundayHolidaysExtraHours) || 0,
       nightlyWeekendExtraHoursAmount: 0,
       holidayDays: employee.holidayDays || 0,
       holidaysAmount: 0,
@@ -586,24 +586,41 @@ class MonthlySalaryForm extends React.Component {
     Promise.all(promises)
       .then(results => Promise.all(results.map(result => result.json())))
       .then(([personalData, familyData, workData, attendanceData]) => {
-        const yesterday = ( d => new Date(d.setDate(d.getDate()-1)) )(new Date());
+        const lastDayDate = new Date(Date.UTC(parseInt(year), (parseInt(month-1))))
+        const firstDayObj = moment.utc(lastDayDate).startOf('month');
+        const lastDayObj = moment.utc(lastDayDate).endOf('month');
         const newEmployees = personalData.map((person) => {
           const family = familyData
             .find(employeeFamily => employeeFamily.employeeId === person._id);
           const work = workData
-            .find(employeeWork => employeeWork.employeeId === person._id
-              && (employeeWork.endDateContract > yesterday.toJSON()
-              || employeeWork.endDateContract === undefined
-              || employeeWork.endDateContract === null));
+            .find(employeeWork => {
+              if (employeeWork.employeeId === person._id) {
+                if (employeeWork.endDateContract === undefined
+                  || employeeWork.endDateContract === null) {
+                  return true;
+                }
+                if (employeeWork.endDateContract > lastDayObj.toJSON()) {
+                  return true;
+                } else if (employeeWork.endDateContract > firstDayObj.toJSON()) {
+                  return true;
+                }
+              }
+              return false;
+            });
           const attendance = attendanceData
             .find(personAttendance => personAttendance.employeeId === person._id);
           const newPerson = _.assignWith(person, attendance,
             (objValue, srcValue) => _.isUndefined(objValue) ? srcValue : objValue);
-          const { absence } = attendance;
-          newPerson.discountedAbsenceDays = calculateOffDays(absence, 'discount', true);
-          newPerson.suspensionDays = absence && absence.suspension.days;
-          newPerson.attendanceId = attendance._id;
-          newPerson.holidayDays = attendance.holidayDays;
+          const { absence } = attendance || { absence: undefined };
+          if (absence) {
+            newPerson.discountedAbsenceDays = calculateOffDays(absence,
+              'discount', true);
+            newPerson.suspensionDays = absence && absence.suspension.days;
+          }
+          if (attendance) {
+            newPerson.attendanceId = attendance._id;
+            newPerson.holidayDays = attendance.holidayDays;
+          }
           newPerson.wage = work && work.monthlySalary;
           newPerson.contractType = work && work.contractType;
           newPerson.laborRegime = work && work.laborRegime;
@@ -625,8 +642,12 @@ class MonthlySalaryForm extends React.Component {
           }
           // Calculate totals once values are set
           employee = MonthlySalaryForm.makeTotalsCalculations(employee);
+          if (!work) {
+            employee.filterOut = true;
+          }
           return employee;
-        });
+        }).filter(employee => !employee.filterOut);
+        console.log(newEmployees);
         salaryEntity.employees = newEmployees;
         this.setState({ salaryEntity });
         return newEmployees;

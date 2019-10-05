@@ -917,7 +917,6 @@ class MonthlyAttendanceForm extends React.Component {
           employee.laborRegime = work && work.laborRegime;
           return employee;
         }).filter(employee => employee.laborRegime !== undefined);
-        console.log(newEmployees);
         attendanceEntity.employees = newEmployees;
         this.setState({ attendanceEntity });
         return newEmployees;
