@@ -170,14 +170,17 @@ class SalaryController {
     return { receipts };
   }
 
-  private async getJobTitle(salaryList: Array<SalaryInterface>) : Promise<Array<SalaryInterface>> {
-    const yesterday = ( d => new Date(d.setDate(d.getDate()-1)) )(new Date());
+  private async getJobTitle(salaryList: Array<SalaryInterface>, month: number, year: number) : Promise<Array<SalaryInterface>> {
+    const lastDayDate = new Date(Date.UTC(year, (month-1)));
+    const firstDayObj = moment.utc(lastDayDate).startOf('month');
+    const lastDayObj = moment.utc(lastDayDate).endOf('month').startOf('day');
     const addJobTitle = async () => await Promise.all(salaryList.map(async salary => {
       // Get work data for employee
       const workData = await WorkModel.findOne({
         $or: [
           { endDateContract: { $exists: false } },
-          { endDateContract: { $gt: yesterday } },
+          { endDateContract: { $gte: lastDayObj.toString() } },
+          { endDateContract: { $lt: firstDayObj.toString() } },
           { endDateContract: null },
         ],
         employeeId: salary.employeeId,
@@ -345,8 +348,9 @@ class SalaryController {
     
     try {
       let salaryList = await Salary.find({ date });
+      
       if (salaryList.length > 0) {
-        salaryList = await this.getJobTitle(salaryList);
+        salaryList = await this.getJobTitle(salaryList, parseInt(month), parseInt(year));
       }
       const extras = {
         companyName: 'Emprendimientos Globales SRL',

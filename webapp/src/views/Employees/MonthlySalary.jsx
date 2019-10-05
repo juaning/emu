@@ -647,7 +647,6 @@ class MonthlySalaryForm extends React.Component {
           }
           return employee;
         }).filter(employee => !employee.filterOut);
-        console.log(newEmployees);
         salaryEntity.employees = newEmployees;
         this.setState({ salaryEntity });
         return newEmployees;
