@@ -22,7 +22,7 @@
     "dotenv": "^5.0.1",
     "exceljs": "^1.15.0",
     "express": "^4.17.1",
-    "handlebars": "^4.2.0",
+    "handlebars": "^4.5.3",
     "moment": "^2.24.0",
     "mongoose": "^5.6.12",
     "mongoose-validator": "^2.1.0",
