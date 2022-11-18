@@ -43,7 +43,7 @@
   "devDependencies": {
     "eslint-plugin-react": "^7.12.4",
     "prettier": "^1.16.2",
-    "react-scripts": "3.0.0"
+    "react-scripts": "5.0.1"
   },
   "scripts": {
     "build-css": "node-sass-chokidar --include-path ./src --include-path ./node_modules src/ -o src/",
